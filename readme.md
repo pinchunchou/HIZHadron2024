@@ -1,5 +1,9 @@
 
-# ZHadron 2024 code!
+# ZHadron 2024 code
+
+Modified from: https://github.com/pinchunchou/PhysicsHIZHadron2022
+
+Did not use clone because the commit history was already too messy.
 
 ## Instructions 
 
