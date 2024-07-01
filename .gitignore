@@ -1,0 +1,10 @@
+*.pdf
+*.pyc
+*.root
+*.err
+*.log
+*.out
+*.dH
+.DS_Store
+crab.log
+crab_*
