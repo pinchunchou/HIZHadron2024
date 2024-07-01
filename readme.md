@@ -1,9 +1,13 @@
 
 # ZHadron 2024 code
 
-Modified from: https://github.com/pinchunchou/PhysicsHIZHadron2022
+Simplified and modified from: https://github.com/pinchunchou/PhysicsHIZHadron2022 , 
 
-Did not use clone because the commit history was already too messy.
+which was forked from:
+1. https://github.com/FHead/PhysicsHIZHadron2022
+2. https://github.com/yenjie/Zhadron2022
+
+Did not fork it because the commit history was already too messy.
 
 ## Instructions 
 
