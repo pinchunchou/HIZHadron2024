@@ -62,19 +62,13 @@ TestRunPPData: Execute
 
 TestRunBackground: Execute
 	./Execute --Input $(PbPbSignalSingleMuon)/0000/HiForestMiniAOD_14.root \
-		--Output /tmp/$(USER)/Test.root --Fraction 0.1 \
+		--Output /tmp/$(USER)/TestDataBkg.root --Fraction 0.1 --DoMuon false \
 		--Background $(PbPbBackgroundData)/HiForestMiniAOD_118.root,$(PbPbBackgroundData)/HiForestMiniAOD_123.root,$(PbPbBackgroundData)/HiForestMiniAOD_127.root,$(PbPbBackgroundData)/HiForestMiniAOD_138.root,$(PbPbBackgroundData)/HiForestMiniAOD_148.root,$(PbPbBackgroundData)/HiForestMiniAOD_16.root,$(PbPbBackgroundData)/HiForestMiniAOD_17.root,$(PbPbBackgroundData)/HiForestMiniAOD_184.root,$(PbPbBackgroundData)/HiForestMiniAOD_18.root,$(PbPbBackgroundData)/HiForestMiniAOD_194.root \
-		`./Expand Setting.dh PbPbSignalData Nominal`
-
-TestRunBackgroundSimple: Execute
-	./Execute --Input $(PbPbSignalSingleMuon)/0000/HiForestMiniAOD_14.root \
-		--Output /tmp/$(USER)/Test.root --Fraction 1 \
-		--Background $(PbPbBackgroundData)/HiForestMiniAOD_118.root \
 		`./Expand Setting.dh PbPbSignalData Nominal`
 
 TestRunMCBackground: Execute
 	./Execute --Input $(PbPbSignalMC)/HiForestMiniAOD_10.root \
-		--Output /tmp/$(USER)/Test.root --Fraction 0.1 \
+		--Output /tmp/$(USER)/TestMCBkg.root --Fraction 0.1 --DoMuon false \
 		--Background $(PbPbBackgroundMC)/HiForestMiniAOD_10.root \
 		`./Expand Setting.dh PbPbBackgroundMC Nominal`
 
@@ -82,18 +76,6 @@ TestRunMCGenBackground: Execute
 	./Execute --Input $(PbPbSignalMC)/HiForestMiniAOD_10.root \
 		--Output /tmp/$(USER)/Test.root --Fraction 0.1 \
 		--Background $(PbPbBackgroundMC)/HiForestMiniAOD_10.root \
-		`./Expand Setting.dh PbPbSignalMC Nominal`
-
-TestRunRandomMCBackground: Execute
-	./Execute --Input $(PbPbSignalMC)/HiForestMiniAOD_10.root \
-		--Output /tmp/$(USER)/Test.root --Fraction 0.1 \
-		--Background `ls $(PbPbBackgroundMC)/*root | head -n 37 | tr '\n' ','` \
-		`./Expand Setting.dh PbPbBackgroundMC Nominal`
-
-TestRunRandomMCGenBackground: Execute
-	./Execute --Input $(PbPbSignalMC)/HiForestMiniAOD_10.root \
-		--Output /tmp/$(USER)/Test.root --Fraction 0.1 \
-		--Background `ls $(PbPbBackgroundMC)/*root | head -n 37 | tr '\n' ','` \
 		`./Expand Setting.dh PbPbSignalMC Nominal`
 
 EOSBase = /eos/cms/store/group/phys_heavyions/pchou/SkimZHadron2024
@@ -173,31 +155,17 @@ PrepareToRunMCTight:
 		--Fraction 1 `./Expand Setting.dh PbPbSignalMC Tight`
 
 PrepareToRunBackground:
-	bash PrepareInput.sh \
-		'$(PbPbSignalSingleMuon)/*/' \
-		10 LogDatabkg_v1/ $(EOSBase)/OutputDatabkg_v1/ \
-		--Background /eos/cms/store/group/phys_heavyions/chenyi/PbPb2018/Forest/MinBias_Hydjet_Drum5F_2018_5p02TeV/HINPbPbSpring21MiniAOD-NoPUmva98_112X_upgrade2018_realistic_HI_v9-v1/MINIAODSIM/MinBias_Hydjet_Drum5F_2018_5p02TeV/20221017_ZHadronInitialRunMCMB/221017_113057/0000/HiForestMiniAOD_10.root,/eos/cms/store/group/phys_heavyions/chenyi/PbPb2018/Forest/MinBias_Hydjet_Drum5F_2018_5p02TeV/HINPbPbSpring21MiniAOD-NoPUmva98_112X_upgrade2018_realistic_HI_v9-v1/MINIAODSIM/MinBias_Hydjet_Drum5F_2018_5p02TeV/20221017_ZHadronInitialRunMCMB/221017_113057/0000/HiForestMiniAOD_13.root,/eos/cms/store/group/phys_heavyions/chenyi/PbPb2018/Forest/MinBias_Hydjet_Drum5F_2018_5p02TeV/HINPbPbSpring21MiniAOD-NoPUmva98_112X_upgrade2018_realistic_HI_v9-v1/MINIAODSIM/MinBias_Hydjet_Drum5F_2018_5p02TeV/20221017_ZHadronInitialRunMCMB/221017_113057/0000/HiForestMiniAOD_17.root,/eos/cms/store/group/phys_heavyions/chenyi/PbPb2018/Forest/MinBias_Hydjet_Drum5F_2018_5p02TeV/HINPbPbSpring21MiniAOD-NoPUmva98_112X_upgrade2018_realistic_HI_v9-v1/MINIAODSIM/MinBias_Hydjet_Drum5F_2018_5p02TeV/20221017_ZHadronInitialRunMCMB/221017_113057/0000/HiForestMiniAOD_20.root,/eos/cms/store/group/phys_heavyions/chenyi/PbPb2018/Forest/MinBias_Hydjet_Drum5F_2018_5p02TeV/HINPbPbSpring21MiniAOD-NoPUmva98_112X_upgrade2018_realistic_HI_v9-v1/MINIAODSIM/MinBias_Hydjet_Drum5F_2018_5p02TeV/20221017_ZHadronInitialRunMCMB/221017_113057/0000/HiForestMiniAOD_22.root,/eos/cms/store/group/phys_heavyions/chenyi/PbPb2018/Forest/MinBias_Hydjet_Drum5F_2018_5p02TeV/HINPbPbSpring21MiniAOD-NoPUmva98_112X_upgrade2018_realistic_HI_v9-v1/MINIAODSIM/MinBias_Hydjet_Drum5F_2018_5p02TeV/20221017_ZHadronInitialRunMCMB/221017_113057/0000/HiForestMiniAOD_34.root,/eos/cms/store/group/phys_heavyions/chenyi/PbPb2018/Forest/MinBias_Hydjet_Drum5F_2018_5p02TeV/HINPbPbSpring21MiniAOD-NoPUmva98_112X_upgrade2018_realistic_HI_v9-v1/MINIAODSIM/MinBias_Hydjet_Drum5F_2018_5p02TeV/20221017_ZHadronInitialRunMCMB/221017_113057/0000/HiForestMiniAOD_37.root \
-		`./Expand Setting.dh PbPbBackgroundMC Nominal`
-
-PrepareToRunRandomBackground:
 	bash PrepareInputRandomBackground.sh \
 		'$(PbPbSignalSingleMuon)/*/' \
-		10 LogDataBackground_v1/ $(EOSBase)/OutputDataBackground_v1/ \
-		$(PbPbBackgroundData)/ 100 \
+		10 LogDataBkg_v1_ee/ $(EOSBase)/OutputDataBkg_v1_ee/ \
+		$(PbPbBackgroundData)/ 100  --DoMuon false \
 		`./Expand Setting.dh PbPbBackgroundData Nominal`
 
 PrepareToRunMCBackground:
-	bash PrepareInput.sh \
-		$(PbPbSignalMC) \
-		1 LogMCBackground_v1/ $(EOSBase)/OutputMCBackground_v1/ \
-		--Background $(PbPbBackgroundMC)/HiForestMiniAOD_10.root,$(PbPbBackgroundMC)/HiForestMiniAOD_11.root,$(PbPbBackgroundMC)/HiForestMiniAOD_12.root,$(PbPbBackgroundMC)/HiForestMiniAOD_13.root,$(PbPbBackgroundMC)/HiForestMiniAOD_14.root,$(PbPbBackgroundMC)/HiForestMiniAOD_15.root,$(PbPbBackgroundMC)/HiForestMiniAOD_16.root,$(PbPbBackgroundMC)/HiForestMiniAOD_17.root,$(PbPbBackgroundMC)/HiForestMiniAOD_18.root,$(PbPbBackgroundMC)/HiForestMiniAOD_19.root,$(PbPbBackgroundMC)/HiForestMiniAOD_1.root,$(PbPbBackgroundMC)/HiForestMiniAOD_20.root \
-		`./Expand Setting.dh PbPbBackgroundMC Nominal`
-
-PrepareToRunRandomMCBackground:
 	bash PrepareInputRandomBackground.sh \
 		$(PbPbSignalMC) \
-		1 LogMCBackground_v1/ $(EOSBase)/OutputMCBackground_v1/ \
-		$(PbPbBackgroundMC)/ 15 \
+		1 LogMCBkg_v1_ee/ $(EOSBase)/OutputMCBkg_v1_ee/ \
+		$(PbPbBackgroundMC)/ 15  --DoMuon false \
 		`./Expand Setting.dh PbPbBackgroundMC Nominal`
 
 PrepareToRunRandomMCGenBackground:

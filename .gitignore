@@ -5,6 +5,10 @@
 *.log
 *.out
 *.dH
+*.dh
+*.condor
 .DS_Store
 crab.log
 crab_*
+pchou.cc
+Execute

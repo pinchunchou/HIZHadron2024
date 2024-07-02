@@ -41,6 +41,7 @@ public:
    double VZ;
    int File;
    int Event;
+   double GenHF;
 public:
    bool operator <(const EventIndex &other) const
    {
@@ -62,7 +63,7 @@ public:
 
 int main(int argc, char *argv[]){
 
-   string Version = "V1";
+   string Version = "V1a";
    CommandLine CL(argc, argv);
 
    vector<string> InputFileNames      = CL.GetStringVector("Input");
@@ -196,6 +197,7 @@ int main(int argc, char *argv[]){
             EventIndex E;
             E.HF = DoGenCorrelation ? GetGenHFSum(MBackgroundGen[iB], MinGenTrackPT) : (DoSumET ? MBackgroundEvent[iB]->hiHF : GetHFSum(MBackgroundPF[iB], MinPFPT));
             E.VZ = MBackgroundEvent[iB]->vz;
+            E.GenHF = DoGenLevel ? GetGenHFSum(MBackgroundGen[iB], MinGenTrackPT) : -1;
             E.File = iB;
             E.Event = iE;
             BackgroundIndices.push_back(E);
@@ -703,32 +705,32 @@ int main(int argc, char *argv[]){
             		if(fabs(Z.Rapidity()) > 2.4) continue;
 
             		MZHadron.zMass->push_back(Zmass);
-               		MZHadron.zEta->push_back(Z.Eta());
-               		MZHadron.zPhi->push_back(Z.Phi());
-               		MZHadron.zPt->push_back(Z.Pt());
+               	MZHadron.zEta->push_back(Z.Eta());
+               	MZHadron.zPhi->push_back(Z.Phi());
+               	MZHadron.zPt->push_back(Z.Pt());
    		
-               		MZHadron.muEta1->push_back(MSignalGG.EleEta->at(iele1));
-               		MZHadron.muEta2->push_back(MSignalGG.EleEta->at(iele2));
-               		MZHadron.muPhi1->push_back(MSignalGG.ElePhi->at(iele1));
-               		MZHadron.muPhi2->push_back(MSignalGG.ElePhi->at(iele2));
+               	MZHadron.muEta1->push_back(MSignalGG.EleEta->at(iele1));
+               	MZHadron.muEta2->push_back(MSignalGG.EleEta->at(iele2));
+               	MZHadron.muPhi1->push_back(MSignalGG.ElePhi->at(iele1));
+               	MZHadron.muPhi2->push_back(MSignalGG.ElePhi->at(iele2));
    		
-               		MZHadron.muPt1->push_back(MSignalGG.ElePt->at(iele1));
-               		MZHadron.muPt2->push_back(MSignalGG.ElePt->at(iele2));
+               	MZHadron.muPt1->push_back(MSignalGG.ElePt->at(iele1));
+               	MZHadron.muPt2->push_back(MSignalGG.ElePt->at(iele2));
 
-               		double deltaEleEta = MSignalGG.EleEta->at(iele1) - MSignalGG.EleEta->at(iele2);
-               		double deltaElePhi = PhiRangePositive(DeltaPhi(MSignalGG.ElePhi->at(iele1), MSignalGG.ElePhi->at(iele2)));
+               	double deltaEleEta = MSignalGG.EleEta->at(iele1) - MSignalGG.EleEta->at(iele2);
+               	double deltaElePhi = PhiRangePositive(DeltaPhi(MSignalGG.ElePhi->at(iele1), MSignalGG.ElePhi->at(iele2)));
    		
-               		MZHadron.muDeta->push_back(deltaEleEta);
-               		MZHadron.muDphi->push_back(deltaElePhi);
-               		MZHadron.muDR->push_back(sqrt(deltaEleEta * deltaEleEta + deltaElePhi * deltaElePhi));
+               	MZHadron.muDeta->push_back(deltaEleEta);
+               	MZHadron.muDphi->push_back(deltaElePhi);
+               	MZHadron.muDR->push_back(sqrt(deltaEleEta * deltaEleEta + deltaElePhi * deltaElePhi));
    		
-               		double deltaPhiStar = tan((M_PI - deltaElePhi) / 2) * sqrt(1 - tanh(deltaEleEta / 2) * tanh(deltaEleEta / 2));
+               	double deltaPhiStar = tan((M_PI - deltaElePhi) / 2) * sqrt(1 - tanh(deltaEleEta / 2) * tanh(deltaEleEta / 2));
    		
-               		MZHadron.muDphiS->push_back(deltaPhiStar);
+               	MZHadron.muDphiS->push_back(deltaPhiStar);
 
-               		MZHadron.isMuon->push_back(false);
+               	MZHadron.isMuon->push_back(false);
    		
-               		n_Zee.Fill(Zmass, Z.Pt(), Z.Eta(), Z.Phi());
+               	n_Zee.Fill(Zmass, Z.Pt(), Z.Eta(), Z.Phi());
 
             	} // Loop over 2nd reco electron ended
 
@@ -772,14 +774,79 @@ int main(int argc, char *argv[]){
             bool GoodGenZ = MZHadron.bestZgenIdx >= 0 && MZHadron.genZPt->size() > 0 && (MZHadron.genZPt->at(MZHadron.bestZgenIdx) > MinZPT) && (MZHadron.genZPt->at(MZHadron.bestZgenIdx) < MaxZPT);
             bool GoodRecoZ = MZHadron.bestZidx >= 0 && MZHadron.zPt->size() > 0 && (MZHadron.zPt->at(MZHadron.bestZidx) > MinZPT) && (MZHadron.zPt->at(MZHadron.bestZidx) < MaxZPT);
 
+            
+            // Background matching 
+            EventIndex Location;
+
+            if(DoBackground == true && (GoodGenZ == true || GoodRecoZ == true) ) 
+            {
+               // find the background event location based on HF
+               double SignalHF = ForceGenMatch ? MZHadron.SignalGenHF : MZHadron.SignalHF;
+               double LowerHF = min(SignalHF - HFTolerance, SignalHF * (1 - HFToleranceFraction)) - HFShift;
+               double HigherHF = max(SignalHF + HFTolerance, SignalHF * (1 + HFToleranceFraction)) - HFShift;
+
+               //if(SignalHF < HFShift)
+               if(HigherHF < 0)
+                  continue;
+
+               if(HFCeiling >= 0 && LowerHF > HFCeiling)
+                  LowerHF = HFCeiling;
+
+               // cout << endl;
+               // cout << SignalHF << " " << LowerHF << " " << HigherHF << " " << HFShift << endl;
+
+               // cout << MSignalEvent.hiHF << " " << SignalHF << endl;
+
+               int LowerIndex = FindFirstAbove(BackgroundIndices, LowerHF);
+               int HigherIndex = FindFirstAbove(BackgroundIndices, HigherHF);
+
+               vector<int> GoodIndices;
+               GoodIndices.reserve(HigherIndex - LowerIndex + 1);
+               for(int i = LowerIndex; i <= HigherIndex; i++)
+                  if(fabs(BackgroundIndices[i].VZ - MZHadron.SignalVZ) < VZTolerance)
+                     GoodIndices.push_back(i);
+
+               Assert(HigherIndex > LowerIndex,
+                  Form("Warning!  Too few events matched.  Please enlarge tolerance or add more background files.  %f < %f - %f < %f",
+                     LowerHF, SignalHF, HFShift, HigherHF));
+               Assert(GoodIndices.size() > 0,
+                  Form("Warning!  Too few events matched.  Please enlarge tolerance or add more background files.  %f < %f - %f < %f, %f",
+                     LowerHF, SignalHF, HFShift, HigherHF, MZHadron.SignalVZ));
+
+               int Index = rand() % GoodIndices.size();
+
+               Location = BackgroundIndices[GoodIndices[Index]];
+
+               // cout << "Index inside the array" << Index << endl;
+               // cout << "From index " << Location.File << " " << Location.Event << " " << Location.HF << endl;
+               // cout << "Track tree pointer " << MBackgroundTrack[Location.File]->Tree << endl;
+               // MBackgroundEvent[Location.File]->GetEntry(Location.Event);
+               // cout << "From background event HF = " << MBackgroundEvent[Location.File]->hiHF << endl;
+
+               MZHadron.BackgroundHF = Location.HF;
+              
+               if(DoGenLevel == true)
+                  MZHadron.BackgroundGenHF = Location.GenHF;
+
+               // cout << Location.HF << endl;
+
+               if(DoGenCorrelation == true)
+                  MBackgroundGen[Location.File]->GetEntry(Location.Event);
+               else
+               {
+                  if(IsPP == true)
+                     MBackgroundTrackPP[Location.File]->GetEntry(Location.Event);
+                  else
+                     MBackgroundTrack[Location.File]->GetEntry(Location.Event);
+               }
+            } // Background matching ended
+
             // Z-track correlation
-            // TODO: We can skip bkg first, and then come back later before skimming.
-            // Remember to check the latest bkg skim code.
 
             if((DoGenCorrelation == true && GoodGenZ == true) || (DoGenCorrelation == false && GoodRecoZ == true))
             {
-               EventIndex Location;
 
+               
                PbPbTrackTreeMessenger *MTrack = DoBackground ? MBackgroundTrack[Location.File] : &MSignalTrack;
                TrackTreeMessenger *MTrackPP   = DoBackground ? MBackgroundTrackPP[Location.File] : &MSignalTrackPP;
                GenParticleTreeMessenger *MGen = DoBackground ? MBackgroundGen[Location.File] : &MSignalGen;
@@ -904,7 +971,6 @@ int main(int argc, char *argv[]){
             // Loop over gen tracks
             if(DoGenLevel == true && GoodGenZ == true)
             {
-               EventIndex Location;
                GenParticleTreeMessenger *MGen = DoBackground ? MBackgroundGen[Location.File] : &MSignalGen;
 
                //std::cout<<"MGen->Mult = "<<MGen->Mult<<std::endl;

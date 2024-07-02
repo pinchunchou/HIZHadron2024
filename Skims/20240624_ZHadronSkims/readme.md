@@ -12,6 +12,11 @@
    * New weights not implemented yet. Will be in newer versions.
    * Background matching not implemented yet. Will be in newer versions.
 
+* Version 1a - 2024 July 2
+   * Implement basic background matching. Event selections and ForceGenMatch not yet ready for background.
+   * New weights not implemented yet. Will be in newer versions.
+   * Plan to include rapidity (Y) in newer version.
+
 ## Arguments
 
 | Argument | type | default | comments |

@@ -6,9 +6,8 @@ default: TestRun
 
 TestRun: Execute
 	mkdir -p log
-	./Execute --InputBase /eos/cms/store/group/phys_heavyions/pchou/SkimZHadron2024/OutputData_v1_ee/ \
-		--Output /tmp/$(USER)/GraphDataSig_v1_ee.root --Fraction 0.1 \
-		 > /tmp/$(USER)/GraphDataSignal_v1_ee.out 2> /tmp/$(USER)/GraphDataSignal_v1_ee.err < /dev/null &
+	./Execute --InputBase $(EOSBase)/SkimZHadron2024/OutputData_v1_ee/ \
+		--Output /tmp/$(USER)/GraphDataSig_v1_ee.root --Fraction 0.1 
 
 Run2DataSig: Execute
 	./Execute --InputBase $(EOSBase)/SkimZHadron2024/OutputData_v1_ee/ \
