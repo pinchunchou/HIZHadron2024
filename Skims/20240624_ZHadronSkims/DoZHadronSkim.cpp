@@ -112,12 +112,12 @@ int main(int argc, char *argv[]){
    if(DoTrackResidual == true)
       Assert(TrackResidualPath.size() == 1 || TrackResidualPath.size() == 4, "You need 1 file for residual correction or 4 files for centrality-dependence");
 
-   if(DoBackground == true)
-   {
-      cerr << "=== WARNING ===" << endl;
-      cerr << "Background mixing mode not yet supported with this code." << endl;
-      cerr << "=== WARNING ===" << endl;
-   }
+   //if(DoBackground == true)
+   //{
+   //   cerr << "=== WARNING ===" << endl;
+   //   cerr << "Background mixing mode not yet supported with this code." << endl;
+   //   cerr << "=== WARNING ===" << endl;
+   //}
 
    vector<string> BackgroundFileNames;
    int NBackground = 0;
@@ -817,7 +817,7 @@ int main(int argc, char *argv[]){
 
                Location = BackgroundIndices[GoodIndices[Index]];
 
-               // cout << "Index inside the array" << Index << endl;
+               // cout << "Index inside the array " << Index << endl;
                // cout << "From index " << Location.File << " " << Location.Event << " " << Location.HF << endl;
                // cout << "Track tree pointer " << MBackgroundTrack[Location.File]->Tree << endl;
                // MBackgroundEvent[Location.File]->GetEntry(Location.Event);

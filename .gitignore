@@ -12,3 +12,5 @@ crab.log
 crab_*
 pchou.cc
 Execute
+CommonCode/binary/
+CommonCode/library/

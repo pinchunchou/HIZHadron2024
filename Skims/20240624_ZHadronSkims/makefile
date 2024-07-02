@@ -61,22 +61,22 @@ TestRunPPData: Execute
 		`./Expand Setting.dh PPSignalData Nominal`
 
 TestRunBackground: Execute
-	./Execute --Input $(PbPbSignalSingleMuon)/0000/HiForestMiniAOD_14.root \
-		--Output /tmp/$(USER)/TestDataBkg.root --Fraction 0.1 --DoMuon false \
-		--Background $(PbPbBackgroundData)/HiForestMiniAOD_118.root,$(PbPbBackgroundData)/HiForestMiniAOD_123.root,$(PbPbBackgroundData)/HiForestMiniAOD_127.root,$(PbPbBackgroundData)/HiForestMiniAOD_138.root,$(PbPbBackgroundData)/HiForestMiniAOD_148.root,$(PbPbBackgroundData)/HiForestMiniAOD_16.root,$(PbPbBackgroundData)/HiForestMiniAOD_17.root,$(PbPbBackgroundData)/HiForestMiniAOD_184.root,$(PbPbBackgroundData)/HiForestMiniAOD_18.root,$(PbPbBackgroundData)/HiForestMiniAOD_194.root \
-		`./Expand Setting.dh PbPbSignalData Nominal`
+	./Execute --Input $(PbPbSignalSingleMuon)/0000/HiForestMiniAOD_696.root \
+		--Output /tmp/$(USER)/TestDataBkg.root --Fraction 1 --DoMuon false --WithProgressBar true \
+		--Background `ls $(PbPbBackgroundData)/*root | head -n 5 | tr '\n' ','` \
+		`./Expand Setting.dh PbPbBackgroundData Nominal`
 
 TestRunMCBackground: Execute
 	./Execute --Input $(PbPbSignalMC)/HiForestMiniAOD_10.root \
-		--Output /tmp/$(USER)/TestMCBkg.root --Fraction 0.1 --DoMuon false \
+		--Output /tmp/$(USER)/TestMCBkg.root --Fraction 0.1 --DoMuon false  --WithProgressBar true \
 		--Background $(PbPbBackgroundMC)/HiForestMiniAOD_10.root \
 		`./Expand Setting.dh PbPbBackgroundMC Nominal`
 
 TestRunMCGenBackground: Execute
 	./Execute --Input $(PbPbSignalMC)/HiForestMiniAOD_10.root \
-		--Output /tmp/$(USER)/Test.root --Fraction 0.1 \
+		--Output /tmp/$(USER)/TestMCGenBkg.root --Fraction 0.1  --DoMuon false --WithProgressBar true \
 		--Background $(PbPbBackgroundMC)/HiForestMiniAOD_10.root \
-		`./Expand Setting.dh PbPbSignalMC Nominal`
+		`./Expand Setting.dh PbPbBackgroundGenMC Nominal`
 
 EOSBase = /eos/cms/store/group/phys_heavyions/pchou/SkimZHadron2024
 AFSBase = /afs/cern.ch/user/p/pchou
@@ -165,13 +165,13 @@ PrepareToRunMCBackground:
 	bash PrepareInputRandomBackground.sh \
 		$(PbPbSignalMC) \
 		1 LogMCBkg_v1_ee/ $(EOSBase)/OutputMCBkg_v1_ee/ \
-		$(PbPbBackgroundMC)/ 15  --DoMuon false \
+		$(PbPbBackgroundMC)/ 15 --DoMuon false \
 		`./Expand Setting.dh PbPbBackgroundMC Nominal`
 
 PrepareToRunRandomMCGenBackground:
 	bash PrepareInputRandomBackground.sh \
 		$(PbPbSignalMC) \
-		10 LogMCGenbkg_v1/ $(EOSBase)/OutputMCbkgGen_v1/ \
-		$(PbPbBackgroundMC)/ 5 \
+		10 LogMCGenbkg_v1_ee/ $(EOSBase)/OutputMCbkgGen_v1_ee/ \
+		$(PbPbBackgroundMC)/ 5 --DoMuon false \
  		`./Expand Setting.dh PbPbBackgroundGenMC Nominal`
 
