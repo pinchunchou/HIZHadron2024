@@ -11,38 +11,38 @@ TestRun: Execute
 
 Run2DataSig: Execute
 	./Execute --InputBase $(EOSBase)/SkimZHadron2024/OutputData_v1_ee/ \
-		--Output $(CERNBOX)/BasicPlots/ZHadron2024/GraphDataSig_v1_ee.root --Fraction 1 \
-		 > log/GraphDataSig_v1_ee.out 2> log/GraphDataSig_v1_ee.err < /dev/null &
+		--Output $(CERNBOX)/BasicPlots/ZHadron2024/GraphDataSig_v1_ee_noZw.root --Fraction 1 --DoZWeight false \
+		 > log/GraphDataSig_v1_ee_noZw.out 2> log/GraphDataSig_v1_ee_noZw.err < /dev/null &
 
 Run2MCSig: Execute
 	./Execute --InputBase $(EOSBase)/SkimZHadron2024/OutputMC_v1_ee/ \
-		--Output $(CERNBOX)/BasicPlots/ZHadron2024/GraphMCSig_v1_ee.root --Fraction 1 \
-		 > log/GraphMCSig_v1_ee.out 2> log/GraphMCSig_v1_ee.err < /dev/null &
+		--Output $(CERNBOX)/BasicPlots/ZHadron2024/GraphMCSig_v1_ee_noZw.root --Fraction 1 --DoZWeight false \
+		 > log/GraphMCSig_v1_ee_noZw.out 2> log/GraphMCSig_v1_ee_noZw.err < /dev/null &
 
 Run2PPMCSig: Execute	
 	./Execute --InputBase $(EOSBase)/SkimZHadron2024/OutputPPMC_v1_ee/ \
-		--Output $(CERNBOX)/BasicPlots/ZHadron2024/GraphPPMC_v1_ee.root --IgnoreCentrality true --Fraction 1 \
-		 > log/GraphPPMC_v1_ee.out 2> log/GraphPPMC_v1_ee.err < /dev/null &
+		--Output $(CERNBOX)/BasicPlots/ZHadron2024/GraphPPMC_v1_ee_noZw.root --IgnoreCentrality true --Fraction 1 --DoZWeight false \
+		 > log/GraphPPMC_v1_ee._noZwout 2> log/GraphPPMC_v1_ee_noZw.err < /dev/null &
 
 Run2PPMCSig0NPU: Execute	
 	./Execute --InputBase $(EOSBase)/SkimZHadron2024/OutputPPMC_v1_ee/ \
-		--Output $(CERNBOX)/BasicPlots/ZHadron2024/GraphPPMC0NPU_v1_ee.root --IgnoreCentrality true --OnlyZeroNPU true --Fraction 1 \
-		 > log/GraphPPMC0NPU_v1_ee.out 2> log/GraphPPMC0NPU_v1_ee.err < /dev/null &
+		--Output $(CERNBOX)/BasicPlots/ZHadron2024/GraphPPMC0NPU_v1_ee_noZw.root --IgnoreCentrality true --OnlyZeroNPU true --Fraction 1 --DoZWeight false \
+		 > log/GraphPPMC0NPU_v1_ee_noZw.out 2> log/GraphPPMC0NPU_v1_ee_noZw.err < /dev/null &
 
 Run2PPMCSig1Vtx: Execute	
 	./Execute --InputBase $(EOSBase)/SkimZHadron2024/OutputPPMC_v1_ee/ \
-		--Output $(CERNBOX)/BasicPlots/ZHadron2024/GraphPPMC1Vtx_v1_ee.root --IgnoreCentrality true --OnlyOneNVertex true --Fraction 1 \
-		 > log/GraphPPMC1Vtx_v1_ee.out 2> log/GraphPPMC1Vtx_v1_ee.err < /dev/null &
+		--Output $(CERNBOX)/BasicPlots/ZHadron2024/GraphPPMC1Vtx_v1_ee_noZw.root --IgnoreCentrality true --OnlyOneNVertex true --Fraction 1 --DoZWeight false \
+		 > log/GraphPPMC1Vtx_v1_ee_noZw.out 2> log/GraphPPMC1Vtx_v1_ee_noZw.err < /dev/null &
 
 Run2PPData: Execute	
 	./Execute --InputBase $(EOSBase)/SkimZHadron2024/OutputPPData_v1_ee/ \
-		--Output $(CERNBOX)/BasicPlots/ZHadron2024/GraphPPData_v1_ee.root --IgnoreCentrality true --Fraction 1 \
-		 > log/GraphPPData_v1_ee.out 2> log/GraphPPData_v1_ee.err < /dev/null &
+		--Output $(CERNBOX)/BasicPlots/ZHadron2024/GraphPPData_v1_ee_noZw.root --IgnoreCentrality true --Fraction 1 --DoZWeight false \
+		 > log/GraphPPData_v1_ee_noZw.out 2> log/GraphPPData_v1_ee_noZw.err < /dev/null &
 
 Run2PPData1Vtx: Execute	
 	./Execute --InputBase $(EOSBase)/SkimZHadron2024/OutputPPData_v1_ee/ \
-		--Output $(CERNBOX)/BasicPlots/ZHadron2024/GraphPPData1Vtx_v1_ee.root --IgnoreCentrality true --OnlyOneNVertex true --Fraction 1 \
-		 > log/GraphPPData1Vtx_v1_ee.out 2> log/GraphPPData1Vtx_v1_ee.err < /dev/null &
+		--Output $(CERNBOX)/BasicPlots/ZHadron2024/GraphPPData1Vtx_v1_ee_noZw.root --IgnoreCentrality true --OnlyOneNVertex true --Fraction 1 --DoZWeight false \
+		 > log/GraphPPData1Vtx_v1_ee_noZw.out 2> log/GraphPPData1Vtx_v1_ee_noZw.err < /dev/null &
 
 Run2MCSigGen: Execute
 	./Execute --InputBase $(EOSBase)/SkimZHadron2024/OutputMCGen_v1_ee/ \
@@ -66,21 +66,21 @@ Run2PPMCSigGen0NPU: Execute
 
 Run2DataBkg: Execute		 
 	./Execute --InputBase $(EOSBase)/SkimZHadron2024/OutputDataBkg_v1_ee/ \
-		--Output $(CERNBOX)/BasicPlots/ZHadron2024/GraphDataBkg_v1_ee.root --Fraction 1 \
-		 > log/GraphDataBkg_v1_ee.out 2> log/GraphDataBkg_v1_ee.err < /dev/null &
+		--Output $(CERNBOX)/BasicPlots/ZHadron2024/GraphDataBkg_v1_ee_noZw.root --Fraction 1 --DoZWeight false \
+		 > log/GraphDataBkg_v1_ee_noZw.out 2> log/GraphDataBkg_v1_ee_noZw.err < /dev/null &
 
 Run2MCBkg: Execute		 
 	./Execute --InputBase $(EOSBase)/SkimZHadron2024/OutputMCBkg_v1_ee/ \
-		--Output $(CERNBOX)/BasicPlots/ZHadron2024/GraphMCBkg_v1_ee.root --Fraction 1 \
-		 > log/GraphMCBkg_v1_ee.out 2> log/GraphMCBkg_v1_ee.err < /dev/null &
+		--Output $(CERNBOX)/BasicPlots/ZHadron2024/GraphMCBkg_v1_ee_noZw.root --Fraction 1 --DoZWeight false \
+		 > log/GraphMCBkg_v1_ee_noZw.out 2> log/GraphMCBkg_v1_ee_noZw.err < /dev/null &
 
 Run2MCBkgGen: Execute		 
-	./Execute --InputBase $(EOSBase)/SkimZHadron2024/OutputMCBkg_v1_ee/ \
+	./Execute --InputBase $(EOSBase)/SkimZHadron2024/OutputMCbkgGen_v1_ee/ \
 		--Output $(CERNBOX)/BasicPlots/ZHadron2024/GraphMCBkgGen_v1_ee.root --DoGenCorrelation true --Fraction 1 \
 		 > log/GraphMCBkgGen_v1_ee.out 2> log/GraphMCBkgGen_v1_ee.err < /dev/null &
 
 Run2MCBkgGen0Sub: Execute		 
-	./Execute --InputBase $(EOSBase)/SkimZHadron2024/OutputMCBkg_v1_ee/ \
+	./Execute --InputBase $(EOSBase)/SkimZHadron2024/OutputMCbkgGen_v1_ee/ \
 		--Output $(CERNBOX)/BasicPlots/ZHadron2024/GraphMCBkgGen0Sub_v1_ee.root --OnlyZeroSub true --DoGenCorrelation true --Fraction 1 \
 		 > log/GraphMCBkgGen0Sub_v1_ee.out 2> log/GraphMCBkgGen0Sub_v1_ee.err < /dev/null &
 
@@ -124,10 +124,16 @@ Execute: ZTrackAnalysis.cpp
 	g++ ZTrackAnalysis.cpp -I. -I$(ProjectBase)/CommonCode/include \
 		-o Execute `root-config --cflags --libs` -std=c++17
 
-Draw: ExecuteDrawRefactor
+Draw: ExecuteDraw
 	./ExecuteDrawRefactor
 
 ExecuteDraw: ZtrackDrawRefactor.cpp
 	g++ ZtrackDrawRefactor.cpp -I. -I$(ProjectBase)/CommonCode/include \
 		-o ExecuteDrawRefactor `root-config --cflags --libs` -std=c++17
 
+DrawBasicBkgSub: ExecuteBasicBkgSub
+	./ExecuteBasicBkgSub
+
+ExecuteBasicBkgSub: ZBasicBkgSub.cpp
+	g++ ZBasicBkgSub.cpp -I. -I$(ProjectBase)/CommonCode/include \
+		-o ExecuteBasicBkgSub `root-config --cflags --libs` -std=c++17

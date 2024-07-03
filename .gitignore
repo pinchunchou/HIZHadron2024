@@ -10,7 +10,9 @@
 .DS_Store
 crab.log
 crab_*
+core.*
 pchou.cc
-Execute
+Execute*
+log/
 CommonCode/binary/
 CommonCode/library/

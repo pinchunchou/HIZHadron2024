@@ -21,8 +21,8 @@ using namespace std;
 #include "SetStyle.h"
 
 #define TptL_min 0.5
-#define typeofdata "20230518"
-#define typeofdatatext "single muon"
+#define typeofdata "20240703"
+#define typeofdatatext "Z #rightarrow e^{+}e^{-}"
 
 struct Files;
 struct Plots;
@@ -78,9 +78,7 @@ public:
    Plots() {}
    Plots(TFile *File, string FolderName, int Rebin1D = 1, int Rebin2D = 1) :
       N1{"HEta", "HPhi", "HTrackMuonDEta", "HTrackMuonDPhi"},
-      N2{"HEtaPhi", "HTrackMuonDEtaDPhi", "HMaxHadronEtaPhi", "HMaxOppositeHadronEtaPhi",
-         "HWTAEtaPhi", "HWTAMoreEtaPhi", "HZMaxHadronEtaPhi", "HZMaxOppositeHadronEtaPhi",
-         "HZWTAEtaPhi", "HZWTAMoreEtaPhi"}
+      N2{"HEtaPhi", "HTrackMuonDEtaDPhi"}
    {
       for(string N : N1) H1[N] = Prepare1DHistogram(File, FolderName, N, Rebin1D);
       for(string N : N2) H2[N] = Prepare2DHistogram(File, FolderName, N, Rebin2D);
@@ -195,18 +193,18 @@ int main(int argc, char *argv[])
 
    Files File;
 
-   string filebase = "/eos/home-p/pchou/BasicPlots/ZHadron2024/"
+   string filebase = "/eos/home-p/pchou/BasicPlots/ZHadron2024/";
    
-   File.SignalData      = TFile::Open((filebase + "GraphDataSig_v1_ee.root" ).c_str(), "read");
-   File.SignalMC        = TFile::Open((filebase + "GraphMCSig_v1_ee.root"   ).c_str(), "read");
-   File.BackgroundData  = TFile::Open((filebase + "GraphDataBkg_v1_ee.root" ).c_str(), "read");
-   File.BackgroundMC    = TFile::Open((filebase + "GraphMCBkg_v1_ee.root"   ).c_str(), "read");
-   File.ppData          = TFile::Open((filebase + "GraphPPData_v1_ee.root"  ).c_str(), "read");
-   File.ppMC            = TFile::Open((filebase + "GraphPPMC_v1_ee.root"    ).c_str(), "read");
+   File.SignalData      = TFile::Open((filebase + "GraphDataSig_v1_ee_noZw.root" ).c_str(), "read");
+   File.SignalMC        = TFile::Open((filebase + "GraphMCSig_v1_ee_noZw.root"   ).c_str(), "read");
+   File.BackgroundData  = TFile::Open((filebase + "GraphDataBkg_v1_ee_noZw.root" ).c_str(), "read");
+   File.BackgroundMC    = TFile::Open((filebase + "GraphMCBkg_v1_ee_noZw.root"   ).c_str(), "read");
+   File.ppData          = TFile::Open((filebase + "GraphPPData_v1_ee_noZw.root"  ).c_str(), "read");
+   File.ppMC            = TFile::Open((filebase + "GraphPPMC_v1_ee_noZw.root"    ).c_str(), "read");
    File.SignalMCGen     = TFile::Open((filebase + "GraphMCSigGen_v1_ee.root").c_str(), "read");
    File.BackgroundMCGen = TFile::Open((filebase + "GraphMCBkgGen_v1_ee.root").c_str(), "read");
 
-   string OutputBase = "/eos/user/p/pchou/figs/ZHadron2024/";
+   string OutputBase = "/eos/user/p/pchou/figs/ZHadron2024/Draw/ov1_v1a_Reco_noZw/";
    // string OutputBase = ".";
 
    ZtrackDraw_single(File, Setting(40, 40,  200,  0,  10, 1, 2), OutputBase);
@@ -255,15 +253,15 @@ void ZtrackDraw_single(Files &File, Setting S, string OutputBase)
 
    string FolderName = Form("Plot_ZPT_%.0f_%.0f_Cent_%.0f_%.0f_TrackPT_%.2f_%.2f",S.ptL,S.ptH,S.centL,S.centH,S.TptL,S.TptH);
    replace(FolderName.begin(), FolderName.end(), '.', 'p');
-
-   Plots HSignalData(File.SignalData, FolderName, 1, 5);
-   Plots HSignalMC(File.SignalMC, FolderName, 1, 4);
-   Plots HppData(File.ppData, FolderName, 1, 5);
-   Plots HppMC(File.ppMC, FolderName, 1, 4);
-   Plots HBackgroundData(File.BackgroundData, FolderName, 1, 5);
-   Plots HBackgroundMC(File.BackgroundMC, FolderName, 1, 4);
-   Plots HSignalMCGen(File.SignalMCGen, FolderName, 1, 4);
-   Plots HBackgroundMCGen(File.BackgroundMCGen, FolderName, 1, 4);
+   cout<<"a1"<<endl;
+   Plots HSignalData(File.SignalData, FolderName, 1, 5);cout<<"a2"<<endl;
+   Plots HSignalMC(File.SignalMC, FolderName, 1, 4);cout<<"a3"<<endl;
+   Plots HppData(File.ppData, FolderName, 1, 5);cout<<"a4"<<endl;
+   Plots HppMC(File.ppMC, FolderName, 1, 4);cout<<"a5"<<endl;
+   Plots HBackgroundData(File.BackgroundData, FolderName, 1, 5);cout<<"a6"<<endl;
+   Plots HBackgroundMC(File.BackgroundMC, FolderName, 1, 4);cout<<"a7"<<endl;
+   Plots HSignalMCGen(File.SignalMCGen, FolderName, 1, 4);cout<<"a8"<<endl;
+   Plots HBackgroundMCGen(File.BackgroundMCGen, FolderName, 1, 4);cout<<"a9"<<endl;
 
    HSignalData.HistogramStyle(kBlack, 24);
    HSignalMC.HistogramStyle(kRed, 24);
