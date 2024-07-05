@@ -17,6 +17,9 @@
    * New weights not implemented yet. Will be in newer versions.
    * Plan to include rapidity (Y) in newer version.
 
+* Version 1b - 2024 July 5
+   * Fix selections: remove Z rapidity selections, fix electron SC selections.
+
 ## Arguments
 
 | Argument | type | default | comments |

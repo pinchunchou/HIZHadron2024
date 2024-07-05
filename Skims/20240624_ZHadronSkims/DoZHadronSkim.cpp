@@ -63,7 +63,7 @@ public:
 
 int main(int argc, char *argv[]){
 
-   string Version = "V1a";
+   string Version = "V1b";
    CommandLine CL(argc, argv);
 
    vector<string> InputFileNames      = CL.GetStringVector("Input");
@@ -624,8 +624,8 @@ int main(int argc, char *argv[]){
                Mu1.SetPtEtaPhiM(MSignalMu.DiPT1[ipair], MSignalMu.DiEta1[ipair], MSignalMu.DiPhi1[ipair], M_MU);
                Mu2.SetPtEtaPhiM(MSignalMu.DiPT2[ipair], MSignalMu.DiEta2[ipair], MSignalMu.DiPhi2[ipair], M_MU);
                TLorentzVector Z = Mu1 + Mu2;
-               if(fabs(Z.Rapidity()) > 2.4)
-                  continue;
+               //if(fabs(Z.Rapidity()) > 2.4)
+               //   continue;
 
                MZHadron.zMass->push_back(MSignalMu.DiMass[ipair]);
                MZHadron.zEta->push_back(MSignalMu.DiEta[ipair]);
@@ -671,12 +671,13 @@ int main(int argc, char *argv[]){
             	if(DoElectron == false) break;
 
             	// Some basic electron kinematic cuts
-            	if(fabs(MSignalGG.EleEta->at(iele1)) > 2.1)               continue;
+            	if(fabs(MSignalGG.EleSCEta->at(iele1)) > 2.5)             continue;
+               if(fabs(MSignalGG.EleEta->at(iele1)) > 2.1)               continue;
             	if(fabs(MSignalGG.ElePt->at(iele1)) < 20)                 continue;
-            	if(MSignalGG.DielectronPassVetoCut(iele1) == false)   continue;
+            	if(MSignalGG.DielectronPassVetoCut(iele1) == false)       continue;
 
             	if(IsPP == false){ // per Kaya, HCAL failure gives rise to misidentified electrons.
-            		if(MSignalGG.EleEta->at(iele1) < -1.39 && MSignalGG.ElePhi->at(iele1) > -1.6 &&  MSignalGG.ElePhi->at(iele1) < -0.9 ) continue;
+            		if(MSignalGG.EleSCEta->at(iele1) < -1.39 && MSignalGG.EleSCPhi->at(iele1) > -1.6 &&  MSignalGG.EleSCPhi->at(iele1) < -0.9 ) continue;
             	}
 
             	TLorentzVector Ele1;  
@@ -687,12 +688,13 @@ int main(int argc, char *argv[]){
             	{
             		// We want opposite-charge electrons with some basic kinematic cuts
             		if(MSignalGG.EleCharge->at(iele1) == MSignalGG.EleCharge->at(iele2))  continue;
-            		if(fabs(MSignalGG.EleEta->at(iele2)) > 2.1)               		  continue;
-            		if(fabs(MSignalGG.ElePt->at(iele2)) < 20)                 		  continue;
-            		if(MSignalGG.DielectronPassVetoCut(iele2) == false)  		  continue;
+            		if(fabs(MSignalGG.EleSCEta->at(iele2)) > 2.5)             		       continue;
+                  if(fabs(MSignalGG.EleEta->at(iele2)) > 2.1)                           continue;
+            		if(fabs(MSignalGG.ElePt->at(iele2)) < 20)                 		       continue;
+            		if(MSignalGG.DielectronPassVetoCut(iele2) == false)  	       	       continue;
 
             		if(IsPP == false){ // per Kaya, HCAL failure gives rise to misidentified electrons.
-            			if(MSignalGG.EleEta->at(iele2) < -1.39 && MSignalGG.ElePhi->at(iele2) > -1.6 &&  MSignalGG.ElePhi->at(iele2) < -0.9 ) continue;
+            			if(MSignalGG.EleSCEta->at(iele2) < -1.39 && MSignalGG.EleSCPhi->at(iele2) > -1.6 &&  MSignalGG.EleSCPhi->at(iele2) < -0.9 ) continue;
             		}
 
             		TLorentzVector Ele2;  
@@ -702,7 +704,7 @@ int main(int argc, char *argv[]){
             		double Zmass = Z.M();
 
             		if(Zmass < 60 || Zmass > 120) continue;
-            		if(fabs(Z.Rapidity()) > 2.4) continue;
+            		//if(fabs(Z.Rapidity()) > 2.4) continue;
 
             		MZHadron.zMass->push_back(Zmass);
                	MZHadron.zEta->push_back(Z.Eta());
