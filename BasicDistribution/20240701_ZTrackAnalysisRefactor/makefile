@@ -137,3 +137,10 @@ DrawBasicBkgSub: ExecuteBasicBkgSub
 ExecuteBasicBkgSub: ZBasicBkgSub.cpp
 	g++ ZBasicBkgSub.cpp -I. -I$(ProjectBase)/CommonCode/include \
 		-o ExecuteBasicBkgSub `root-config --cflags --libs` -std=c++17
+
+DrawZMass: ExecuteZMassDraw
+	./ExecuteDrawZMass
+
+ExecuteZMassDraw: ZMassDraw.cpp
+	g++ ZMassDraw.cpp -I. -I$(ProjectBase)/CommonCode/include \
+		-o ExecuteDrawZMass `root-config --cflags --libs` -std=c++17
