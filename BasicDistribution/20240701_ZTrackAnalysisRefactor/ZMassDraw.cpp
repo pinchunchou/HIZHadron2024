@@ -5,6 +5,7 @@
 #include <TROOT.h>
 #include <TStyle.h>
 #include <TCanvas.h>
+#include <TChain.h>
 #include <TLegend.h>
 #include <TAxis.h>
 #include <TSystem.h>
@@ -35,14 +36,14 @@ void style(){
   gStyle->SetOptTitle(0); /*don't show histogram titles*/
   gStyle->SetTitleSize(24, "xyz");
   gStyle->SetTitleOffset(1, "xz");
-  gStyle->SetTitleOffset(1.2, "y");
+  gStyle->SetTitleOffset(1.5, "y");
   gStyle->SetLabelSize(18, "xyz");
   gStyle->SetLegendBorderSize(0);
   gStyle->SetLegendFillColor(kWhite);
 
   gStyle->SetPadTopMargin(0.05);
   gStyle->SetPadBottomMargin(0.15);
-  gStyle->SetPadLeftMargin(0.15);
+  gStyle->SetPadLeftMargin(0.2);
   gStyle->SetPadRightMargin(0.05);
 
   gStyle->SetLineScalePS(1.5);
@@ -63,6 +64,32 @@ int main(int argc, char *argv[]){
 
    style();
 
+   // Prepare for histograms from skim.
+
+   TChain *n_Zee_MC   = new TChain("n_Zee");
+   TChain *n_Zee_Data = new TChain("n_Zee");
+
+   string filebase = "/eos/cms/store/group/phys_heavyions/pchou/SkimZHadron2024/"; 
+
+   n_Zee_MC->Add((filebase + "OutputMC_v1_ee/*.root" ).c_str());
+   n_Zee_Data->Add((filebase + "OutputData_v1_ee/*.root" ).c_str());
+
+
+   TH1D* hMC = new TH1D("hMC", "Z candidate mass", 30, 60, 120);
+   TH1D* hData = new TH1D("hData", "Z candidate mass", 30, 60, 120);
+
+   n_Zee_MC->Draw("mass>>hMC","pt>30","goff");
+   n_Zee_Data->Draw("mass>>hData","pt>30","goff");
+
+   float MC_ents = hMC->GetEntries();
+   float Data_ents = hData->GetEntries();
+
+   hMC->Scale(1./MC_ents*Data_ents);
+   //hData->Scale(1.);
+
+/*
+   // Prepare for histograms.
+
    string HistName = "HZMass";
    string filebase = "/eos/home-p/pchou/BasicPlots/ZHadron2024/";
 
@@ -77,7 +104,6 @@ int main(int argc, char *argv[]){
    TH1D* hMC = (TH1D*) file_sigMC->Get(Form("%s/%s", FolderName.c_str(), HistName.c_str()));
    TH1D* hData = (TH1D*) file_sigData->Get(Form("%s/%s", FolderName.c_str(), HistName.c_str()));
 
-
    TNamed *NMC   = (TNamed *) file_sigMC->Get(Form("%s/EntryCount", FolderName.c_str()));
    TNamed *NData = (TNamed *) file_sigData->Get(Form("%s/EntryCount", FolderName.c_str()));
 
@@ -87,13 +113,14 @@ int main(int argc, char *argv[]){
 
    //HZMass: 100, 0, 150
 
-   int rebinnum = 2;
+   int rebinnum = 1;
    int bin_width = hMC->GetBinWidth(1); // GeV.
 
    hMC->Rebin(rebinnum);
    hData->Rebin(rebinnum);
    
    bin_width*=rebinnum;
+   bin_width = 1;
    
    float MC_ents = hMC->GetEntries();
    float Data_ents = hData->GetEntries();
@@ -103,11 +130,17 @@ int main(int argc, char *argv[]){
 
    hMC->Scale(1./bin_width/IMC*IData);
    hData->Scale(1./bin_width);
+   */
+
+
+
 
    std::cout<<"max = "<<hMC->GetMaximum()<<", "<<hData->GetMaximum()<<std::endl;
 
    std::vector<TH1D *> h_nums;
    h_nums.push_back(hData);
+
+   // Prepare for texts.
 
    std::vector<string> LegendText;
    LegendText.push_back("Pythia+Hydjet MC");
@@ -115,23 +148,22 @@ int main(int argc, char *argv[]){
 
    std::vector<TLatex> pts;
 
-
-   TLatex pt0(0.2,0.88,"Z #rightarrow e^{+}e^{-}");
+   TLatex pt0(0.25,0.88,"Z #rightarrow e^{+}e^{-}");
    pt0.SetTextFont(42);
    pt0.SetTextSize(0.04);
    pt0.SetNDC(kTRUE);
 
-   TLatex pt(0.2,0.82,"Cent: 0-100 %");
+   TLatex pt(0.25,0.82,"Cent: 0-100 %");
    pt.SetTextFont(42);
    pt.SetTextSize(0.04);
    pt.SetNDC(kTRUE);
 
-   TLatex pt2(0.2,0.76,"p^{e}_{T} > 20 GeV/c");
+   TLatex pt2(0.25,0.76,"p^{e}_{T} > 20 GeV/c");
    pt2.SetTextFont(42);
    pt2.SetTextSize(0.04);
    pt2.SetNDC(kTRUE);
 
-   TLatex pt3(0.2,0.70,"p^{Z}_{T} > 30 GeV/c");
+   TLatex pt3(0.25,0.70,"p^{Z}_{T} > 30 GeV/c");
    pt3.SetTextFont(42);
    pt3.SetTextSize(0.04);
    pt3.SetNDC(kTRUE);
@@ -150,14 +182,14 @@ int main(int argc, char *argv[]){
    pts.push_back(pt1);
 
    string XTitle = "M^{ee} [GeV/c^{2}]";
-   string YTitle = "Entries / [3 GeV/c^{2}]";
+   string YTitle = "Entries / [2 GeV/c^{2}]";
    string RTitle = "Data / MC";
-   float XMin = 60,  XMax = 120,  YMin = 0,  YMax = 1.5* hMC->GetMaximum(),  RMin = 0.5,  RMax = 2;
+   float XMin = 60,  XMax = 120,  YMin = 0,  YMax = 1.5* hMC->GetMaximum(),  RMin = 0.5,  RMax = 1.5;
 
    bool isLog = false, isRatio = true;
 
-   string OutputBase = "/eos/user/p/pchou/figs/ZHadron2024/ZMass/ov1_v1a_Reco_noZw/20240704/";
-   string OutputName = "ZMass_ee_PbPb_run2.png";
+   string OutputBase = "/eos/user/p/pchou/figs/ZHadron2024/ZMass/ov1_v1a_Reco_noZw/20240705/";
+   string OutputName = "ZMass_ee_PbPb_run2_fromskim.png";
 
    DrawRatioPlot(hMC, h_nums, LegendText, pts, XTitle, YTitle, RTitle, XMin, XMax, YMin, YMax, RMin, RMax,
       isLog, isRatio, OutputBase, OutputName);
