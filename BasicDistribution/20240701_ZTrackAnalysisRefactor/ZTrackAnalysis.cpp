@@ -175,7 +175,7 @@ int main(int argc, char *argv[])
       HGenZPT.push_back(new TH1D("HGenZPT", "GEN Z PT", 1000, 0, 200));
       HGenZY.push_back(new TH1D("HGenZY", "GEN Z y", 100, -3.2, 3.2));
       HGenZEtaPhi.push_back(new TH2D("HGenZEtaPhi", "GEN Z eta phi", 100, -3.2, 3.2, 100, -M_PI, M_PI));
-      HZMass.push_back(new TH1D("HZMass", "Z candidate mass", 100, 0, 150));
+      HZMass.push_back(new TH1D("HZMass", "Z candidate mass", 150, 0, 300));
       HTrackPT.push_back(new TH1D("HTrackPT", "Track PT", 1000, 0, 200));
       HTrackEta.push_back(new TH1D("HTrackEta", "Track eta", 100, -3.2, 3.2));
       HTrackPhi.push_back(new TH1D("HTrackPhi", "Track phi", 100, -M_PI, M_PI));

@@ -9,6 +9,15 @@ TestRun: Execute
 	./Execute --InputBase $(EOSBase)/SkimZHadron2024/OutputData_v1_ee/ \
 		--Output /tmp/$(USER)/GraphDataSig_v1_ee.root --Fraction 0.1 
 
+Run2All: Run2Sig Run2PP Run2Bkg
+Run2Sig: Run2DataSig Run2MCSig Run2MCSigGen Run2MCSigGen0Sub 
+Run2PP: Run2PPMCSig Run2PPMCSig0NPU Run2PPMCSig1Vtx Run2PPData Run2PPData1Vtx Run2PPMCSigGen Run2PPMCSigGen0NPU 
+Run2Bkg: Run2DataBkg Run2MCBkg Run2MCBkgGen Run2MCBkgGen0Sub
+
+Run3All: Run3Sig Run3PP
+Run3Sig: Run3DataSig Run3MCSig
+Run3PP: Run3PPMCSig Run3PPMCSig0NPU Run3PPMCSig1Vtx Run3PPData Run3PPData1Vtx
+
 Run2DataSig: Execute
 	./Execute --InputBase $(EOSBase)/SkimZHadron2024/OutputData_v1_ee/ \
 		--Output $(CERNBOX)/BasicPlots/ZHadron2024/GraphDataSig_v1_ee_noZw.root --Fraction 1 --DoZWeight false \
