@@ -264,10 +264,10 @@ int main(int argc, char *argv[]){
 
    ZHadronMessenger MZHadron;
    MZHadron.SetBranch(&Tree);
-   Tree.SetAlias("zP", "(zPt*cosh(zEta))");
-   Tree.SetAlias("zPz", "(zPt*sinh(zEta))");
-   Tree.SetAlias("zE", "sqrt(zP*zP+zMass*zMass)");
-   Tree.SetAlias("zY", "(0.5*log((zE+zPz)/(zE-zPz)))");
+   //Tree.SetAlias("zP", "(zPt*cosh(zEta))");
+   //Tree.SetAlias("zPz", "(zPt*sinh(zEta))");
+   //Tree.SetAlias("zE", "sqrt(zP*zP+zMass*zMass)");
+   //Tree.SetAlias("zY", "(0.5*log((zE+zPz)/(zE-zPz)))");
 
    // Loop over signal files
    for(string InputFileName : InputFileNames)
@@ -488,13 +488,14 @@ int main(int argc, char *argv[]){
 
                      if(VGenZ.M() < 60 || VGenZ.M() > 120)
                         continue;
-                     if(fabs(VGenZ.Rapidity()) > 2.4)
-                        continue;
+                     //if(fabs(VGenZ.Rapidity()) > 2.4)
+                     //   continue;
 
                      MZHadron.genZMass->push_back(VGenZ.M());
                      MZHadron.genZPt->push_back  (VGenZ.Pt());
                      MZHadron.genZPhi->push_back (VGenZ.Phi());
                      MZHadron.genZEta->push_back (VGenZ.Eta());
+                     MZHadron.genZY ->push_back  (VGenZ.Rapidity());
    
                      MZHadron.genMuPt1->push_back(MSignalMu.GenPT[igen1]);
                      MZHadron.genMuPt2->push_back(MSignalMu.GenPT[igen2]);
@@ -566,13 +567,15 @@ int main(int argc, char *argv[]){
 
                      if(VGenZ.M() < 60 || VGenZ.M() > 120)
                         continue;
-                     if(fabs(VGenZ.Rapidity()) > 2.4)
-                        continue;
+                     
+                     //if(fabs(VGenZ.Rapidity()) > 2.4)
+                     //   continue;
 
                      MZHadron.genZMass->push_back(VGenZ.M());
                      MZHadron.genZPt->push_back  (VGenZ.Pt());
                      MZHadron.genZPhi->push_back (VGenZ.Phi());
                      MZHadron.genZEta->push_back (VGenZ.Eta());
+                     MZHadron.genZY ->push_back  (VGenZ.Rapidity());
    
                      MZHadron.genMuPt1->push_back(MSignalGG.MCPt->at(igen1));
                      MZHadron.genMuPt2->push_back(MSignalGG.MCPt->at(igen2));
@@ -631,6 +634,7 @@ int main(int argc, char *argv[]){
                MZHadron.zEta->push_back(MSignalMu.DiEta[ipair]);
                MZHadron.zPhi->push_back(MSignalMu.DiPhi[ipair]);
                MZHadron.zPt->push_back(MSignalMu.DiPT[ipair]);
+               MZHadron.zY->push_back(MSignalMu.DiRapidity[ipair]);
    
                MZHadron.muEta1->push_back(MSignalMu.DiEta1[ipair]);
                MZHadron.muEta2->push_back(MSignalMu.DiEta2[ipair]);
@@ -671,10 +675,10 @@ int main(int argc, char *argv[]){
             	if(DoElectron == false) break;
 
             	// Some basic electron kinematic cuts
-            	if(fabs(MSignalGG.EleSCEta->at(iele1)) > 2.5)             continue;
-               if(fabs(MSignalGG.EleEta->at(iele1)) > 2.1)               continue;
-            	if(fabs(MSignalGG.ElePt->at(iele1)) < 20)                 continue;
-            	if(MSignalGG.DielectronPassVetoCut(iele1) == false)       continue;
+            	if(fabs(MSignalGG.EleSCEta->at(iele1)) > 2.5)                       continue;
+               if(fabs(MSignalGG.EleEta->at(iele1)) > 2.1)                         continue;
+            	if(fabs(MSignalGG.ElePt->at(iele1)) < 20)                           continue;
+            	if(MSignalGG.DielectronPassVetoCut(iele1, MZHadron.hiBin) == false) continue;
 
             	if(IsPP == false){ // per Kaya, HCAL failure gives rise to misidentified electrons.
             		if(MSignalGG.EleSCEta->at(iele1) < -1.39 && MSignalGG.EleSCPhi->at(iele1) > -1.6 &&  MSignalGG.EleSCPhi->at(iele1) < -0.9 ) continue;
@@ -691,7 +695,7 @@ int main(int argc, char *argv[]){
             		if(fabs(MSignalGG.EleSCEta->at(iele2)) > 2.5)             		       continue;
                   if(fabs(MSignalGG.EleEta->at(iele2)) > 2.1)                           continue;
             		if(fabs(MSignalGG.ElePt->at(iele2)) < 20)                 		       continue;
-            		if(MSignalGG.DielectronPassVetoCut(iele2) == false)  	       	       continue;
+            		if(MSignalGG.DielectronPassVetoCut(iele2, MZHadron.hiBin) == false)   continue;
 
             		if(IsPP == false){ // per Kaya, HCAL failure gives rise to misidentified electrons.
             			if(MSignalGG.EleSCEta->at(iele2) < -1.39 && MSignalGG.EleSCPhi->at(iele2) > -1.6 &&  MSignalGG.EleSCPhi->at(iele2) < -0.9 ) continue;
@@ -710,6 +714,7 @@ int main(int argc, char *argv[]){
                	MZHadron.zEta->push_back(Z.Eta());
                	MZHadron.zPhi->push_back(Z.Phi());
                	MZHadron.zPt->push_back(Z.Pt());
+                  MZHadron.zY->push_back(Z.Rapidity());
    		
                	MZHadron.muEta1->push_back(MSignalGG.EleEta->at(iele1));
                	MZHadron.muEta2->push_back(MSignalGG.EleEta->at(iele2));
@@ -923,15 +928,22 @@ int main(int argc, char *argv[]){
                   double DeltaRMu1 = sqrt(DeltaEtaMu1 * DeltaEtaMu1 + DeltaPhiMu1 * DeltaPhiMu1);
                   double DeltaRMu2 = sqrt(DeltaEtaMu2 * DeltaEtaMu2 + DeltaPhiMu2 * DeltaPhiMu2);
 
+                  double TrackP  = TrackPT*cosh(TrackEta);
+                  double TrackPZ = TrackPT*sinh(TrackEta);
+                  double TrackE  = sqrt(TrackP*TrackP+M_PI*M_PI); // Here we assume track mass = pi mass (suggested by Olga).
+                  double TrackY  = 0.5*log((TrackE+TrackPZ)/(TrackE-TrackPZ));
+
                   bool MuTagged = false;
                   if(DeltaRMu1 < MuonVeto)   MuTagged = true;
                   if(DeltaRMu2 < MuonVeto)   MuTagged = true;
 
                   double ZEta = DoGenCorrelation ? MZHadron.genZEta->at(MZHadron.bestZgenIdx) : MZHadron.zEta->at(MZHadron.bestZidx);
                   double ZPhi = DoGenCorrelation ? MZHadron.genZPhi->at(MZHadron.bestZgenIdx) : MZHadron.zPhi->at(MZHadron.bestZidx);
+                  double ZY   = DoGenCorrelation ? MZHadron.genZY->at(MZHadron.bestZgenIdx) : MZHadron.zY->at(MZHadron.bestZidx);
 
                   double deltaEta = TrackEta - ZEta;
                   double deltaPhi = DeltaPhi(TrackPhi, ZPhi);
+                  double deltaY = TrackY - ZY;
 
                   H2D.Fill(+deltaEta, +deltaPhi, 0.25);
                   H2D.Fill(-deltaEta, +deltaPhi, 0.25);
@@ -940,6 +952,7 @@ int main(int argc, char *argv[]){
 
                   MZHadron.trackDphi->push_back(deltaPhi);
                   MZHadron.trackDeta->push_back(deltaEta);
+                  MZHadron.trackDY->push_back(deltaY);
                   MZHadron.trackPt->push_back(TrackPT);
                   MZHadron.trackMuTagged->push_back(MuTagged);
                   MZHadron.trackMuDR->push_back(min(DeltaRMu1, DeltaRMu2));
@@ -947,6 +960,7 @@ int main(int argc, char *argv[]){
 
                   MZHadron.trackEta->push_back(TrackEta);
                   MZHadron.trackPhi->push_back(TrackPhi);
+                  MZHadron.trackY->push_back(TrackY);
                   MZHadron.trackCharge->push_back(TrackCharge);
 
                   double TrackCorrection = 1;
@@ -1000,6 +1014,11 @@ int main(int argc, char *argv[]){
                   int TrackCharge = MGen->Charge->at(itrack) ;
                   int SubEvent    = MGen->SubEvent->at(itrack) + DoBackground;
 
+                  double TrackP  = TrackPT*cosh(TrackEta);
+                  double TrackPZ = TrackPT*sinh(TrackEta);
+                  double TrackE  = sqrt(TrackP*TrackP+M_PI*M_PI); // Here we assume track mass = pi mass (suggested by Olga).
+                  double TrackY  = 0.5*log((TrackE+TrackPZ)/(TrackE-TrackPZ));
+
                   //std::cout<<"MZHadron.genMuEta1->size()= "<<MZHadron.genMuEta1->size()<<std::endl;
                   //std::cout<<"MZHadron.genZPt->size()= "<<MZHadron.genZPt->size()<<std::endl;
 
@@ -1025,13 +1044,16 @@ int main(int argc, char *argv[]){
 
                   double ZEta = MZHadron.genZEta->at(MZHadron.bestZgenIdx);
                   double ZPhi = MZHadron.genZPhi->at(MZHadron.bestZgenIdx);
+                  double ZY = MZHadron.genZY->at(MZHadron.bestZgenIdx);
 
                   double deltaEta = TrackEta - ZEta;
                   double deltaPhi = DeltaPhi(TrackPhi, ZPhi);
+                  double deltaY = TrackY - ZY;
 
                   //std::cout<<"push back"<<std::endl;
                   MZHadron.GenTrackDphi->push_back(deltaPhi);
                   MZHadron.GenTrackDeta->push_back(deltaEta);
+                  MZHadron.GenTrackDY->push_back(deltaY);
                   MZHadron.GenTrackPt->push_back(TrackPT);
                   MZHadron.GenTrackMuTagged->push_back(MuTagged);
                   MZHadron.GenTrackMuDR->push_back(min(DeltaRMu1, DeltaRMu2));
@@ -1039,6 +1061,7 @@ int main(int argc, char *argv[]){
 
                   MZHadron.GenTrackEta->push_back(TrackEta);
                   MZHadron.GenTrackPhi->push_back(TrackPhi);
+                  MZHadron.GenTrackY->push_back(TrackY);
                   MZHadron.GenTrackCharge->push_back(TrackCharge);
                   //std::cout<<"pushed back"<<std::endl;
                }

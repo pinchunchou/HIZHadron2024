@@ -66,23 +66,38 @@ int main(int argc, char *argv[]){
 
    // Prepare for histograms from skim.
 
-   TChain *n_Zee_MC   = new TChain("n_Zee");
-   TChain *n_Zee_Data = new TChain("n_Zee");
+   //TChain *n_Zee_MC   = new TChain("n_Zee");
+   //TChain *n_Zee_Data = new TChain("n_Zee");
 
    string filebase = "/eos/cms/store/group/phys_heavyions/pchou/SkimZHadron2024/"; 
 
-   n_Zee_MC->Add((filebase + "OutputMC_v1_ee/*.root" ).c_str());
-   n_Zee_Data->Add((filebase + "OutputData_v1_ee/*.root" ).c_str());
+   //n_Zee_MC->Add((filebase + "OutputMC_v1b_ee/*.root" ).c_str());
+   //n_Zee_Data->Add((filebase + "OutputData_v1b_ee/*.root" ).c_str());
 
+
+   TChain *Tree_MC   = new TChain("Tree");
+   TChain *Tree_Data = new TChain("Tree");
+
+   Tree_MC->Add((filebase + "OutputMC_v1b_ee_eidcorrected/*.root" ).c_str());
+   Tree_Data->Add((filebase + "OutputData_v1b_ee_eidcorrected/*.root" ).c_str());
 
    TH1D* hMC = new TH1D("hMC", "Z candidate mass", 30, 60, 120);
    TH1D* hData = new TH1D("hData", "Z candidate mass", 30, 60, 120);
 
-   n_Zee_MC->Draw("mass>>hMC","pt>30","goff");
-   n_Zee_Data->Draw("mass>>hData","pt>30","goff");
+   Tree_MC->Draw("zMass>>hMC","NCollWeight*(zPt>30)","goff");
+   Tree_Data->Draw("zMass>>hData","NCollWeight*(zPt>30)","goff");
 
-   float MC_ents = hMC->GetEntries();
-   float Data_ents = hData->GetEntries();
+   TH1F HNSig("HNSig","Normalization", 1, 0, 1);
+   TH1F HNBkg("HNBkg","Normalization", 1, 0, 1);
+
+   Tree_MC->Draw("0>>HNSig", "NCollWeight*(zPt>30)","goff");
+   Tree_Data->Draw("0>>HNBkg", "NCollWeight*(zPt>30)","goff");
+
+   //float MC_ents = hMC->GetEntries();
+   //float Data_ents = hData->GetEntries();
+
+   float MC_ents = HNSig.GetBinContent(1);
+   float Data_ents = HNBkg.GetBinContent(1);
 
    hMC->Scale(1./MC_ents*Data_ents);
    //hData->Scale(1.);
@@ -188,7 +203,7 @@ int main(int argc, char *argv[]){
 
    bool isLog = false, isRatio = true;
 
-   string OutputBase = "/eos/user/p/pchou/figs/ZHadron2024/ZMass/ov1_v1a_Reco_noZw/20240705/";
+   string OutputBase = "/eos/user/p/pchou/figs/ZHadron2024/ZMass/ov1_v1b_Reco_noZw_eidcorrected/20240705/";
    string OutputName = "ZMass_ee_PbPb_run2_fromskim.png";
 
    DrawRatioPlot(hMC, h_nums, LegendText, pts, XTitle, YTitle, RTitle, XMin, XMax, YMin, YMax, RMin, RMax,

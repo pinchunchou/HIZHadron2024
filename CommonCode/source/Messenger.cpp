@@ -314,32 +314,63 @@ bool GGTreeMessenger::GetEntry(int iEntry)
    return true;
 }
 
-bool GGTreeMessenger::DielectronPassVetoCut(int index)
+bool GGTreeMessenger::DielectronPassVetoCut(int index, int hiBin)
 {
    // If somebody requested a pair that does not exist, we return false
    if(index >= NEle)
       return false;
 
+   if(EleMissHits->at(index) > 3 || EleIP3D->at(index) >= 0.03)
+      return false;
+
    bool VetoCut = true;
 
-   if(fabs(EleEta->at(index)) < 1.442){
-      if(EleSigmaIEtaIEta_2012->at(index) >= 0.0102)
+   if(fabs(EleEta->at(index)) < 1.44 && hiBin <= 60 ){
+      if(EleSigmaIEtaIEta_2012->at(index) >= 0.0147)
          VetoCut = false;
-      if(EledEtaSeedAtVtx->at(index) >= 0.00327)
+      if(EledEtaSeedAtVtx->at(index) >= 0.0041)
          VetoCut = false;
-      if(EledPhiAtVtx->at(index) >= 0.06055)
+      if(EledPhiAtVtx->at(index) >= 0.0853)
          VetoCut = false;
-      if(EleEoverPInv->at(index) >= 0.52688)
+      if(EleHoverEBc->at(index) >= 0.2733)
+         VetoCut = false;
+      if(EleEoverPInv->at(index) >= 0.0367)
          VetoCut = false;
 
-   }else if(fabs(EleEta->at(index)) > 1.57 && fabs(EleEta->at(index)) < 2.1){
-      if(EleSigmaIEtaIEta_2012->at(index) >= 0.02957)
+   }else if(fabs(EleEta->at(index)) > 1.57 && fabs(EleEta->at(index)) < 2.1 && hiBin <= 60 ){
+      if(EleSigmaIEtaIEta_2012->at(index) >= 0.048)
          VetoCut = false;
-      if(EledEtaSeedAtVtx->at(index) >= 0.0049)
+      if(EledEtaSeedAtVtx->at(index) >= 0.0097)
          VetoCut = false;
-      if(EledPhiAtVtx->at(index) >= 0.09622)
+      if(EledPhiAtVtx->at(index) >= 0.2348)
          VetoCut = false;
-      if(EleEoverPInv->at(index) >= 0.146)
+      if(EleHoverEBc->at(index) >= 0.1898)
+         VetoCut = false;
+      if(EleEoverPInv->at(index) >= 0.0300)
+         VetoCut = false;
+
+   }else if(fabs(EleEta->at(index)) < 1.44 && hiBin > 60 ){
+      if(EleSigmaIEtaIEta_2012->at(index) >= 0.0113)
+         VetoCut = false;
+      if(EledEtaSeedAtVtx->at(index) >= 0.0037)
+         VetoCut = false;
+      if(EledPhiAtVtx->at(index) >= 0.1280)
+         VetoCut = false;
+      if(EleHoverEBc->at(index) >= 0.1814)
+         VetoCut = false;
+      if(EleEoverPInv->at(index) >= 0.1065)
+         VetoCut = false;
+
+   }else if(fabs(EleEta->at(index)) > 1.57 && fabs(EleEta->at(index)) < 2.1 && hiBin > 60 ){
+      if(EleSigmaIEtaIEta_2012->at(index) >= 0.0376)
+         VetoCut = false;
+      if(EledEtaSeedAtVtx->at(index) >= 0.0074)
+         VetoCut = false;
+      if(EledPhiAtVtx->at(index) >= 0.2085)
+         VetoCut = false;
+      if(EleHoverEBc->at(index) >= 0.1138)
+         VetoCut = false;
+      if(EleEoverPInv->at(index) >= 0.0237)
          VetoCut = false;
 
    }else{
@@ -2069,29 +2100,35 @@ ZHadronMessenger::~ZHadronMessenger()
       delete zMass;
       delete zEta;
       delete zPhi;
+      delete zY;
       delete zPt;
       delete genZMass;
       delete genZEta;
       delete genZPhi;
+      delete genZY;
       delete genZPt;
       delete trackPt;
       delete trackDeta;
       delete trackDphi;
+      delete trackDY;
       delete trackMuTagged;
       delete trackMuDR;
       delete TrackPDGID;
       delete trackEta;
       delete trackPhi;
+      delete trackY;
       delete trackCharge;
 
       delete GenTrackDphi;
       delete GenTrackDeta;
+      delete GenTrackDY;
       delete GenTrackPt;
       delete GenTrackMuTagged;
       delete GenTrackMuDR;
       delete GenSubevent;
       delete GenTrackEta;
       delete GenTrackPhi;
+      delete GenTrackY;
       delete GenTrackCharge;
 
       delete jetPt;
@@ -2152,16 +2189,20 @@ bool ZHadronMessenger::Initialize()
    zEta = nullptr;
    zPhi = nullptr;
    zPt = nullptr;
+   zY = nullptr;
    genZMass = nullptr;
    genZEta = nullptr;
    genZPhi = nullptr;
+   genZY = nullptr;
    genZPt = nullptr;
    trackDphi = nullptr;
    trackPt = nullptr;
    trackDeta = nullptr;
+   trackDY = nullptr;
    TrackPDGID = nullptr;
    trackEta = nullptr;
    trackPhi = nullptr;
+   trackY = nullptr;
    trackMuTagged = nullptr;
    trackMuDR = nullptr;
    trackWeight = nullptr;
@@ -2171,12 +2212,14 @@ bool ZHadronMessenger::Initialize()
 
    GenTrackDphi = nullptr;
    GenTrackDeta = nullptr;
+   GenTrackDY = nullptr;
    GenTrackPt = nullptr;
    GenTrackMuTagged = nullptr;
    GenTrackMuDR = nullptr;
    GenSubevent = nullptr;
    GenTrackEta = nullptr;
    GenTrackPhi = nullptr;
+   GenTrackY = nullptr;
    GenTrackCharge = nullptr;
 
    jetPt = nullptr;
@@ -2250,17 +2293,21 @@ bool ZHadronMessenger::Initialize()
    Tree->SetBranchAddress("zMass", &zMass);
    Tree->SetBranchAddress("zEta", &zEta);
    Tree->SetBranchAddress("zPhi", &zPhi);
+   Tree->SetBranchAddress("zY", &zY);
    Tree->SetBranchAddress("zPt", &zPt);
    Tree->SetBranchAddress("genZMass", &genZMass);
    Tree->SetBranchAddress("genZEta", &genZEta);
    Tree->SetBranchAddress("genZPhi", &genZPhi);
+   Tree->SetBranchAddress("genZY", &genZY);
    Tree->SetBranchAddress("genZPt", &genZPt);
    Tree->SetBranchAddress("trackDphi", &trackDphi);
    Tree->SetBranchAddress("trackPt", &trackPt);
    Tree->SetBranchAddress("trackDeta", &trackDeta);
+   Tree->SetBranchAddress("trackDY", &trackDY);
    Tree->SetBranchAddress("TrackPDGID", &TrackPDGID);
    Tree->SetBranchAddress("trackEta", &trackEta);
    Tree->SetBranchAddress("trackPhi", &trackPhi);
+   Tree->SetBranchAddress("trackY", &trackY);
    Tree->SetBranchAddress("trackMuTagged", &trackMuTagged);
    Tree->SetBranchAddress("trackMuDR", &trackMuDR);
    Tree->SetBranchAddress("trackWeight", &trackWeight);
@@ -2270,15 +2317,15 @@ bool ZHadronMessenger::Initialize()
 
    Tree->SetBranchAddress("GenTrackDphi", &GenTrackDphi);
    Tree->SetBranchAddress("GenTrackDeta", &GenTrackDeta);
+   Tree->SetBranchAddress("GenTrackDY", &GenTrackDY);
    Tree->SetBranchAddress("GenTrackPt", & GenTrackPt);
    Tree->SetBranchAddress("GenTrackMuTagged", & GenTrackMuTagged);
    Tree->SetBranchAddress("GenTrackMuDR", & GenTrackMuDR);
    Tree->SetBranchAddress("GenSubevent", & GenSubevent);
    Tree->SetBranchAddress("GenTrackEta", & GenTrackEta);
    Tree->SetBranchAddress("GenTrackPhi", & GenTrackPhi);
+   Tree->SetBranchAddress("GenTrackY", & GenTrackY);
    Tree->SetBranchAddress("GenTrackCharge", & GenTrackCharge);
-
-
 
    Tree->SetBranchAddress("jetPt", &jetPt);
    Tree->SetBranchAddress("jetDeta", &jetDeta);
@@ -2352,17 +2399,21 @@ bool ZHadronMessenger::SetBranch(TTree *T)
    zMass = new std::vector<double>();
    zEta = new std::vector<double>();
    zPhi = new std::vector<double>();
+   zY = new std::vector<double>();
    zPt = new std::vector<double>();
    genZMass = new std::vector<double>();
    genZEta = new std::vector<double>();
    genZPhi = new std::vector<double>();
+   genZY = new std::vector<double>();
    genZPt = new std::vector<double>();
    trackPt = new std::vector<double>();
    trackDeta = new std::vector<double>();
    trackDphi = new std::vector<double>();
+   trackDY = new std::vector<double>();
    TrackPDGID = new std::vector<double>();
    trackEta = new std::vector<double>();
    trackPhi = new std::vector<double>();
+   trackY = new std::vector<double>();
    trackMuTagged = new std::vector<bool>();
    trackMuDR = new std::vector<double>();
    trackWeight = new std::vector<double>();
@@ -2372,12 +2423,14 @@ bool ZHadronMessenger::SetBranch(TTree *T)
 
    GenTrackDphi = new std::vector<double>();
    GenTrackDeta = new std::vector<double>();
+   GenTrackDY = new std::vector<double>();
    GenTrackPt = new std::vector<double>();
    GenTrackMuTagged = new std::vector<bool>();
    GenTrackMuDR = new std::vector<double>();
    GenSubevent = new std::vector<int>();
    GenTrackEta = new std::vector<double>();
    GenTrackPhi = new std::vector<double>();
+   GenTrackY = new std::vector<double>();
    GenTrackCharge = new std::vector<int>();
 
    jetPt = new std::vector<double>();
@@ -2452,17 +2505,21 @@ bool ZHadronMessenger::SetBranch(TTree *T)
    Tree->Branch("zMass",                  &zMass);
    Tree->Branch("zEta",                   &zEta);
    Tree->Branch("zPhi",                   &zPhi);
+   Tree->Branch("zY",                     &zY);
    Tree->Branch("zPt",                    &zPt);
    Tree->Branch("genZMass",               &genZMass);
    Tree->Branch("genZEta",                &genZEta);
    Tree->Branch("genZPhi",                &genZPhi);
+   Tree->Branch("genZY",                  &genZY);
    Tree->Branch("genZPt",                 &genZPt);
    Tree->Branch("trackPt",                &trackPt);
    Tree->Branch("trackDeta",              &trackDeta);
    Tree->Branch("trackDphi",              &trackDphi);
+   Tree->Branch("trackDY",                &trackDY);
    Tree->Branch("TrackPDGID",             &TrackPDGID);
    Tree->Branch("trackPhi",               &trackPhi);
    Tree->Branch("trackEta",               &trackEta);
+   Tree->Branch("trackY",                 &trackY);
    Tree->Branch("trackMuTagged",          &trackMuTagged);
    Tree->Branch("trackMuDR",              &trackMuDR);
    Tree->Branch("trackWeight",            &trackWeight);
@@ -2472,12 +2529,14 @@ bool ZHadronMessenger::SetBranch(TTree *T)
 
    Tree->Branch("GenTrackDphi",           &GenTrackDphi);
    Tree->Branch("GenTrackDeta",           &GenTrackDeta);
+   Tree->Branch("GenTrackDY",             &GenTrackDY);
    Tree->Branch("GenTrackPt",             & GenTrackPt);
    Tree->Branch("GenTrackMuTagged",       & GenTrackMuTagged);
    Tree->Branch("GenTrackMuDR",           & GenTrackMuDR);
    Tree->Branch("GenSubevent",            & GenSubevent);
    Tree->Branch("GenTrackEta",            & GenTrackEta);
    Tree->Branch("GenTrackPhi",            & GenTrackPhi);
+   Tree->Branch("GenTrackY",              & GenTrackY);
    Tree->Branch("GenTrackCharge",         & GenTrackCharge);
    
    Tree->Branch("jetPt",                  &jetPt);
@@ -2586,17 +2645,21 @@ void ZHadronMessenger::Clear()
    zMass->clear();
    zEta->clear();
    zPhi->clear();
+   zY->clear();
    zPt->clear();
    genZMass->clear();
    genZEta->clear();
    genZPhi->clear();
+   genZY->clear();
    genZPt->clear();
    trackPt->clear();
    trackDeta->clear();
    trackDphi->clear();
+   trackDY->clear();
    TrackPDGID->clear();
    trackPhi->clear();
    trackEta->clear();
+   trackY->clear();
    trackMuTagged->clear();
    trackMuDR->clear();
    trackWeight->clear();
@@ -2606,12 +2669,14 @@ void ZHadronMessenger::Clear()
 
    GenTrackDphi->clear();
    GenTrackDeta->clear();
+   GenTrackDY->clear();
    GenTrackPt->clear();
    GenTrackMuTagged->clear();
    GenTrackMuDR->clear();
    GenSubevent->clear();
    GenTrackEta->clear();
    GenTrackPhi->clear();
+   GenTrackY->clear();
    GenTrackCharge->clear();
 
    jetPt->clear();
@@ -2722,10 +2787,12 @@ void ZHadronMessenger::CopyNonTrack(ZHadronMessenger &M)
    if(zMass != nullptr && M.zMass != nullptr)   *zMass = *(M.zMass);
    if(zEta != nullptr && M.zEta != nullptr)   *zEta = *(M.zEta);
    if(zPhi != nullptr && M.zPhi != nullptr)   *zPhi = *(M.zPhi);
+   if(zY != nullptr && M.zY != nullptr)   *zY = *(M.zY);
    if(zPt != nullptr && M.zPt != nullptr)   *zPt = *(M.zPt);
    if(genZMass != nullptr && M.genZMass != nullptr)   *genZMass = *(M.genZMass);
    if(genZEta != nullptr && M.genZEta != nullptr)   *genZEta = *(M.genZEta);
    if(genZPhi != nullptr && M.genZPhi != nullptr)   *genZPhi = *(M.genZPhi);
+   if(genZY != nullptr && M.genZY != nullptr)   *genZY = *(M.genZY);
    if(genZPt != nullptr && M.genZPt != nullptr)   *genZPt = *(M.genZPt);
    
    if(jetPt != nullptr && M.jetPt != nullptr)   *jetPt = *(M.jetPt);

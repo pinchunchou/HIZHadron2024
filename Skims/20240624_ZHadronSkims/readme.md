@@ -20,6 +20,9 @@
 * Version 1b - 2024 July 5
    * Fix selections: remove Z rapidity selections, fix electron SC selections.
 
+* Version 1c - 2024 July 5
+   * Fix electron selections and save rapidity information (in which we assume track mass = pion mass).
+
 ## Arguments
 
 | Argument | type | default | comments |

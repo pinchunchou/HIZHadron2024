@@ -38,34 +38,21 @@ void style(){
   gStyle->SetCanvasColor(kWhite);
   gStyle->SetOptStat(0); /*don't show statistics box*/
   gStyle->SetOptTitle(0); /*don't show histogram titles*/
-  gStyle->SetTitleSize(36, "xyz");
-  gStyle->SetTitleOffset(1, "yz");
-  gStyle->SetTitleOffset(-0.5, "x");
-  gStyle->SetLabelSize(24, "xyz");
+  gStyle->SetTitleSize(24, "xyz");
+  gStyle->SetTitleOffset(1, "xz");
+  gStyle->SetTitleOffset(1.5, "y");
+  gStyle->SetLabelSize(18, "xyz");
   gStyle->SetLegendBorderSize(0);
   gStyle->SetLegendFillColor(kWhite);
 
-  //gStyle->SetPadTopMargin(0.05);
-  //gStyle->SetPadBottomMargin(0.15);
-  //gStyle->SetPadLeftMargin(0.15);
-  //gStyle->SetPadRightMargin(0.05);
+  gStyle->SetPadTopMargin(0.05);
+  gStyle->SetPadBottomMargin(0.15);
+  gStyle->SetPadLeftMargin(0.2);
+  gStyle->SetPadRightMargin(0.05);
 
   gStyle->SetLineScalePS(1.5);
 
   gROOT->ForceStyle();
-}
-
-void SetPad(TPad *P)
-{
-   if(P == nullptr)
-      return;
-   //P->SetLeftMargin(500);
-   //P->SetTopMargin(0);
-   P->SetRightMargin(0);
-   //P->SetBottomMargin(0);
-   //P->SetTickx(false);
-   //P->SetTicky(false);
-   P->Draw();
 }
 
 TFile *file_sigMC;
@@ -74,16 +61,9 @@ TFile *file_ppMC;
 TFile *file_ppbkgMC;
 
 
-//const char *typeofdata = "v18_PFmuon/20240514/Reco_v18e_663_671_ov1_NoNcoll_noTrkResW";
-const char *typeofdata = "ZHadron2024/BasicBkgSub/ov1_v1a_Reco_noZw/20240703/";
-//const char *typeofdata = "testBkgSub/20240204/v17d_No1Sub";
-//const char *typeofdata1 = "no1sub";
-//const char *typeofdata1 = "37_ov10_RECO_PP";
-//const char *typeofdata1 = "SigNo0Sub";
-const char *typeofdata1 = "ov1_v1a_Reco_noZw";
+const char *typeofdata = "ZHadron2024/BasicBkgSub/ov1_v1a_Reco_noZw_comparesub0/20240705/";
+const char *typeofdata1 = "ov1_v1a_Reco_noZw_comparesub0";
 
-//const char *typeofdata = "v17d_PFMuon/20240204/SigBkg_ov20_10HF";
-//const char *typeofdata1 = "350_ov20_pp10HF";
 
 bool selfmix = false;
 bool isgen   = false;
@@ -91,48 +71,19 @@ bool drawlog = false;
 bool drawrat = false;
 bool drawlow = true;
 
-bool comparesub0 = false;
+bool comparesub0 = true;
 
 void ZBasicBkgSub_single(int binnum=40,float ptL=20,float ptH=2000,float centL=0,float centH=90,float TptL=0,float TptH=10000, 
    string HistName="HPhi", string XTitleName = "#Delta#phi_{Z,track}", string YTitleName = "dN/d#Delta#phi", int rebinnum=1)
 {
-   style();
    std::cout<<"ptL = "<<ptL<<", ptH = "<<ptH<<", centL = "<<centL<<", centH = "<<centH<<", TptL = "<<TptL<<", TptH = "<<TptH<<std::endl;
    
-   double MarginLeft    = 50;
-   double MarginRight   = 5;
-   double MarginTop     = 0;
-   double MarginBottom  = 50;
-   double PadWidth      = 800;
-   double PadHeight     = 800;
-   double RPadHeight    = 250;
+   TCanvas *c = new TCanvas("c", "", 500, 600);
+   TPad *Pad  = new TPad("Pad" , "", 0, 0.3, 1,   1);
+   TPad *RPad = new TPad("RPad", "", 0, 0. , 1, 0.3);
 
-   double CanvasWidth   = MarginLeft + PadWidth + MarginRight;
-   double CanvasHeight  = MarginTop + PadHeight + RPadHeight + MarginBottom;
-
-   double XMarginLeft   = MarginLeft / CanvasWidth;
-   double XMarginRight  = MarginRight / CanvasWidth;
-   double XMarginTop    = MarginTop / CanvasHeight;
-   double XMarginBottom = MarginBottom / CanvasHeight;
-   double XPadWidth     = PadWidth / CanvasWidth;
-   double XPadHeight    = PadHeight / CanvasHeight;
-   double XRPadHeight   = RPadHeight/ CanvasHeight;
-
-   TCanvas *c = new TCanvas("c","",CanvasWidth, CanvasHeight);
-
-   TPad* Pad = new TPad("Pad", "",
-         XMarginLeft, XMarginBottom + XRPadHeight,
-         XMarginLeft + XPadWidth , XMarginBottom + XRPadHeight + XPadHeight);
-   TPad* RPad = new TPad("RPad", "",
-         XMarginLeft, XMarginBottom,
-         XMarginLeft + XPadWidth , XMarginBottom + XRPadHeight);
-
-   c->SetRightMargin(0);
-   SetPad(Pad);
-   SetPad(RPad);
-
-   RPad->SetTopMargin(0);
-   Pad->SetBottomMargin(0);
+   Pad->Draw();
+   RPad->Draw();
 
    std::cout<<"Getting histograms..."<<std::endl;
 
@@ -279,23 +230,23 @@ void ZBasicBkgSub_single(int binnum=40,float ptL=20,float ptH=2000,float centL=0
    else
       typeofsample = "Nominal MC";
 
-   TLatex *pt0 = new TLatex(0.15,0.82,typeofsample.c_str());
+   TLatex *pt0 = new TLatex(0.25,0.88,typeofsample.c_str());
    //TLatex *pt0 = new TLatex(0.15,0.82,"Nominal MC GEN (Pythia+Hydjet)");
    pt0->SetTextFont(42);
    pt0->SetTextSize(0.03);
    pt0->SetNDC(kTRUE);
 
-   TLatex *pt = new TLatex(0.15,0.76,Form("%.0f %%< Centrality < %.0f %%",centL,centH));
+   TLatex *pt = new TLatex(0.25,0.82,Form("%.0f %%< Centrality < %.0f %%",centL,centH));
    pt->SetTextFont(42);
    pt->SetTextSize(0.03);
    pt->SetNDC(kTRUE);
 
-   TLatex *pt2 = new TLatex(0.15,0.70,Form("%.1f < Z p_{T} < %.1f GeV",ptL,ptH));
+   TLatex *pt2 = new TLatex(0.25,0.76,Form("%.1f < Z p_{T} < %.1f GeV",ptL,ptH));
    pt2->SetTextFont(42);
    pt2->SetTextSize(0.03);
    pt2->SetNDC(kTRUE);
 
-   TLatex *pt3 = new TLatex(0.15,0.64,Form("%.1f < Track p_{T} < %.1f GeV",TptL,TptH));
+   TLatex *pt3 = new TLatex(0.25,0.70,Form("%.1f < Track p_{T} < %.1f GeV",TptL,TptH));
    pt3->SetTextFont(42);
    pt3->SetTextSize(0.03);
    pt3->SetNDC(kTRUE);
@@ -329,7 +280,7 @@ void ZBasicBkgSub_single(int binnum=40,float ptL=20,float ptH=2000,float centL=0
 
 
    //TLatex *ptInt1 = new TLatex(0.15,0.56,Form("#Sigma raw = %.2f #pm %.2f,  #Sigma bkg = %.2f #pm %.2f",sig_int,sig_err,bkg_int,bkg_err));
-   TLatex *ptInt1 = new TLatex(0.15,0.56,Form("#Sigma raw = %.2f,  #Sigma bkg = %.2f",sig_int,bkg_int));
+   TLatex *ptInt1 = new TLatex(0.25,0.64,Form("#Sigma raw = %.2f,  #Sigma bkg = %.2f",sig_int,bkg_int));
    ptInt1->SetTextFont(42);
    ptInt1->SetTextSize(0.03);
    ptInt1->SetNDC(kTRUE);
@@ -344,7 +295,7 @@ void ZBasicBkgSub_single(int binnum=40,float ptL=20,float ptH=2000,float centL=0
       pptext = "#Sigma pp";//sig pythia gen
 
    //TLatex *ptInt2 = new TLatex(0.15,0.50,Form("#Sigma (raw-bkg) = %.2f #pm %.2f,  %s = %.2f #pm %.2f",sb_int,sb_err,pptext.c_str(),pp_int,pp_err));
-   TLatex *ptInt2 = new TLatex(0.15,0.50,Form("#Sigma (raw-bkg) = %.2f,  %s = %.2f",sb_int,pptext.c_str(),pp_int));
+   TLatex *ptInt2 = new TLatex(0.25,0.58,Form("#Sigma (raw-bkg) = %.2f,  %s = %.2f",sb_int,pptext.c_str(),pp_int));
    ptInt2->SetTextFont(42);
    ptInt2->SetTextSize(0.03);
    ptInt2->SetNDC(kTRUE);
@@ -358,7 +309,11 @@ void ZBasicBkgSub_single(int binnum=40,float ptL=20,float ptH=2000,float centL=0
    hMC_bkg_phi->SetMarkerStyle(kFullCircle);
    hMC_sb_phi->SetMarkerStyle(kFullCircle);
 
-   hpp_phi->SetLineWidth(2);
+   hMC_phi->SetMarkerSize(0.5);
+   hMC_bkg_phi->SetMarkerSize(0.5);
+   hMC_sb_phi->SetMarkerSize(0.5);
+
+   //hpp_phi->SetLineWidth(2);
 
    double min1 = hMC_sb_phi->GetMinimum();
    double min2 = hpp_phi->GetMinimum();
@@ -380,11 +335,14 @@ void ZBasicBkgSub_single(int binnum=40,float ptL=20,float ptH=2000,float centL=0
    hMC_phi->SetYTitle(YTitleName.c_str());
    hMC_bkg_phi->SetYTitle(YTitleName.c_str());
 
+   hMC_phi->SetXTitle(XTitleName.c_str());
+   hMC_bkg_phi->SetXTitle(XTitleName.c_str());
+
    string genlegtxt = "";
    if(isgen)
       genlegtxt = " Gen";
 
-   TLegend leg1(0.68,0.62,0.98,0.88);
+   TLegend leg1(0.58,0.72,0.98,0.90);
    leg1.AddEntry(hMC_phi ,Form("raw%s",genlegtxt.c_str()),"lep");
    leg1.AddEntry(hMC_bkg_phi ,Form("bkg%s",genlegtxt.c_str()),"lep");
    //leg1.AddEntry(hMC_bkg_phi ,"bkg (subevt#neq0)","lep");
@@ -441,7 +399,7 @@ void ZBasicBkgSub_single(int binnum=40,float ptL=20,float ptH=2000,float centL=0
    horiz_line->SetLineColor(kBlack);
    PbPb_to_pp->SetLineColor(kRed);
 
-   PbPb_to_pp->SetXTitle(XTitleName.c_str());
+   PbPb_to_pp->SetXTitle("");
 
    if(selfmix)
       PbPb_to_pp->SetYTitle("Difference");
@@ -469,7 +427,7 @@ void ZBasicBkgSub_single(int binnum=40,float ptL=20,float ptH=2000,float centL=0
       horir_line->SetLineColor(kBlack);
       PbPb_rat_pp->SetLineColor(kRed);
    
-      PbPb_rat_pp->SetXTitle(XTitleName.c_str());
+      PbPb_rat_pp->SetXTitle("");
    
       if(selfmix)
          PbPb_rat_pp->SetYTitle("Ratio");
@@ -532,14 +490,13 @@ void ZBasicBkgSub_loop(int binnum=40,float ptL=20,float ptH=2000,float centL=0,f
    if(isgen)
       gentxt="Gen";
 
-   //string HistName[] = {"HZEta", "HZPhi", "HTrackEta", "HTrackPhi", "HEta", "HPhi"};
-   string HistName[] = {Form("H%sZEta",gentxt.c_str()), Form("H%sZPhi",gentxt.c_str()), Form("H%sTrackEta",gentxt.c_str()), Form("H%sTrackPhi",gentxt.c_str()), Form("H%sEta",gentxt.c_str()), Form("H%sPhi",gentxt.c_str())};
-   string XTitleName[] = {"#eta_{Z}", "#phi_{Z}", "#eta_{track}", "#phi_{track}", "#Delta#eta_{Z,track}", "#Delta#phi_{Z,track}"};
-   string YTitleName[] = {"dN/d#eta", "dN/d#phi", "dN/d#eta", "dN/d#phi", "dN/d#Delta#eta", "dN/d#Delta#phi"};
+   //string HistName[] = {Form("H%sZEta",gentxt.c_str()), Form("H%sZPhi",gentxt.c_str()), Form("H%sTrackEta",gentxt.c_str()), Form("H%sTrackPhi",gentxt.c_str()), Form("H%sEta",gentxt.c_str()), Form("H%sPhi",gentxt.c_str())};
+   //string XTitleName[] = {"#eta_{Z}", "#phi_{Z}", "#eta_{track}", "#phi_{track}", "#Delta#eta_{Z,track}", "#Delta#phi_{Z,track}"};
+   //string YTitleName[] = {"dN/d#eta", "dN/d#phi", "dN/d#eta", "dN/d#phi", "dN/d#Delta#eta", "dN/d#Delta#phi"};
    
-   //string HistName[] = {Form("H%sPhi",gentxt.c_str())};
-   //string XTitleName[] = {"#Delta#phi_{Z,track}"};
-   //string YTitleName[] = {"dN/d#Delta#phi"};
+   string HistName[] = {Form("H%sPhi",gentxt.c_str())};
+   string XTitleName[] = {"#Delta#phi_{Z,track}"};
+   string YTitleName[] = {"dN/d#Delta#phi"};
    
    int rebin_num[] = {2, 2, 2, 2, 1, 1};
 
@@ -559,7 +516,7 @@ int main(int argc, char *argv[]){
    if(isgen)
       file_sigMC = TFile::Open((filebase + "GraphMCSigGen_v1_ee.root").c_str(), "read");
    else
-      file_sigMC = TFile::Open((filebase + "GraphMCSig_v1_ee_noZw.root"   ).c_str(), "read");
+      file_sigMC = TFile::Open((filebase + "GraphMCSig_v1_ee_noZw.root").c_str(), "read");
    
    if(selfmix)
       file_bkgMC = TFile::Open("~/eos_base/BasicPlots/GraphMCSigBkg_v17d_PFmuon_350_10HF_ov20.root","read");
@@ -567,15 +524,15 @@ int main(int argc, char *argv[]){
       if(isgen)
          file_bkgMC = TFile::Open((filebase + "GraphMCBkgGen_v1_ee.root").c_str(), "read");
       else
-         file_bkgMC = TFile::Open((filebase + "GraphMCBkg_v1_ee_noZw.root"   ).c_str(), "read");
+         file_bkgMC = TFile::Open((filebase + "GraphMCBkg_v1_ee_noZw.root").c_str(), "read");
    }
 
    if(isgen)
-      file_ppMC  = TFile::Open("~/eos_base/BasicPlots/GraphPPMC0NPU_v18c_v3.root","read");
+      file_ppMC  = TFile::Open((filebase + "GraphPPMCGen0NPU_v1_ee.root").c_str(), "read");
    else if(comparesub0)
-      file_ppMC  = TFile::Open("~/eos_base/BasicPlots/GraphMCSignalGen0Sub_v18c_v3.root","read");
+      file_ppMC  = TFile::Open((filebase + "GraphMCSigGen0Sub_v1_ee.root").c_str(), "read");
    else
-      file_ppMC  = TFile::Open((filebase + "GraphPPMC0NPU_v1_ee_noZw.root"    ).c_str(), "read");
+      file_ppMC  = TFile::Open((filebase + "GraphPPMC0NPU_v1_ee_noZw.root").c_str(), "read");
 
    if(selfmix)
       file_ppbkgMC  = TFile::Open("~/eos_base/BasicPlots/GraphPPMCSigBkg_v17d_PFmuon_143_10HF.root","read");
@@ -586,14 +543,14 @@ int main(int argc, char *argv[]){
 
 
    ZBasicBkgSub_loop(40, 40, 200,  0, 100,  1,  2);
-   ZBasicBkgSub_loop(40, 40, 200,  0, 100,  2,  4);
-   ZBasicBkgSub_loop(40, 40, 200,  0, 100,  4, 10);
+   //ZBasicBkgSub_loop(40, 40, 200,  0, 100,  2,  4);
+   //ZBasicBkgSub_loop(40, 40, 200,  0, 100,  4, 10);
    ZBasicBkgSub_loop(40, 40, 200,  0,  10,  1,  2);
-   ZBasicBkgSub_loop(40, 40, 200,  0,  10,  2,  4);
+   //ZBasicBkgSub_loop(40, 40, 200,  0,  10,  2,  4);
    ZBasicBkgSub_loop(40, 40, 200,  0,  10,  4, 10);
 
-   ZBasicBkgSub_loop(40, 40, 200, 10,  30,  1,  2);
-   ZBasicBkgSub_loop(40, 40, 200, 30,  50,  1,  2);
+   //ZBasicBkgSub_loop(40, 40, 200, 10,  30,  1,  2);
+   //ZBasicBkgSub_loop(40, 40, 200, 30,  50,  1,  2);
    ZBasicBkgSub_loop(40, 40, 200, 50,  90,  1,  2);
 
    file_sigMC->Close();

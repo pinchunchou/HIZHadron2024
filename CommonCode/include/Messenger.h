@@ -125,7 +125,7 @@ public:
    bool Initialize(TTree *EventTree);
    bool Initialize();
    bool GetEntry(int iEntry);
-   bool DielectronPassVetoCut(int index);
+   bool DielectronPassVetoCut(int index, int hiBin);
 };
 
 class RhoTreeMessenger
@@ -577,16 +577,20 @@ public:
    std::vector<double> *zEta;
    std::vector<double> *zPhi;
    std::vector<double> *zPt;
+   std::vector<double> *zY;
    std::vector<double> *genZMass;
    std::vector<double> *genZEta;
    std::vector<double> *genZPhi;
+   std::vector<double> *genZY;
    std::vector<double> *genZPt;
    std::vector<double> *trackPt;
    std::vector<double> *trackDeta;
    std::vector<double> *trackDphi;
+   std::vector<double> *trackDY;
    std::vector<double> *TrackPDGID;
    std::vector<double> *trackEta;
    std::vector<double> *trackPhi;
+   std::vector<double> *trackY;
    std::vector<bool> *trackMuTagged;
    std::vector<double> *trackMuDR;
    std::vector<double> *trackWeight;
@@ -596,12 +600,14 @@ public:
 
    std::vector<double> *GenTrackDphi;
    std::vector<double> *GenTrackDeta;
+   std::vector<double> *GenTrackDY;
    std::vector<double> *GenTrackPt;
    std::vector<bool> *GenTrackMuTagged;
    std::vector<double> *GenTrackMuDR;
    std::vector<int> *GenSubevent;
    std::vector<double> *GenTrackEta;
    std::vector<double> *GenTrackPhi;
+   std::vector<double> *GenTrackY;
    std::vector<int> *GenTrackCharge;
    
    std::vector<double> *jetPt;
