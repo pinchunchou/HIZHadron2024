@@ -85,7 +85,7 @@ CERNBOX = /eos/home-p/pchou
 PrepareToRun:
 	bash PrepareInput.sh \
 		'$(PbPbSignalSingleMuon)/*/' \
-		20 LogData_v1c_ee_eidcorrected/ $(EOSBase)/OutputData_v1c_ee/ \
+		20 LogData_v1c_ee/ $(EOSBase)/OutputData_v1c_ee/ \
 		--Fraction 1 --DoMuon false `./Expand Setting.dh PbPbSignalData Nominal`
 
 PrepareToRun3:
@@ -97,7 +97,7 @@ PrepareToRun3:
 PrepareToRunMC:
 	bash PrepareInput.sh \
 		$(PbPbSignalMC)/ \
-		5 LogMC_v1c_ee_eidcorrected/ $(EOSBase)/OutputMC_v1c_ee/ \
+		5 LogMC_v1c_ee/ $(EOSBase)/OutputMC_v1c_ee/ \
 		--Fraction 1 --DoMuon false `./Expand Setting.dh PbPbSignalMC Nominal`
 
 PrepareToRunMC3:

@@ -74,12 +74,15 @@ int main(int argc, char *argv[]){
    //n_Zee_MC->Add((filebase + "OutputMC_v1b_ee/*.root" ).c_str());
    //n_Zee_Data->Add((filebase + "OutputData_v1b_ee/*.root" ).c_str());
 
+   string OutputBase = "/eos/user/p/pchou/figs/ZHadron2024/ZMass/ov1_v1c_Reco_noZw/20240705/";
+   string OutputName = "ZMass_ee_PbPb_run2_fromskim.png";
+
 
    TChain *Tree_MC   = new TChain("Tree");
    TChain *Tree_Data = new TChain("Tree");
 
-   Tree_MC->Add((filebase + "OutputMC_v1b_ee_eidcorrected/*.root" ).c_str());
-   Tree_Data->Add((filebase + "OutputData_v1b_ee_eidcorrected/*.root" ).c_str());
+   Tree_MC->Add((filebase + "OutputMC_v1c_ee/*.root" ).c_str());
+   Tree_Data->Add((filebase + "OutputData_v1c_ee/*.root" ).c_str());
 
    TH1D* hMC = new TH1D("hMC", "Z candidate mass", 30, 60, 120);
    TH1D* hData = new TH1D("hData", "Z candidate mass", 30, 60, 120);
@@ -202,9 +205,6 @@ int main(int argc, char *argv[]){
    float XMin = 60,  XMax = 120,  YMin = 0,  YMax = 1.5* hMC->GetMaximum(),  RMin = 0.5,  RMax = 1.5;
 
    bool isLog = false, isRatio = true;
-
-   string OutputBase = "/eos/user/p/pchou/figs/ZHadron2024/ZMass/ov1_v1b_Reco_noZw_eidcorrected/20240705/";
-   string OutputName = "ZMass_ee_PbPb_run2_fromskim.png";
 
    DrawRatioPlot(hMC, h_nums, LegendText, pts, XTitle, YTitle, RTitle, XMin, XMax, YMin, YMax, RMin, RMax,
       isLog, isRatio, OutputBase, OutputName);
