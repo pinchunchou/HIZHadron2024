@@ -23,6 +23,9 @@
 * Version 1c - 2024 July 5
    * Fix electron selections and save rapidity information (in which we assume track mass = pion mass).
 
+* Version 1d - 2024 July 6
+   * Fix electron selections for pp.
+
 ## Arguments
 
 | Argument | type | default | comments |

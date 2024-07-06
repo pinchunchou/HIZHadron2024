@@ -61,8 +61,8 @@ TFile *file_ppMC;
 TFile *file_ppbkgMC;
 
 
-const char *typeofdata = "ZHadron2024/BasicBkgSub/ov1_v1a_Reco_noZw_comparesub0/20240705/";
-const char *typeofdata1 = "ov1_v1a_Reco_noZw_comparesub0";
+const char *typeofdata = "ZHadron2024/BasicBkgSub/ov1_v1c_Reco_noZw_comparesub0/20240706/";
+const char *typeofdata1 = "ov1_v1c_Reco_noZw_comparesub0";
 
 
 bool selfmix = false;
@@ -371,14 +371,14 @@ void ZBasicBkgSub_single(int binnum=40,float ptL=20,float ptH=2000,float centL=0
    ptInt2->Draw();
 
    //std::cout<<"max1 = "<<max1<<std::endl;
-   hMC_phi->SetMaximum(1.6*max1);
-   hMC_bkg_phi->SetMaximum(1.6*max1);
+   hMC_phi->SetMaximum(2*max1);
+   hMC_bkg_phi->SetMaximum(2*max1);
 
    if(min1<0){
-      hMC_phi->SetMinimum(1.6*min1);
-      hMC_bkg_phi->SetMinimum(1.6*min1);
-      hMC_sb_phi->SetMinimum(1.6*min1);
-      hpp_phi->SetMinimum(1.6*min1);
+      hMC_phi->SetMinimum(2*min1);
+      hMC_bkg_phi->SetMinimum(2*min1);
+      hMC_sb_phi->SetMinimum(2*min1);
+      hpp_phi->SetMinimum(2*min1);
    }else{
       hMC_phi->SetMinimum(0);
       hMC_bkg_phi->SetMinimum(0);

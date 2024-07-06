@@ -382,6 +382,50 @@ bool GGTreeMessenger::DielectronPassVetoCut(int index, int hiBin)
    return VetoCut;
 }
 
+bool GGTreeMessenger::DielectronPassVetoCutPP(int index)
+{
+   // If somebody requested a pair that does not exist, we return false
+   if(index >= NEle)
+      return false;
+
+   if(EleMissHits->at(index) > 3 || EleIP3D->at(index) >= 0.03)
+      return false;
+
+   bool VetoCut = true;
+
+   if(fabs(EleEta->at(index)) < 1.44 ){
+      if(EleSigmaIEtaIEta_2012->at(index) >= 0.0113)
+         VetoCut = false;
+      if(EledEtaSeedAtVtx->at(index) >= 0.0037)
+         VetoCut = false;
+      if(EledPhiAtVtx->at(index) >= 0.1280)
+         VetoCut = false;
+      if(EleHoverEBc->at(index) >= 0.1814)
+         VetoCut = false;
+      if(EleEoverPInv->at(index) >= 0.1065)
+         VetoCut = false;
+
+   }else if(fabs(EleEta->at(index)) > 1.57 && fabs(EleEta->at(index)) < 2.1 ){
+      if(EleSigmaIEtaIEta_2012->at(index) >= 0.0376)
+         VetoCut = false;
+      if(EledEtaSeedAtVtx->at(index) >= 0.0074)
+         VetoCut = false;
+      if(EledPhiAtVtx->at(index) >= 0.2085)
+         VetoCut = false;
+      if(EleHoverEBc->at(index) >= 0.1138)
+         VetoCut = false;
+      if(EleEoverPInv->at(index) >= 0.0237)
+         VetoCut = false;
+
+   }else{
+      VetoCut = false;
+   }
+
+   // Note that the PF electron is not checked right now
+   
+   return VetoCut;
+}
+
 RhoTreeMessenger::RhoTreeMessenger(TFile &File, std::string TreeName)
 {
    Tree = (TTree *)File.Get(TreeName.c_str());

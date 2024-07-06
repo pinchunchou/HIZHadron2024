@@ -63,7 +63,7 @@ public:
 
 int main(int argc, char *argv[]){
 
-   string Version = "V1b";
+   string Version = "V1d";
    CommandLine CL(argc, argv);
 
    vector<string> InputFileNames      = CL.GetStringVector("Input");
@@ -678,7 +678,8 @@ int main(int argc, char *argv[]){
             	if(fabs(MSignalGG.EleSCEta->at(iele1)) > 2.5)                       continue;
                if(fabs(MSignalGG.EleEta->at(iele1)) > 2.1)                         continue;
             	if(fabs(MSignalGG.ElePt->at(iele1)) < 20)                           continue;
-            	if(MSignalGG.DielectronPassVetoCut(iele1, MZHadron.hiBin) == false) continue;
+            	if(IsPP == false && MSignalGG.DielectronPassVetoCut(iele1, MZHadron.hiBin) == false) continue;
+               if(IsPP == true  && MSignalGG.DielectronPassVetoCutPP(iele1) == false) continue;
 
             	if(IsPP == false){ // per Kaya, HCAL failure gives rise to misidentified electrons.
             		if(MSignalGG.EleSCEta->at(iele1) < -1.39 && MSignalGG.EleSCPhi->at(iele1) > -1.6 &&  MSignalGG.EleSCPhi->at(iele1) < -0.9 ) continue;
@@ -695,7 +696,8 @@ int main(int argc, char *argv[]){
             		if(fabs(MSignalGG.EleSCEta->at(iele2)) > 2.5)             		       continue;
                   if(fabs(MSignalGG.EleEta->at(iele2)) > 2.1)                           continue;
             		if(fabs(MSignalGG.ElePt->at(iele2)) < 20)                 		       continue;
-            		if(MSignalGG.DielectronPassVetoCut(iele2, MZHadron.hiBin) == false)   continue;
+            		if(IsPP == false && MSignalGG.DielectronPassVetoCut(iele2, MZHadron.hiBin) == false)   continue;
+                  if(IsPP == true  && MSignalGG.DielectronPassVetoCutPP(iele2) == false)   continue;
 
             		if(IsPP == false){ // per Kaya, HCAL failure gives rise to misidentified electrons.
             			if(MSignalGG.EleSCEta->at(iele2) < -1.39 && MSignalGG.EleSCPhi->at(iele2) > -1.6 &&  MSignalGG.EleSCPhi->at(iele2) < -0.9 ) continue;

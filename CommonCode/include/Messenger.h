@@ -126,6 +126,7 @@ public:
    bool Initialize();
    bool GetEntry(int iEntry);
    bool DielectronPassVetoCut(int index, int hiBin);
+   bool DielectronPassVetoCutPP(int index);
 };
 
 class RhoTreeMessenger

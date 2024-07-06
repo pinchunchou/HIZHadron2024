@@ -63,6 +63,11 @@ void DrawRatioPlot(TH1D *h_deno, std::vector<TH1D *> h_nums, std::vector<string>
 int main(int argc, char *argv[]){
 
    style();
+   string OutputBase = "/eos/user/p/pchou/figs/ZHadron2024/ZMass/ov1_v1c_Reco_noZw/20240705/";
+   //string OutputName = "ZMass_ee_PbPb_run2_fromskim_noNcoll.png";
+   string OutputName = "ZMass_ee_ppref_run2_fromskim.png";
+   //float XMin = 60,  XMax = 120,  YMin = 0,  YMax = 550,  RMin = 0.5,  RMax = 1.5;
+   float XMin = 60,  XMax = 120,  YMin = 0,  YMax = 2950,  RMin = 0.5,  RMax = 1.5;
 
    // Prepare for histograms from skim.
 
@@ -74,33 +79,42 @@ int main(int argc, char *argv[]){
    //n_Zee_MC->Add((filebase + "OutputMC_v1b_ee/*.root" ).c_str());
    //n_Zee_Data->Add((filebase + "OutputData_v1b_ee/*.root" ).c_str());
 
-   string OutputBase = "/eos/user/p/pchou/figs/ZHadron2024/ZMass/ov1_v1c_Reco_noZw/20240705/";
-   string OutputName = "ZMass_ee_PbPb_run2_fromskim.png";
-
-
    TChain *Tree_MC   = new TChain("Tree");
    TChain *Tree_Data = new TChain("Tree");
 
-   Tree_MC->Add((filebase + "OutputMC_v1c_ee/*.root" ).c_str());
-   Tree_Data->Add((filebase + "OutputData_v1c_ee/*.root" ).c_str());
+   //Tree_MC->Add((filebase + "OutputMC_v1c_ee/*.root" ).c_str());
+   //Tree_Data->Add((filebase + "OutputData_v1c_ee/*.root" ).c_str());
+
+   Tree_MC->Add((filebase + "OutputPPMC_v1c_ee/*.root" ).c_str());
+   Tree_Data->Add((filebase + "OutputPPData_v1c_ee/*.root" ).c_str());
 
    TH1D* hMC = new TH1D("hMC", "Z candidate mass", 30, 60, 120);
    TH1D* hData = new TH1D("hData", "Z candidate mass", 30, 60, 120);
 
-   Tree_MC->Draw("zMass>>hMC","NCollWeight*(zPt>30)","goff");
-   Tree_Data->Draw("zMass>>hData","NCollWeight*(zPt>30)","goff");
+   //Tree_MC->Draw("zMass>>hMC","NCollWeight*(zPt>30)","goff");
+   //Tree_Data->Draw("zMass>>hData","NCollWeight*(zPt>30)","goff");
+
+   Tree_MC->Draw("zMass>>hMC","zPt>30","goff");
+   Tree_Data->Draw("zMass>>hData","zPt>30","goff");
 
    TH1F HNSig("HNSig","Normalization", 1, 0, 1);
    TH1F HNBkg("HNBkg","Normalization", 1, 0, 1);
 
-   Tree_MC->Draw("0>>HNSig", "NCollWeight*(zPt>30)","goff");
-   Tree_Data->Draw("0>>HNBkg", "NCollWeight*(zPt>30)","goff");
+   //Tree_MC->Draw("0>>HNSig", "NCollWeight*(zPt>30&&zMass>60&&zMass<120)","goff");
+   //Tree_Data->Draw("0>>HNBkg", "NCollWeight*(zPt>30&&zMass>60&&zMass<120)","goff");
+
+   Tree_MC->Draw("0>>HNSig", "zPt>30&&zMass>60&&zMass<120","goff");
+   Tree_Data->Draw("0>>HNBkg", "zPt>30&&zMass>60&&zMass<120","goff");
 
    //float MC_ents = hMC->GetEntries();
    //float Data_ents = hData->GetEntries();
 
    float MC_ents = HNSig.GetBinContent(1);
    float Data_ents = HNBkg.GetBinContent(1);
+   std::cout << "MC_ents = "<<MC_ents<<", Data_ents = "<<Data_ents<<std::endl;
+
+   //101000000
+   //43654157
 
    hMC->Scale(1./MC_ents*Data_ents);
    //hData->Scale(1.);
@@ -161,8 +175,10 @@ int main(int argc, char *argv[]){
    // Prepare for texts.
 
    std::vector<string> LegendText;
-   LegendText.push_back("Pythia+Hydjet MC");
-   LegendText.push_back("PbPb Run2 data");
+   //LegendText.push_back("Pythia+Hydjet MC");
+   LegendText.push_back("Pythia MC");
+   //LegendText.push_back("PbPb Run2 data");
+   LegendText.push_back("pp Run2 data");
 
    std::vector<TLatex> pts;
 
@@ -187,11 +203,12 @@ int main(int argc, char *argv[]){
    pt3.SetNDC(kTRUE);
 
    pts.push_back(pt0);
-   pts.push_back(pt);
+   //pts.push_back(pt);
    pts.push_back(pt2);
    pts.push_back(pt3);
 
-   TLatex pt1(0.99,0.99,"Run2 PbPb, #sqrt{s_{NN}} = 5.02 TeV, 1618 #mub^{-1}");
+   //TLatex pt1(0.99,0.99,"Run2 PbPb, #sqrt{s_{NN}} = 5.02 TeV, 1618 #mub^{-1}");
+   TLatex pt1(0.99,0.99,"Run2 pp, #sqrt{s_{NN}} = 5.02 TeV, 309 pb^{-1}");
    pt1.SetTextFont(42);
    pt1.SetTextSize(0.03);
    pt1.SetTextAlign(33);//3 = right/top, 2 = center, 1 = left/bottom
@@ -202,7 +219,6 @@ int main(int argc, char *argv[]){
    string XTitle = "M^{ee} [GeV/c^{2}]";
    string YTitle = "Entries / [2 GeV/c^{2}]";
    string RTitle = "Data / MC";
-   float XMin = 60,  XMax = 120,  YMin = 0,  YMax = 1.5* hMC->GetMaximum(),  RMin = 0.5,  RMax = 1.5;
 
    bool isLog = false, isRatio = true;
 
