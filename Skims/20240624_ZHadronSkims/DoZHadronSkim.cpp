@@ -42,6 +42,7 @@ public:
    int File;
    int Event;
    double GenHF;
+   int hiBin;
 public:
    bool operator <(const EventIndex &other) const
    {
@@ -63,7 +64,7 @@ public:
 
 int main(int argc, char *argv[]){
 
-   string Version = "V1d";
+   string Version = "V1e";
    CommandLine CL(argc, argv);
 
    vector<string> InputFileNames      = CL.GetStringVector("Input");
@@ -106,7 +107,7 @@ int main(int argc, char *argv[]){
    string GGTreeName                  = IsPP ? "ggHiNtuplizerGED/EventTree" : "ggHiNtuplizer/EventTree";
    GGTreeName                         = CL.Get("GGTree", GGTreeName);
 
-   bool WithProgressBar               = CL.GetBool("WithProgressBar", false);
+   bool WithProgressBar               = CL.GetBool("WithProgressBar", true);
 
    Assert(!(DoGenCorrelation == true && DoGenLevel == false), "You need to turn on gen level to do gen correlation!");
    if(DoTrackResidual == true)
@@ -200,6 +201,12 @@ int main(int argc, char *argv[]){
             E.GenHF = DoGenLevel ? GetGenHFSum(MBackgroundGen[iB], MinGenTrackPT) : -1;
             E.File = iB;
             E.Event = iE;
+            E.hiBin = MBackgroundEvent[iB]->hiBin ; 
+            if(IsPP == false && IsData == false && DoMCHiBinShift == true){ // PbPb MC, we shift 1.5% as per Kaya
+               E.hiBin = E.hiBin - MCHiBinShift;
+               if(E.hiBin < 0)   // too central, skip
+                  continue;
+            }
             BackgroundIndices.push_back(E);
          }
       }
@@ -213,6 +220,14 @@ int main(int argc, char *argv[]){
    TNtuple n_Zmumu( "n_Zmumu", "Invariant Mass of mu^{+}mu{-}", "mass:pt:eta:phi");
    TTree Tree("Tree", Form("Tree for ZHadron analysis, %s", Version.c_str()));
    TTree InfoTree("InfoTree", "Information");
+   TTree UnmatchedTree("Unmatched", "Information for unmatched");
+
+   double UnmatchedHF;
+   double UnmatchedVZ;
+   //int UnmatchedCount;
+   UnmatchedTree.Branch("HF", &UnmatchedHF, "HF/D");
+   UnmatchedTree.Branch("VZ", &UnmatchedVZ, "VZ/D");
+   //UnmatchedTree.Branch("Count", &UnmatchedCount, "Count/I");
 
    string Key, Value;
    InfoTree.Branch("Key", &Key);
@@ -815,12 +830,21 @@ int main(int argc, char *argv[]){
                   if(fabs(BackgroundIndices[i].VZ - MZHadron.SignalVZ) < VZTolerance)
                      GoodIndices.push_back(i);
 
-               Assert(HigherIndex > LowerIndex,
-                  Form("Warning!  Too few events matched.  Please enlarge tolerance or add more background files.  %f < %f - %f < %f",
-                     LowerHF, SignalHF, HFShift, HigherHF));
-               Assert(GoodIndices.size() > 0,
-                  Form("Warning!  Too few events matched.  Please enlarge tolerance or add more background files.  %f < %f - %f < %f, %f",
-                     LowerHF, SignalHF, HFShift, HigherHF, MZHadron.SignalVZ));
+               if(LowerIndex >= HigherIndex || GoodIndices.size() == 0){
+                  UnmatchedHF = SignalHF;
+                  UnmatchedVZ = MZHadron.SignalVZ;
+                  UnmatchedTree.Fill();
+                  printf("Warning!  Too few events matched.  Please enlarge tolerance or add more background files.  %f < %f - %f < %f, %f \n",
+                     LowerHF, SignalHF, HFShift, HigherHF, MZHadron.SignalVZ);
+                  break;
+               }
+
+               //Assert(HigherIndex > LowerIndex,
+               //   Form("Warning!  Too few events matched.  Please enlarge tolerance or add more background files.  %f < %f - %f < %f",
+               //      LowerHF, SignalHF, HFShift, HigherHF));
+               //Assert(GoodIndices.size() > 0,
+               //   Form("Warning!  Too few events matched.  Please enlarge tolerance or add more background files.  %f < %f - %f < %f, %f",
+               //      LowerHF, SignalHF, HFShift, HigherHF, MZHadron.SignalVZ));
 
                int Index = rand() % GoodIndices.size();
 
@@ -859,7 +883,6 @@ int main(int argc, char *argv[]){
                PbPbTrackTreeMessenger *MTrack = DoBackground ? MBackgroundTrack[Location.File] : &MSignalTrack;
                TrackTreeMessenger *MTrackPP   = DoBackground ? MBackgroundTrackPP[Location.File] : &MSignalTrackPP;
                GenParticleTreeMessenger *MGen = DoBackground ? MBackgroundGen[Location.File] : &MSignalGen;
-               PFTreeMessenger *MPF           = &MSignalPF;
 
                // Loop over reco tracks and build the correlation function
                int NTrack = DoGenCorrelation ? MGen->Mult : (IsPP ? MTrackPP->nTrk : MTrack->TrackPT->size());
@@ -1204,6 +1227,7 @@ int main(int argc, char *argv[]){
    n_Zmumu.Write();
    Tree.Write();
    InfoTree.Write();
+   UnmatchedTree.Write();
 
    OutputFile.Close();
 

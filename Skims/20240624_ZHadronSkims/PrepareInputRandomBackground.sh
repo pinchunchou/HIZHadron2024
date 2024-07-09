@@ -37,7 +37,7 @@ echo "Universe              = vanilla"                         > $Condor
 echo "Executable            = $PWD/RunCondor.sh"               >> $Condor
 #echo "Executable            = $PWD/RunCondorCopyBackground.sh" >> $Condor
 echo "should_transfer_files = NO"                              >> $Condor
-echo "+JobFlavour           = \"tomorrow\""                    >> $Condor
+echo "+JobFlavour           = \"tomorrow\""                     >> $Condor
 #echo "request_disk          = 2500M"                           >> $Condor
 #echo "request_memory        = 2500M"                           >> $Condor
 echo                                                           >> $Condor
@@ -45,7 +45,7 @@ echo                                                           >> $Condor
 Count=0
 for i in `ls $Directory/*root | Reformat $Number | sed "s/ /,/g" | sed "s/[,]*$//"`
 do
-   BackgroundFiles=`ls $BackgroundFolder/* | shuf | head -n$BackgroundCount | tr '\n' ',' | sed "s/,$//"`
+   BackgroundFiles=`ls $BackgroundFolder/*.root | shuf | head -n$BackgroundCount | tr '\n' ',' | sed "s/,$//"`
 
    echo "Arguments = $PWD $ProjectBase $CMSSW_BASE $OutputBase/Result${Count}.root $Count --Input $i --Background $BackgroundFiles $@" >> $Condor
    #echo "Arguments = $PWD $ProjectBase $CMSSW_BASE $OutputBase/Result${Count}.root $Count $BackgroundFiles --Input $i $@" >> $Condor

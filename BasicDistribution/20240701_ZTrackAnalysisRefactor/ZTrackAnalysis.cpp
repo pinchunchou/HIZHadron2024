@@ -146,15 +146,16 @@ int main(int argc, char *argv[])
 
    for(int iC = 0; iC < C.size(); iC++)
    {
+
       string FolderName =
          Form("Plot_ZPT_%.0f_%.0f_Cent_%.0f_%.0f_TrackPT_%.2f_%.2f",
             C[iC].ZPTMin, C[iC].ZPTMax,
             C[iC].CentMin, C[iC].CentMax,
             C[iC].TrackPTMin, C[iC].TrackPTMax);
       replace(FolderName.begin(), FolderName.end(), '.', 'p');
-
+      //cout<<"FolderName = "<<FolderName<<endl;
       Folder.push_back(OutputFile.mkdir(FolderName.c_str()));
-      
+      //cout<<"Folder cd"<<endl;
       Folder[iC]->cd();
       TotalEventCount.push_back(0);
       HTotalEventCount.push_back(new TH1D("HTotalEventCount", "", 1, 0, 1));
@@ -315,6 +316,7 @@ int main(int argc, char *argv[])
       }
 
       Tree->GetEntry(iE);
+      //cout<<"iE = "<<iE<<endl;
 
       //if(OnlyZeroSub == true && DoGenCorrelation == false && NPU != 0) continue;
       if(OnlyZeroNPU == true && NPU != 0) continue;
@@ -322,6 +324,7 @@ int main(int argc, char *argv[])
 
       for(int iC = 0; iC < (int)C.size(); iC++)
       {
+         //cout<<"iC = "<<iC<<endl;
          bool ZMassRange = false, genZMassRange = false;
          if(DoGenCorrelation == false && ZMass != nullptr && ZMass->size() > 0 && ZMass->at(0) > 60)
             ZMassRange = true;
@@ -359,6 +362,9 @@ int main(int argc, char *argv[])
 
          // If we know that the Z candidate is not in range, no need to loop over tracks!
          // Saves a tiny bit of time
+         //if(genZMass->size() > 0)
+         //   cout<<"genZMass->at(0) = "<<genZMass->at(0)<<", genZPt->at(0) = "<<genZPt->at(0)<<", CentRange = "<<CentRange<<endl;
+         
          if(!(ZMassRange && ZPTRange && CentRange))
             continue;
 

@@ -25,6 +25,11 @@
 
 * Version 1d - 2024 July 6
    * Fix electron selections for pp.
+   * Implement background hiBin shift.
+
+* Version 1e - 2024 July 8
+   * Fix background unmatched. Save unmatched info.
+
 
 ## Arguments
 

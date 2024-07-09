@@ -63,7 +63,7 @@ void DrawRatioPlot(TH1D *h_deno, std::vector<TH1D *> h_nums, std::vector<string>
 int main(int argc, char *argv[]){
 
    style();
-   string OutputBase = "/eos/user/p/pchou/figs/ZHadron2024/ZMass/ov1_v1c_Reco_noZw/20240705/";
+   string OutputBase = "/eos/user/p/pchou/figs/ZHadron2024/ZMass/ov1_v1d_Reco_noZw/20240705/";
    //string OutputName = "ZMass_ee_PbPb_run2_fromskim_noNcoll.png";
    string OutputName = "ZMass_ee_ppref_run2_fromskim.png";
    //float XMin = 60,  XMax = 120,  YMin = 0,  YMax = 550,  RMin = 0.5,  RMax = 1.5;
@@ -85,8 +85,8 @@ int main(int argc, char *argv[]){
    //Tree_MC->Add((filebase + "OutputMC_v1c_ee/*.root" ).c_str());
    //Tree_Data->Add((filebase + "OutputData_v1c_ee/*.root" ).c_str());
 
-   Tree_MC->Add((filebase + "OutputPPMC_v1c_ee/*.root" ).c_str());
-   Tree_Data->Add((filebase + "OutputPPData_v1c_ee/*.root" ).c_str());
+   Tree_MC->Add((filebase + "OutputPPMC_v1d_ee/*.root" ).c_str());
+   Tree_Data->Add((filebase + "OutputPPData_v1d_ee/*.root" ).c_str());
 
    TH1D* hMC = new TH1D("hMC", "Z candidate mass", 30, 60, 120);
    TH1D* hData = new TH1D("hData", "Z candidate mass", 30, 60, 120);

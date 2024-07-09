@@ -61,17 +61,17 @@ TFile *file_ppMC;
 TFile *file_ppbkgMC;
 
 
-const char *typeofdata = "ZHadron2024/BasicBkgSub/ov1_v1c_Reco_noZw_comparesub0/20240706/";
-const char *typeofdata1 = "ov1_v1c_Reco_noZw_comparesub0";
+const char *typeofdata = "ZHadron2024/BasicBkgSub/ov1_v1e_Gen/20240709/";
+const char *typeofdata1 = "ov1_v1d_Gen";
 
 
 bool selfmix = false;
-bool isgen   = false;
+bool isgen   = true;
 bool drawlog = false;
 bool drawrat = false;
 bool drawlow = true;
 
-bool comparesub0 = true;
+bool comparesub0 = false;
 
 void ZBasicBkgSub_single(int binnum=40,float ptL=20,float ptH=2000,float centL=0,float centH=90,float TptL=0,float TptH=10000, 
    string HistName="HPhi", string XTitleName = "#Delta#phi_{Z,track}", string YTitleName = "dN/d#Delta#phi", int rebinnum=1)
@@ -514,25 +514,25 @@ int main(int argc, char *argv[]){
    string filebase = "/eos/home-p/pchou/BasicPlots/ZHadron2024/";
 
    if(isgen)
-      file_sigMC = TFile::Open((filebase + "GraphMCSigGen_v1_ee.root").c_str(), "read");
+      file_sigMC = TFile::Open((filebase + "GraphMCSigGen_v1c_ee.root").c_str(), "read");
    else
-      file_sigMC = TFile::Open((filebase + "GraphMCSig_v1_ee_noZw.root").c_str(), "read");
+      file_sigMC = TFile::Open((filebase + "GraphMCSig_v1c_ee_noZw.root").c_str(), "read");
    
    if(selfmix)
       file_bkgMC = TFile::Open("~/eos_base/BasicPlots/GraphMCSigBkg_v17d_PFmuon_350_10HF_ov20.root","read");
    else{
       if(isgen)
-         file_bkgMC = TFile::Open((filebase + "GraphMCBkgGen_v1_ee.root").c_str(), "read");
+         file_bkgMC = TFile::Open((filebase + "GraphMCBkgGen_v1e_ee.root").c_str(), "read");
       else
-         file_bkgMC = TFile::Open((filebase + "GraphMCBkg_v1_ee_noZw.root").c_str(), "read");
+         file_bkgMC = TFile::Open((filebase + "GraphMCBkg_v1c_ee_noZw.root").c_str(), "read");
    }
 
    if(isgen)
-      file_ppMC  = TFile::Open((filebase + "GraphPPMCGen0NPU_v1_ee.root").c_str(), "read");
+      file_ppMC  = TFile::Open((filebase + "GraphPPMCGen0NPU_v1d_ee.root").c_str(), "read");
    else if(comparesub0)
-      file_ppMC  = TFile::Open((filebase + "GraphMCSigGen0Sub_v1_ee.root").c_str(), "read");
+      file_ppMC  = TFile::Open((filebase + "GraphMCSigGen0Sub_v1d_ee.root").c_str(), "read");
    else
-      file_ppMC  = TFile::Open((filebase + "GraphPPMC0NPU_v1_ee_noZw.root").c_str(), "read");
+      file_ppMC  = TFile::Open((filebase + "GraphPPMC0NPU_v1d_ee_noZw.root").c_str(), "read");
 
    if(selfmix)
       file_ppbkgMC  = TFile::Open("~/eos_base/BasicPlots/GraphPPMCSigBkg_v17d_PFmuon_143_10HF.root","read");
@@ -549,8 +549,8 @@ int main(int argc, char *argv[]){
    //ZBasicBkgSub_loop(40, 40, 200,  0,  10,  2,  4);
    ZBasicBkgSub_loop(40, 40, 200,  0,  10,  4, 10);
 
-   //ZBasicBkgSub_loop(40, 40, 200, 10,  30,  1,  2);
-   //ZBasicBkgSub_loop(40, 40, 200, 30,  50,  1,  2);
+   ZBasicBkgSub_loop(40, 40, 200, 10,  30,  1,  2);
+   ZBasicBkgSub_loop(40, 40, 200, 30,  50,  1,  2);
    ZBasicBkgSub_loop(40, 40, 200, 50,  90,  1,  2);
 
    file_sigMC->Close();
