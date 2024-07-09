@@ -16,3 +16,5 @@ Execute*
 log/
 CommonCode/binary/
 CommonCode/library/
+Corrections/*/DYMC
+Corrections/*/PPMC
