@@ -42,10 +42,10 @@ Execute: DeriveZEfficiency.cpp
 
 PrepareToRun: Execute
 	bash PrepareInput.sh \
-		$(DYMC) 2 Log/ $(EOSBase)/PbPb/ \
+		$(DYMC) 2 Log/ $(AFSBase)/PbPb/ \
 		--Fraction 1.00
 
 PrepareToRunPP: Execute
 	bash PrepareInput.sh \
-		$(PPMC) 2 Log/ $(EOSBase)/pp/ \
+		$(PPMC) 2 Log/ $(AFSBase)/pp/ \
 		--Fraction 1.00 --IsPP true

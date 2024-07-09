@@ -147,7 +147,7 @@ int main(int argc, char *argv[])
             for(int iEle2 = iEle1 + 1; iEle2 < MSignalGG.NMC; iEle2++)
             {
                // We only want electron from Z's
-               if(fabs(MSignalGG.MCPID->at(iEle2)) != 11)
+               if(MSignalGG.MCPID->at(iEle2) != -MSignalGG.MCPID->at(iEle1))
                    continue;
                if(MSignalGG.MCMomPID->at(iEle2) != 23)
                   continue;
@@ -286,12 +286,12 @@ int main(int argc, char *argv[])
             TreeZMass = PGenZ[i].M();
             TreeZHasReco = (NReco > 0);
             TreeHiBin = MEvent.hiBin;
-            TreeWPbPbMC = GetZWeightPbPbMC(TreeZPT, TreeZY, TreeHiBin);
-            TreeWPbPbData = GetZWeightPbPbData(TreeZPT, TreeZY, TreeHiBin);
-            TreeWPbPbDataTrigger = GetZWeightPbPbDataTrigger(TreeZPT, TreeZY, TreeHiBin);
-            TreeWPPMC = GetZWeightPPMC(TreeZPT, TreeZY);
-            TreeWPPData = GetZWeightPPData(TreeZPT, TreeZY);
-            TreeWPPDataTrigger = GetZWeightPPDataTrigger(TreeZPT, TreeZY);
+            TreeWPbPbMC = GetZeeWeightPbPbMC(TreeZPT, TreeZY, TreeHiBin);
+            TreeWPbPbData = GetZeeWeightPbPbData(TreeZPT, TreeZY, TreeHiBin);
+            TreeWPbPbDataTrigger = GetZeeWeightPbPbDataTrigger(TreeZPT, TreeZY, TreeHiBin);
+            TreeWPPMC = GetZeeWeightPPMC(TreeZPT, TreeZY);
+            TreeWPPData = GetZeeWeightPPData(TreeZPT, TreeZY);
+            TreeWPPDataTrigger = GetZeeWeightPPDataTrigger(TreeZPT, TreeZY);
             
             Tree.Fill();
          }
