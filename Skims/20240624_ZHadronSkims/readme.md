@@ -30,6 +30,8 @@
 * Version 1e - 2024 July 8
    * Fix background unmatched. Save unmatched info.
 
+* Version 2 - 2024 July 10
+   * Implement Z weight for ee.
 
 ## Arguments
 

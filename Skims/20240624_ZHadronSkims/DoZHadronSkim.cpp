@@ -216,8 +216,8 @@ int main(int argc, char *argv[]){
    // Declare output files
    TFile OutputFile(OutputFileName.c_str(), "RECREATE");
 
-   TNtuple   n_Zee( "n_Zee"  , "Invariant Mass of e^{+}e{-}",   "mass:pt:eta:phi");
-   TNtuple n_Zmumu( "n_Zmumu", "Invariant Mass of mu^{+}mu{-}", "mass:pt:eta:phi");
+   TNtuple   n_Zee( "n_Zee"  , "Invariant Mass of e^{+}e^{-}",   "mass:pt:eta:phi");
+   TNtuple n_Zmumu( "n_Zmumu", "Invariant Mass of mu^{+}mu^{-}", "mass:pt:eta:phi");
    TTree Tree("Tree", Form("Tree for ZHadron analysis, %s", Version.c_str()));
    TTree InfoTree("InfoTree", "Information");
    TTree UnmatchedTree("Unmatched", "Information for unmatched");
@@ -1103,10 +1103,10 @@ int main(int argc, char *argv[]){
                if(IsPP == false)
                {
                   if(IsData == false)
-                     MZHadron.ZWeight = GetZWeightPbPbMC(Z.Pt(), Z.Rapidity(), MZHadron.hiBin);
+                     MZHadron.ZWeight = GetZeeWeightPbPbMC(Z.Pt(), Z.Rapidity(), MZHadron.hiBin);
                   else
                   {
-                     MZHadron.ZWeight = GetZWeightPbPbDataTrigger(Z.Pt(), Z.Rapidity(), MZHadron.hiBin);
+                     MZHadron.ZWeight = GetZeeWeightPbPbDataTrigger(Z.Pt(), Z.Rapidity(), MZHadron.hiBin);
                      
                      double Mu1Eta = MZHadron.muEta1->at(MZHadron.bestZidx);
                      double Mu1PT = MZHadron.muPt1->at(MZHadron.bestZidx);
@@ -1173,10 +1173,10 @@ int main(int argc, char *argv[]){
                else
                {
                   if(IsData == false)
-                     MZHadron.ZWeight = GetZWeightPPMC(Z.Pt(), Z.Rapidity());
+                     MZHadron.ZWeight = GetZeeWeightPPMC(Z.Pt(), Z.Rapidity());
                   else
                   {
-                     MZHadron.ZWeight = GetZWeightPPDataTrigger(Z.Pt(), Z.Rapidity());
+                     MZHadron.ZWeight = GetZeeWeightPPDataTrigger(Z.Pt(), Z.Rapidity());
                      // Extra Z weight for systematics
 
                      double Mu1Eta = MZHadron.muEta1->at(MZHadron.bestZidx);

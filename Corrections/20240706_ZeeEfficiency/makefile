@@ -12,15 +12,15 @@ Prepare:
 
 TestRun: Execute
 	./Execute --Input `ls DYMC/* | head -n5 | tr '\n' ','` \
-		--Output EfficiencyPlots.pdf --RootOutput /tmp/pchou/ZEfficiency.root --Fraction 1.00
-	mv /tmp/pchou/ZEfficiency.root .
-	cp EfficiencyPlots.pdf $(CERNBOX)
+		--Output EfficiencyPlotsPbPb.pdf --RootOutput /tmp/pchou/ZEfficiencyPbPb.root --Fraction 1.00
+	mv /tmp/pchou/ZEfficiencyPbPb.root .
+	cp EfficiencyPlotsPbPb.pdf $(CERNBOX)
 
 TestRunPP: Execute
 	./Execute --Input `ls PPMC/* | head -n5 | tr '\n' ','` \
-		--Output EfficiencyPlots.pdf --RootOutput /tmp/pchou/ZEfficiency.root --Fraction 1.00 --IsPP true
-	mv /tmp/pchou/ZEfficiency.root .
-	cp EfficiencyPlots.pdf $(CERNBOX)
+		--Output EfficiencyPlotsPP.pdf --RootOutput /tmp/pchou/ZEfficiencyPP.root --Fraction 1.00 --IsPP true
+	mv /tmp/pchou/ZEfficiencyPP.root .
+	cp EfficiencyPlotsPP.pdf $(CERNBOX)
 
 TestRunAll: Execute
 	./Execute --Input `ls DYMC/* | tr '\n' ','` \

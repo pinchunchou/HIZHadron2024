@@ -3,6 +3,7 @@ using namespace std;
 
 #include "TFile.h"
 #include "TTree.h"
+#include "TChain.h"
 #include "TProfile.h"
 #include "TH2D.h"
 #include "TCanvas.h"
@@ -15,15 +16,20 @@ int main();
 void MakePlot(double XMin, double XMax, double YMin, double YMax, string Title,
    TProfile &P1, TProfile &P2, bool LogX, string Output);
 
+string OutputBase = "/eos/home-p/pchou/figs/ZHadron2024/ZeeEfficiency/";
+
 int main()
 {
    SetThumbStyle();
 
-   TFile FPbPb("../20240706_ZeeEfficiency/ZEfficiencyAll.root");
-   TFile FPP("../20240706_ZeeEfficiency/ZEfficiencyAllPP.root");
+   TFile FPbPb("../20240706_ZeeEfficiency/ZEfficiencyPbPb.root");
+   TFile FPP("../20240706_ZeeEfficiency/ZEfficiencyPP.root");
 
-   TTree *TPbPb = (TTree *)FPbPb.Get("Tree");
-   TTree *TPP = (TTree *)FPP.Get("Tree");
+   //TTree *TPbPb = (TTree *)FPbPb.Get("Tree");
+   //TTree *TPP = (TTree *)FPP.Get("Tree");
+
+   TChain* TPbPb = new TChain("Tree"); TPbPb->Add("../20240706_ZeeEfficiency/PbPb_y/*.root");
+   TChain* TPP = new TChain("Tree"); TPP->Add("../20240706_ZeeEfficiency/pp/*.root");
 
    double PTBins[31] = {0};
    for(int i = 0; i <= 30; i++)
@@ -51,22 +57,22 @@ int main()
    TProfile HPPDataPTCorrected     ("HPPDataPTCorrected",      ";;", 30, PTBins);
 
    TPbPb->Draw("HasReco:Y>>HPbPbMCYRaw",                             "PT > 1", "prof");
-   TPbPb->Draw("HasReco*WPbPbMC:Y>>HPbPbMCYCorrected",                     "PT > 1", "prof");
+   TPbPb->Draw("HasReco*TreeWPbPbMC:Y>>HPbPbMCYCorrected",                     "PT > 1", "prof");
    TPbPb->Draw("HasReco:PT>>HPbPbMCPTRaw",                           "PT > 1", "prof");
-   TPbPb->Draw("HasReco*WPbPbMC:PT>>HPbPbMCPTCorrected",                   "PT > 1", "prof");
+   TPbPb->Draw("HasReco*TreeWPbPbMC:PT>>HPbPbMCPTCorrected",                   "PT > 1", "prof");
    TPbPb->Draw("HasReco:HiBin/2>>HPbPbMCHiBinRaw",                   "PT > 1", "prof");
-   TPbPb->Draw("HasReco*WPbPbMC:HiBin/2>>HPbPbMCHiBinCorrected",           "PT > 1", "prof");
+   TPbPb->Draw("HasReco*TreeWPbPbMC:HiBin/2>>HPbPbMCHiBinCorrected",           "PT > 1", "prof");
    TPP  ->Draw("HasReco:Y>>HPPMCYRaw",                               "PT > 1", "prof");
-   TPP  ->Draw("HasReco*WPPMC:Y>>HPPMCYCorrected",                   "PT > 1", "prof");
+   TPP  ->Draw("HasReco*TreeWPPMC:Y>>HPPMCYCorrected",                   "PT > 1", "prof");
    TPP  ->Draw("HasReco:PT>>HPPMCPTRaw",                             "PT > 1", "prof");
-   TPP  ->Draw("HasReco*WPPMC:PT>>HPPMCPTCorrected",                 "PT > 1", "prof");
+   TPP  ->Draw("HasReco*TreeWPPMC:PT>>HPPMCPTCorrected",                 "PT > 1", "prof");
    
-   MakePlot(-2.4, 2.4, 0.6, 1.1, ";y^{Z};Efficiency", HPbPbMCYRaw, HPbPbMCYCorrected, false, "PbPbMCY.pdf");
-   MakePlot(1, 200, 0.6, 1.1, ";p_{T}^{Z};Efficiency", HPbPbMCPTRaw, HPbPbMCPTCorrected, true, "PbPbMCPT.pdf");
-   MakePlot(0, 100, 0.6, 1.1, ";Centrality (%);Efficiency", HPbPbMCHiBinRaw, HPbPbMCHiBinCorrected, false, "PbPbMCHiBin.pdf");
-   MakePlot(-2.4, 2.4, 0.6, 1.1, ";y^{Z};Efficiency", HPbPbDataYRaw, HPbPbDataYCorrected, false, "PbPbDataY.pdf");
-   MakePlot(1, 200, 0.6, 1.1, ";p_{T}^{Z};Efficiency", HPbPbDataPTRaw, HPbPbDataPTCorrected, true, "PbPbDataPT.pdf");
-   MakePlot(0, 100, 0.6, 1.1, ";Centrality (%);Efficiency", HPbPbDataHiBinRaw, HPbPbDataHiBinCorrected, false, "PbPbDataHiBin.pdf");
+   MakePlot(-2.4, 2.4, 0.6, 1.1, ";y^{Z};Efficiency", HPbPbMCYRaw, HPbPbMCYCorrected, false, "PbPbMCY_y.pdf");
+   MakePlot(1, 200, 0.6, 1.1, ";p_{T}^{Z};Efficiency", HPbPbMCPTRaw, HPbPbMCPTCorrected, true, "PbPbMCPT_y.pdf");
+   MakePlot(0, 100, 0.6, 1.1, ";Centrality (%);Efficiency", HPbPbMCHiBinRaw, HPbPbMCHiBinCorrected, false, "PbPbMCHiBin_y.pdf");
+   MakePlot(-2.4, 2.4, 0.6, 1.1, ";y^{Z};Efficiency", HPbPbDataYRaw, HPbPbDataYCorrected, false, "PbPbDataY_y.pdf");
+   MakePlot(1, 200, 0.6, 1.1, ";p_{T}^{Z};Efficiency", HPbPbDataPTRaw, HPbPbDataPTCorrected, true, "PbPbDataPT_y.pdf");
+   MakePlot(0, 100, 0.6, 1.1, ";Centrality (%);Efficiency", HPbPbDataHiBinRaw, HPbPbDataHiBinCorrected, false, "PbPbDataHiBin_y.pdf");
    MakePlot(-2.4, 2.4, 0.6, 1.1, ";y^{Z};Efficiency", HPPMCYRaw, HPPMCYCorrected, false, "PPMCY.pdf");
    MakePlot(1, 200, 0.6, 1.1, ";p_{T}^{Z};Efficiency", HPPMCPTRaw, HPPMCPTCorrected, true, "PPMCPT.pdf");
    MakePlot(-2.4, 2.4, 0.6, 1.1, ";y^{Z};Efficiency", HPPDataYRaw, HPPDataYCorrected, false, "PPDataY.pdf");
@@ -120,7 +126,7 @@ void MakePlot(double XMin, double XMax, double YMin, double YMax, string Title,
    if(LogX == true)
       Canvas.SetLogx();
 
-   Canvas.SaveAs(Output.c_str());
+   Canvas.SaveAs((OutputBase + Output).c_str());
 }
 
 

@@ -682,8 +682,9 @@ double GetZeeWeightPbPb(double PT, double Y, double HiBin)
       YWeight = YWeight * Y + PY[i];
 
    // Tree->SetAlias("CWeight", "(1/(1.02931+2.27613*exp(-0.0162159*HiBin)-2.52141*exp(-0.0173972*HiBin)))")
-   double PC[5] = {1.01774, 0.311404, 0.0750920, 0.305513, 0.00156283};
+   double PC[5] = {1.09626, 0.260176, 0.109566, 0.278259, 0.0394061};
    double CWeight = PC[0] - PC[1] * exp(-PC[2] * HiBin) - PC[3] * exp(-PC[4] * HiBin);
+   //double CWeight = 1;
 
    // Tree->SetAlias("CWeight2", "(1/((HiBin>=45)*1+(HiBin<45)*(1.0082-0.000508604*HiBin)))")
    double CWeight2 = 1;
@@ -692,7 +693,8 @@ double GetZeeWeightPbPb(double PT, double Y, double HiBin)
 
    //double PTWeight = 1.00407 - 0.00346508 * log(PT) / log(10);
    double logPT = log(PT) / log(10);
-   double PTWeight = 0.684375 - 0.0317183*logPT + 0.116212*logPT*logPT - 0.105253*logPT*logPT*logPT + 0.0287522*logPT*logPT*logPT;
+   double PTWeight = 0.941261 - 0.0115051*logPT;// + 0.116212*logPT*logPT - 0.105253*logPT*logPT*logPT + 0.0287522*logPT*logPT*logPT;
+   //double PTWeight = 1;
    // cout << YWeight << " " << CWeight << " " << CWeight2 << endl;
 
    return 1 / (YWeight * CWeight * CWeight2 * PTWeight);
@@ -785,8 +787,8 @@ double GetZeeWeightPPMC(double PT, double Y)
       YWeight = YWeight * Y + PY[i];
 
    double logPT = log(PT) / log(10);
-   double PTWeight = 0.796138 +0.00293421*logPT + 0.00625970*logPT*logPT - 0.0119495*logPT*logPT*logPT + 0.00444359*logPT*logPT*logPT;
-
+   double PTWeight = 0.997808 + 0.00205520*logPT;// + 0.00625970*logPT*logPT - 0.0119495*logPT*logPT*logPT + 0.00444359*logPT*logPT*logPT;
+   //double PTWeight = 1;
    return 1 / (YWeight * PTWeight);
 }
 
