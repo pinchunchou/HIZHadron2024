@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
    vector<string> InputFileNames = CL.GetStringVector("Input");
    string OutputFileName         = CL.Get("Output", "EfficiencyPlots.pdf");
    string RootOutputFileName     = CL.Get("RootOutput", "ZEfficiency.root");
-   vector<double> Ys             = CL.GetDoubleVector("Y", vector<double>{-2.4, -2.0, -1.6, -1.2, -0.8, -0.4, 0, 0.4, 0.8, 1.2, 1.6, 2.0, 2.4});
+   vector<double> Ys             = CL.GetDoubleVector("Y", vector<double>{-2.1, -1.9, -1.7, -1.5, -1.3, -1.1, -0.9, -0.7, -0.5, -0.3, -0.1, 0.1, 0.3, 0.5, 0.7, 0.9, 1.1, 1.3, 1.5, 1.7, 1.9, 2.1});
    vector<double> PTs            = CL.GetDoubleVector("PT", vector<double>{0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100, 125, 150, 1000});
    double Fraction               = CL.GetDouble("Fraction", 1.00);
    bool IsPP                     = CL.GetBool("IsPP", false);
@@ -164,6 +164,9 @@ int main(int argc, char *argv[])
                if(Z.M() < 60 || Z.M() > 120)
                   continue;
 
+               if(fabs(Z.Rapidity()) > 2.1) 
+                  continue;
+
                PGenZ.push_back(Ele1 + Ele2);
                PGenEle1.push_back(Ele1);
                PGenEle2.push_back(Ele2);
@@ -223,7 +226,7 @@ int main(int argc, char *argv[])
                double Zmass = Z.M();
 
                if(Zmass < 60 || Zmass > 120) continue;
-               if(fabs(Z.Rapidity()) > 2.4) continue;
+               
 
                PRecoZ.push_back(Z);
                PRecoEle1.push_back(Ele1);

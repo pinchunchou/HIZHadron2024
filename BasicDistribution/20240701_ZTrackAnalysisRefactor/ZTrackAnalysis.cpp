@@ -100,7 +100,14 @@ int main(int argc, char *argv[])
    C.push_back(Configuration(40, 40,  200, 30,  50, 4, 10));
    C.push_back(Configuration(40, 40,  200, 50,  90, 4, 10));
    C.push_back(Configuration(40, 40,  200,  0, 100, 4, 10));
-   
+
+   C.push_back(Configuration(40, 40,  200,  0, 90, 1, 2));
+   C.push_back(Configuration(40, 30,  200,  0, 90, 1, 2));
+   C.push_back(Configuration(40, 40,  200,  0, 90, 1, 1000));
+   C.push_back(Configuration(40, 30,  200,  0, 90, 1, 1000));
+   C.push_back(Configuration(40, 40,  200,  0, 90, 2, 4));
+   C.push_back(Configuration(40, 40,  200,  0, 90, 4, 10));
+
    
    vector<TDirectory *>     Folder;
    vector<double>           TotalEventCount;

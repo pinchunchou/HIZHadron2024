@@ -64,7 +64,7 @@ public:
 
 int main(int argc, char *argv[]){
 
-   string Version = "V1e";
+   string Version = "V2a";
    CommandLine CL(argc, argv);
 
    vector<string> InputFileNames      = CL.GetStringVector("Input");

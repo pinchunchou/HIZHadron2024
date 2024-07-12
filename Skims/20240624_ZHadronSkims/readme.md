@@ -33,6 +33,9 @@
 * Version 2 - 2024 July 10
    * Implement Z weight for ee.
 
+* Version 2a - 2024 July 10
+   * Fix Z weight for ee.
+
 ## Arguments
 
 | Argument | type | default | comments |
