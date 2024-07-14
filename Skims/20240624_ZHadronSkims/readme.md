@@ -31,10 +31,13 @@
    * Fix background unmatched. Save unmatched info.
 
 * Version 2 - 2024 July 10
-   * Implement Z weight for ee.
+   * Implement Z weights for ee.
 
 * Version 2a - 2024 July 10
-   * Fix Z weight for ee.
+   * Fix Z weights for ee.
+
+* Version 2b - 2024 July 14
+   * Fix Z weights for ee.
 
 ## Arguments
 

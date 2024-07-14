@@ -64,7 +64,7 @@ public:
 
 int main(int argc, char *argv[]){
 
-   string Version = "V2a";
+   string Version = "V2b";
    CommandLine CL(argc, argv);
 
    vector<string> InputFileNames      = CL.GetStringVector("Input");
@@ -75,8 +75,8 @@ int main(int argc, char *argv[]){
 
    bool DoGenLevel                    = CL.GetBool("DoGenLevel", true);
    double Fraction                    = CL.GetDouble("Fraction", 1.00);
-   double MinZPT                      = CL.GetDouble("MinZPT", 20.00);
-   double MaxZPT                      = CL.GetDouble("MaxZPT", 2000000.0);
+   double MinZPT                      = CL.GetDouble("MinZPT", 30.00);
+   double MaxZPT                      = CL.GetDouble("MaxZPT", 2000.0);
    double MinTrackPT                  = CL.GetDouble("MinTrackPT", 1.00);
    double MaxTrackPT                  = CL.GetDouble("MaxTrackPT", 10000.00);
    double MinGenTrackPT               = CL.GetDouble("MinGenTrackPT", 0.40);

@@ -61,8 +61,8 @@ TFile *file_ppMC;
 TFile *file_ppbkgMC;
 
 
-const char *typeofdata = "ZHadron2024/BasicBkgSub/ov1_v2a_Gen_sub0/20240712/";
-const char *typeofdata1 = "ov1_v2a_Gen_sub0";
+const char *typeofdata = "ZHadron2024/BasicBkgSub/ov1_v2a_Gen_sub0/20240713/";
+const char *typeofdata1 = "ov1_v2a_Gen_sub0_ov1";
 
 
 bool selfmix = false;
@@ -528,7 +528,7 @@ int main(int argc, char *argv[]){
       file_bkgMC = TFile::Open("~/eos_base/BasicPlots/GraphMCSigBkg_v17d_PFmuon_350_10HF_ov20.root","read");
    else{
       if(isgen)
-         file_bkgMC = TFile::Open((filebase + "GraphMCBkgGen_v2a_ee_ov10.root").c_str(), "read");
+         file_bkgMC = TFile::Open((filebase + "GraphMCBkgGen_v2a_ee_ov1.root").c_str(), "read");
       else
          file_bkgMC = TFile::Open((filebase + "GraphMCBkg_v2a_ee_2.root").c_str(), "read");
    }

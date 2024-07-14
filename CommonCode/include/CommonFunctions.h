@@ -678,40 +678,43 @@ double GetZeeWeightPbPb(double PT, double Y, double HiBin)
 
    double logPT = log(PT) / log(10);
    double YWeight = 0;
-   double PTWeight = 1;
+   double PTWeight = 0;
    double CWeight = 1;
 
-   if(HiBin <= 20){
-      double PY[9] = {1.19306, -0.0438758, -0.194472, 0.122650, -0.0703695, -0.0692509, 0.037700, 0.0106838, -0.00266316};
+   if(HiBin <= 20){//TODO
+      double PY[9] = {1.19566, -0.0505880, -0.118037, 0.152175, -0.167742, -0.0864798, 0.0703373, 0.0130519, -0.00775953};
       for(int i = 8; i >= 0; i--) YWeight = YWeight * Y + PY[i];
-      PTWeight = 0.506333 - 0.0248085*logPT + 0.000873505*PT;// + 0.294518*logPT*logPT - 0.228410*logPT*logPT*logPT + 0.0583805*logPT*logPT*logPT;
-      double PC[5] = {1.22568, 0.190250, 0.150236, 0.246428, 0.146907};
-      //CWeight = PC[0] - PC[1] * exp(-PC[2] * HiBin/2) - PC[3] * exp(-PC[4] * HiBin/2);
+      PTWeight = 1.13422 - 0.464265*logPT + 0.00318745*PT;// + 0.294518*logPT*logPT - 0.228410*logPT*logPT*logPT + 0.0583805*logPT*logPT*logPT;
+      double PC[5] = {1.10138, 0.264877, 0.243171, 0., 0.};
+      CWeight = PC[0] - PC[1] * exp(-PC[2] * (HiBin/2 - PC[3]));// - PC[3] * exp(-PC[4] * HiBin/2);
    }else if(HiBin > 20 && HiBin <= 60){
-      double PY[9] = {1.13846, -0.0680574, -0.122892, 0.121402, -0.121977, -0.0585884, 0.0672619, 0.00906852, -0.00873661};
+      double PY[9] = {1.14740, -0.0567120, -0.140971, 0.101232, -0.0966799, -0.0481951, 0.0549172, 0.00747156, -0.00684610};
       for(int i = 8; i >= 0; i--) YWeight = YWeight * Y + PY[i];
-      PTWeight = 0.687321 - 0.0393247*logPT + 0.000693314*PT;// + 0.187676*logPT*logPT - 0.169706*logPT*logPT*logPT + 0.0461283*logPT*logPT*logPT;
-      double PC[5] = {1.12479, 0.272621, 0.0832398, 0.330377, 0.0832300};
-      //CWeight = PC[0] - PC[1] * exp(-PC[2] * HiBin/2) - PC[3] * exp(-PC[4] * HiBin/2);
+      PTWeight = 0.792606 - 0.117747*logPT + 0.00115921*PT;// + 0.187676*logPT*logPT - 0.169706*logPT*logPT*logPT + 0.0461283*logPT*logPT*logPT;
+      double PC[5] = {1.08587, 0.288613, 0.115125, 8.01972, 0.};
+      CWeight = PC[0] - PC[1] * exp(-PC[2] * (HiBin/2 - PC[3]));// - PC[3] * exp(-PC[4] * HiBin/2);
    }else if(HiBin > 60 && HiBin <= 100){
-      double PY[9] = {1.12002, -0.0391611, -0.131993, 0.0314958, -0.0412911, 0.00883281, 0.0149612, -0.00336083, 0.000238071};
+      double PY[9] = {1.12822, -0.0274828, -0.151633, 0.00766144, -0.0170607, 0.0207212, 0.00511805, -0.00503926, 0.00150476};
       for(int i = 8; i >= 0; i--) YWeight = YWeight * Y + PY[i];
-      PTWeight = 0.734388 - 0.0319884*logPT + 0.000468678*PT;// + 0.204650*logPT*logPT - 0.176494*logPT*logPT*logPT + 0.0467753*logPT*logPT*logPT;
-      double PC[5] = {1.11656, 0.270832, 0.0234276, 2.63172, 0.146628};
+      PTWeight = 0.796534 - 0.0903468*logPT + 0.00104151*PT;// + 0.204650*logPT*logPT - 0.176494*logPT*logPT*logPT + 0.0467753*logPT*logPT*logPT;
+      //double PC[5] = {1.11656, 0.270832, 0.0234276, 2.63172, 0.146628};
       //CWeight = PC[0] - PC[1] * exp(-PC[2] * HiBin/2) - PC[3] * exp(-PC[4] * HiBin/2);
-   }else if(HiBin > 100 && HiBin <= 180){
-      double PY[9] = {1.10569, -0.00713424, -0.0579103, 0.0161137, -0.125869, 0.000453968, 0.0507122, 0.000234081, -0.00432670};
+      CWeight = 7.13729e-01+1.10393e-02*(HiBin/2)-9.42640e-05*(HiBin*HiBin/4);
+   }else if(HiBin > 100 && HiBin <= 180){//TODO
+      double PY[9] = {1.10909, -0.00713942, -0.0544541, 0.0120645, -0.130769, 0.00375674, 0.0524065, -0.000350706, -0.00447017};
       for(int i = 8; i >= 0; i--) YWeight = YWeight * Y + PY[i];
-      PTWeight = 0.752966 - 0.0122411*logPT + 0.000263738*PT;// - 0.0198129*logPT*logPT - 0.00161800*logPT*logPT*logPT + 0.00326099*logPT*logPT*logPT;
-      double PC[5] = {1.00591, 41.8563, 0.141307, -3.97067e+07, 1.20586};
+      PTWeight = 1.05216 - 0.221570*logPT + 0.00136383*PT;// - 0.0198129*logPT*logPT - 0.00161800*logPT*logPT*logPT + 0.00326099*logPT*logPT*logPT;
+      //double PC[5] = {1.00591, 41.8563, 0.141307, -3.97067e+07, 1.20586};
       //CWeight = PC[0] - PC[1] * exp(-PC[2] * HiBin/2) - PC[3] * exp(-PC[4] * HiBin/2);
+      CWeight = 9.38058e-01+8.90918e-04*(HiBin/2);
    }else{
-      double PY[9] = {1.28449, -0.408147, -0.639191, 0.727285, 0.480741, -0.227113, -0.156542, 0.0161066, 0.0199080};
+      double PY[9] = {1.13094, -0.463079, 0.194433, 0.98566, -0.523615, -0.432711, 0.202134, 0.0529807, -0.0201689};
       for(int i = 8; i >= 0; i--) YWeight = YWeight * Y + PY[i];
       //PTWeight = 0.625776 + 0.0733583*logPT;// - 0.530160*logPT*logPT + 0.446091*logPT*logPT*logPT - 0.111444*logPT*logPT*logPT;
       PTWeight = 0.589467 + 0.113280*logPT - 0.000616749*PT;// - 0.530160*logPT*logPT + 0.446091*logPT*logPT*logPT - 0.111444*logPT*logPT*logPT;
-      double PC[5] = {0.856476, -2.49728e+04, 0.130232, -3.97067e+07, 4.37005};
+      //double PC[5] = {0.856476, -2.49728e+04, 0.130232, -3.97067e+07, 4.37005};
       //CWeight = PC[0] - PC[1] * exp(-PC[2] * HiBin/2) - PC[3] * exp(-PC[4] * HiBin/2);
+      CWeight = 7.10724e+01-1.52455*(HiBin/2)+8.28843e-03*(HiBin*HiBin/4);
    }
 
    // Tree->SetAlias("CWeight2", "(1/((HiBin>=45)*1+(HiBin<45)*(1.0082-0.000508604*HiBin)))")
@@ -803,13 +806,13 @@ double GetZWeightPPMC(double PT, double Y)
 
 double GetZeeWeightPPMC(double PT, double Y)
 {
-   double PY[9] = {1.09867, -0.0124722, -0.0865482, 0.00672027, -0.0740251, -0.00293854, 0.0321098, 0.000500494, -0.00218622};
+   double PY[9] = {1.09921, -0.0125087, -0.0866617, 0.00679303, -0.0739058, -0.00297747, 0.0320475, 0.000506456, -0.00217581};
    double YWeight = 0;
    for(int i = 8; i >= 0; i--)
       YWeight = YWeight * Y + PY[i];
 
    double logPT = log(PT) / log(10);
-   double PTWeight = 0.804848 - 0.00864155*logPT + 0.000152637*PT;// + 0.00625970*logPT*logPT - 0.0119495*logPT*logPT*logPT + 0.00444359*logPT*logPT*logPT;
+   double PTWeight = 0.852004 - 0.0421117*logPT + 0.000339198*PT;// + 0.00625970*logPT*logPT - 0.0119495*logPT*logPT*logPT + 0.00444359*logPT*logPT*logPT;
    //double PTWeight = 1;
    return 1 / (YWeight * PTWeight);
 }
