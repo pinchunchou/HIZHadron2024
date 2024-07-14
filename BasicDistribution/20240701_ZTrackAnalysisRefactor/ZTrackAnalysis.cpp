@@ -214,7 +214,7 @@ int main(int argc, char *argv[])
    else
       Tree->Add((InputBase + "?#Tree").c_str());
  
-   int HiBin, NPU, NVertex;
+   int HiBin, NPU, NVertex, bestZidx=0, bestZgenIdx=0;
 
    vector<double> *ZMass       = nullptr;
    vector<double> *ZPT         = nullptr;
@@ -306,6 +306,9 @@ int main(int argc, char *argv[])
    if(Tree->GetBranch("GenSubevent"))      Tree->SetBranchAddress("GenSubevent",     &genSubevent);
    if(Tree->GetBranch("GenTrackMuTagged")) Tree->SetBranchAddress("GenTrackMuTagged",&genTrackMuTagged);
 
+   if(Tree->GetBranch("bestZidx"))   Tree->SetBranchAddress("bestZidx",   &bestZidx);
+   if(Tree->GetBranch("bestZgenIdx"))   Tree->SetBranchAddress("bestZgenIdx",   &bestZgenIdx);
+
    int EntryCount = Tree->GetEntries() * Fraction;
    ProgressBar Bar(cout, EntryCount);
    Bar.SetStyle(-1);
@@ -333,28 +336,28 @@ int main(int argc, char *argv[])
       {
          //cout<<"iC = "<<iC<<endl;
          bool ZMassRange = false, genZMassRange = false;
-         if(DoGenCorrelation == false && ZMass != nullptr && ZMass->size() > 0 && ZMass->at(0) > 60)
+         if(DoGenCorrelation == false && ZMass != nullptr && ZMass->size() > 0 && bestZidx >= 0 && ZMass->at(bestZidx) > 60)
             ZMassRange = true;
 
-         if(DoGenCorrelation == true && genZMass != nullptr && genZMass->size() > 0){
-            if(genZMass->at(0) > 60) ZMassRange = true;
+         if(DoGenCorrelation == true && genZMass != nullptr && genZMass->size() > 0 && bestZgenIdx >= 0 ){
+            if(genZMass->at(bestZgenIdx) > 60) ZMassRange = true;
          }
 
-         if(genZMass != nullptr && genZMass->size() > 0){
-            if(genZMass->at(0) > 60) genZMassRange = true;
+         if(genZMass != nullptr && genZMass->size() > 0  && bestZgenIdx >= 0 ){
+            if(genZMass->at(bestZgenIdx) > 60) genZMassRange = true;
          }
 
          bool ZPTRange = false, genZPTRange = false;
-         if(DoGenCorrelation == false && ZPT != nullptr && ZPT->size() > 0 && ZPT->at(0) > C[iC].ZPTMin && ZPT->at(0) <= C[iC].ZPTMax)
+         if(DoGenCorrelation == false && ZPT != nullptr && ZPT->size() > 0 && bestZidx >= 0 && ZPT->at(bestZidx) > C[iC].ZPTMin && ZPT->at(bestZidx) <= C[iC].ZPTMax)
             ZPTRange = true;
 
-         if(DoGenCorrelation == true && genZPt != nullptr && genZPt->size() > 0){
-            if (genZPt->at(0) > C[iC].ZPTMin && genZPt->at(0) <= C[iC].ZPTMax) 
+         if(DoGenCorrelation == true && genZPt != nullptr && genZPt->size() > 0  && bestZgenIdx >= 0 ){
+            if (genZPt->at(bestZgenIdx) > C[iC].ZPTMin && genZPt->at(bestZgenIdx) <= C[iC].ZPTMax) 
                ZPTRange = true;
          }
 
-         if(genZPt != nullptr && genZPt->size() > 0){
-            if (genZPt->at(0) > C[iC].ZPTMin && genZPt->at(0) <= C[iC].ZPTMax) 
+         if(genZPt != nullptr && genZPt->size() > 0  && bestZgenIdx >= 0 ){
+            if (genZPt->at(bestZgenIdx) > C[iC].ZPTMin && genZPt->at(bestZgenIdx) <= C[iC].ZPTMax) 
                genZPTRange = true;
          }
 
@@ -381,13 +384,13 @@ int main(int argc, char *argv[])
          double Mu1Eta_0, Mu2Eta_0, Mu1Phi_0, Mu2Phi_0;
 
          if(DoGenCorrelation == true){
-            ZEta_0 = genZEta->at(0); ZPhi_0 = genZPhi->at(0); ZMass_0 = genZMass->at(0); ZPT_0 = genZPt->at(0);
-            Mu1Eta_0 = genMu1Eta->at(0); Mu2Eta_0 = genMu2Eta->at(0); 
-            Mu1Phi_0 = genMu1Phi->at(0); Mu2Phi_0 = genMu2Phi->at(0); 
+            ZEta_0 = genZEta->at(bestZgenIdx); ZPhi_0 = genZPhi->at(bestZgenIdx); ZMass_0 = genZMass->at(bestZgenIdx); ZPT_0 = genZPt->at(bestZgenIdx);
+            Mu1Eta_0 = genMu1Eta->at(bestZgenIdx); Mu2Eta_0 = genMu2Eta->at(bestZgenIdx); 
+            Mu1Phi_0 = genMu1Phi->at(bestZgenIdx); Mu2Phi_0 = genMu2Phi->at(bestZgenIdx); 
          }else{
-            ZEta_0 = ZEta->at(0); ZPhi_0 = ZPhi->at(0); ZMass_0 = ZMass->at(0); ZPT_0 = ZPT->at(0);
-            Mu1Eta_0 = Mu1Eta->at(0); Mu2Eta_0 = Mu2Eta->at(0); 
-            Mu1Phi_0 = Mu1Phi->at(0); Mu2Phi_0 = Mu2Phi->at(0); 
+            ZEta_0 = ZEta->at(bestZidx); ZPhi_0 = ZPhi->at(bestZidx); ZMass_0 = ZMass->at(bestZidx); ZPT_0 = ZPT->at(bestZidx);
+            Mu1Eta_0 = Mu1Eta->at(bestZidx); Mu2Eta_0 = Mu2Eta->at(bestZidx); 
+            Mu1Phi_0 = Mu1Phi->at(bestZidx); Mu2Phi_0 = Mu2Phi->at(bestZidx); 
          }
 
          int NTrack = 0, NGenTrack = 0;
@@ -459,9 +462,9 @@ int main(int argc, char *argv[])
                //std::cout<<", "<<NCollWeight<<", "<<trackWeight->at(iT)<<", "<<trackResidualWeight->at(iT)<<", "<<ZWeight<<", "<<ZPT_0<<", "<<ZEta_0<<", "<<ZMass_0<<std::endl;
             
                if(genZEta->size() > 0 && genTrackPT == nullptr){
-                  HGenTrackEta[iC]->Fill(TrackDEta->at(iT) + genZEta->at(0), weight);
-                  HGenTrackPhi[iC]->Fill(PhiRangeSymmetric(TrackDPhi->at(iT) + genZPhi->at(0)), weight);
-                  HGenTrackEtaPhi[iC]->Fill(TrackDEta->at(iT) + genZEta->at(0), PhiRangeSymmetric(TrackDPhi->at(iT) + genZPhi->at(0)), weight);
+                  HGenTrackEta[iC]->Fill(TrackDEta->at(iT) + genZEta->at(bestZgenIdx), weight);
+                  HGenTrackPhi[iC]->Fill(PhiRangeSymmetric(TrackDPhi->at(iT) + genZPhi->at(bestZgenIdx)), weight);
+                  HGenTrackEtaPhi[iC]->Fill(TrackDEta->at(iT) + genZEta->at(bestZgenIdx), PhiRangeSymmetric(TrackDPhi->at(iT) + genZPhi->at(bestZgenIdx)), weight);
                   HGenTrackPT[iC]->Fill(genTrackPT->at(iT), weight);
                }
 
@@ -503,9 +506,9 @@ int main(int argc, char *argv[])
             if(PassEverything)
             {
                
-               HGenTrackEta[iC]->Fill(genTrackDEta->at(iT) + genZEta->at(0), weight);
-               HGenTrackPhi[iC]->Fill(PhiRangeSymmetric(genTrackDPhi->at(iT) + genZPhi->at(0)), weight);
-               HGenTrackEtaPhi[iC]->Fill(genTrackDEta->at(iT) + genZEta->at(0), PhiRangeSymmetric(genTrackDPhi->at(iT) + genZPhi->at(0)), weight);
+               HGenTrackEta[iC]->Fill(genTrackDEta->at(iT) + genZEta->at(bestZgenIdx), weight);
+               HGenTrackPhi[iC]->Fill(PhiRangeSymmetric(genTrackDPhi->at(iT) + genZPhi->at(bestZgenIdx)), weight);
+               HGenTrackEtaPhi[iC]->Fill(genTrackDEta->at(iT) + genZEta->at(bestZgenIdx), PhiRangeSymmetric(genTrackDPhi->at(iT) + genZPhi->at(bestZgenIdx)), weight);
                HGenTrackPT[iC]->Fill(genTrackPT->at(iT), weight);
 
                HGenEta[iC]->Fill(genTrackDEta->at(iT), weight);
@@ -547,14 +550,14 @@ int main(int argc, char *argv[])
                //std::cout<<"genTrackPT == nullptr"<<std::endl;
                GenEventCount[iC] = GenEventCount[iC] + NCollWeight*ZWeight*VZWeight;
                HGenEventCount[iC]->Fill(0., NCollWeight*ZWeight*VZWeight);
-               HGenZEta[iC]->Fill(genZEta->at(0), NCollWeight*ZWeight*VZWeight);
-               HGenZPhi[iC]->Fill(genZPhi->at(0), NCollWeight*ZWeight*VZWeight);
-               HGenZEtaPhi[iC]->Fill(genZEta->at(0), genZPhi->at(0), NCollWeight*ZWeight*VZWeight);
-               HGenZPT[iC]->Fill(genZPt->at(0), NCollWeight*ZWeight*VZWeight);
+               HGenZEta[iC]->Fill(genZEta->at(bestZgenIdx), NCollWeight*ZWeight*VZWeight);
+               HGenZPhi[iC]->Fill(genZPhi->at(bestZgenIdx), NCollWeight*ZWeight*VZWeight);
+               HGenZEtaPhi[iC]->Fill(genZEta->at(bestZgenIdx), genZPhi->at(bestZgenIdx), NCollWeight*ZWeight*VZWeight);
+               HGenZPT[iC]->Fill(genZPt->at(bestZgenIdx), NCollWeight*ZWeight*VZWeight);
 
-               GenZP = genZPt->at(0) * cosh(genZEta->at(0));
-               GenZPz = genZPt->at(0) * sinh(genZEta->at(0));
-               GenZE = sqrt(GenZP*GenZP+genZMass->at(0)*genZMass->at(0));
+               GenZP = genZPt->at(bestZgenIdx) * cosh(genZEta->at(bestZgenIdx));
+               GenZPz = genZPt->at(bestZgenIdx) * sinh(genZEta->at(bestZgenIdx));
+               GenZE = sqrt(GenZP*GenZP+genZMass->at(bestZgenIdx)*genZMass->at(bestZgenIdx));
                GenZY = 0.5*log((GenZE+GenZPz)/(GenZE-GenZPz));
                HGenZY[iC]->Fill(GenZY, NCollWeight*ZWeight*VZWeight);
 
@@ -566,14 +569,14 @@ int main(int argc, char *argv[])
             //std::cout<<"genTrackPT != nullptr"<<std::endl;
             GenEventCount[iC] = GenEventCount[iC] + NCollWeight;
             HGenEventCount[iC]->Fill(0., NCollWeight);
-            HGenZEta[iC]->Fill(genZEta->at(0), NCollWeight);
-            HGenZPhi[iC]->Fill(genZPhi->at(0), NCollWeight);
-            HGenZEtaPhi[iC]->Fill(genZEta->at(0), genZPhi->at(0), NCollWeight);
-            HGenZPT[iC]->Fill(genZPt->at(0), NCollWeight);
+            HGenZEta[iC]->Fill(genZEta->at(bestZgenIdx), NCollWeight);
+            HGenZPhi[iC]->Fill(genZPhi->at(bestZgenIdx), NCollWeight);
+            HGenZEtaPhi[iC]->Fill(genZEta->at(bestZgenIdx), genZPhi->at(bestZgenIdx), NCollWeight);
+            HGenZPT[iC]->Fill(genZPt->at(bestZgenIdx), NCollWeight);
 
-            GenZP = genZPt->at(0) * cosh(genZEta->at(0));
-            GenZPz = genZPt->at(0) * sinh(genZEta->at(0));
-            GenZE = sqrt(GenZP*GenZP+genZMass->at(0)*genZMass->at(0));
+            GenZP = genZPt->at(bestZgenIdx) * cosh(genZEta->at(bestZgenIdx));
+            GenZPz = genZPt->at(bestZgenIdx) * sinh(genZEta->at(bestZgenIdx));
+            GenZE = sqrt(GenZP*GenZP+genZMass->at(bestZgenIdx)*genZMass->at(bestZgenIdx));
             GenZY = 0.5*log((GenZE+GenZPz)/(GenZE-GenZPz));
             HGenZY[iC]->Fill(GenZY, NCollWeight);
          }
