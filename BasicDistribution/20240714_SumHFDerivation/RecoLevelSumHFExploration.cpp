@@ -98,6 +98,9 @@ void PVCheck(TTree* Tree, string OutputBase, string OutputName)
    PSignalHFVsNPU.SetMarkerStyle(20);
    PSignalHFVsNPU.SetMarkerColor(kBlue);
    PSignalHFVsNPU.SetLineColor(kBlue);
+
+   PSignalHFVsNPV.SetMinimum(500);
+   PSignalHFVsNPU.SetMinimum(500);
    
    TLegend Legend(0.18, 0.78, 0.48, 0.90);
 
@@ -133,8 +136,8 @@ void ZPTCheck(TTree* Tree, string OutputBase, string OutputName){
 	PSignalHFVsZPT_NPU0.SetMarkerColor(kBlue);
 	PSignalHFVsZPT_NPU0.SetLineColor(kBlue);
 
-	Tree->Draw("SignalHF:zPt[0]>>PSignalHFVsZPT_NPV1", "NVertex == 1 && zPt[0] < 100", "prof");
-	Tree->Draw("SignalHF:zPt[0]>>PSignalHFVsZPT_NPU0", "NPU == 0 && zPt[0] < 100", "prof same");
+	Tree->Draw("SignalHF:zPt>>PSignalHFVsZPT_NPV1", "NVertex == 1 && zPt < 100", "prof");
+	Tree->Draw("SignalHF:zPt>>PSignalHFVsZPT_NPU0", "NPU == 0 && zPt < 100", "prof same");
 
 	TF1 FSignalHFVsZPT_NPV1("FSignalHFVsZPT_NPV1", "[0]-[1]*exp(-[2]*x)", 0, 100);
 	TF1 FSignalHFVsZPT_NPU0("FSignalHFVsZPT_NPU0", "[0]-[1]*exp(-[2]*x)", 0, 100);
@@ -144,6 +147,9 @@ void ZPTCheck(TTree* Tree, string OutputBase, string OutputName){
 
 	PSignalHFVsZPT_NPV1.Fit(&FSignalHFVsZPT_NPV1,"E");
 	PSignalHFVsZPT_NPU0.Fit(&FSignalHFVsZPT_NPU0,"E");
+
+	PSignalHFVsZPT_NPV1.SetMinimum(600);
+	PSignalHFVsZPT_NPU0.SetMinimum(600);
 
 	TLegend Legend(0.18, 0.78, 0.48, 0.90);
 	Legend.SetFillStyle(0);
