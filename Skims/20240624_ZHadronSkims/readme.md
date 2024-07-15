@@ -39,6 +39,10 @@
 * Version 2b - 2024 July 14
    * Fix Z weights for ee.
 
+* Version 2c - 2024 July 15
+   * Fix pi mass for track Y.
+   * Implement different HFShifts for different NVertex.
+
 ## Arguments
 
 | Argument | type | default | comments |

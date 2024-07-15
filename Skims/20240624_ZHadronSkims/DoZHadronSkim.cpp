@@ -61,10 +61,11 @@ public:
 
 #define E_MASS 0.0005111
 #define Z_MASS 91.1880
+#define PI_MASS 0.13957039
 
 int main(int argc, char *argv[]){
 
-   string Version = "V2b";
+   string Version = "V2c";
    CommandLine CL(argc, argv);
 
    vector<string> InputFileNames      = CL.GetStringVector("Input");
@@ -130,6 +131,8 @@ int main(int argc, char *argv[]){
    int Oversample = 1;
    bool ReuseBackground = false;
    bool ForceGenMatch = false;
+   bool isMultiHFShift = false;
+   vector<double> HFShifts = {0};
 
    if(DoBackground == true)
    {
@@ -143,6 +146,8 @@ int main(int argc, char *argv[]){
       Oversample                  = CL.GetInteger("Oversample", 1);
       ReuseBackground             = CL.GetBool("ReuseBackground", false);
       ForceGenMatch               = CL.GetBool("ForceGenMatch", false);
+      isMultiHFShift              = CL.GetBool("isMultiHFShift", false);
+      HFShifts                    = CL.GetDoubleVector("HFShifts");
 
    }
 
@@ -274,6 +279,12 @@ int main(int argc, char *argv[]){
    Key = "ReuseBackground";         Value = InfoString(ReuseBackground);         InfoTree.Fill();
    Key = "ForceGenMatch";           Value = InfoString(ForceGenMatch);           InfoTree.Fill();
    Key = "MCHiBinShift";            Value = InfoString(MCHiBinShift);            InfoTree.Fill();
+   Key = "DoAlternateTrackSelection"; Value = InfoString(DoAlternateTrackSelection); InfoTree.Fill();
+   Key = "AlternateTrackSelection"; Value = InfoString(AlternateTrackSelection); InfoTree.Fill();
+   //Key = "WithProgressBar";         Value = InfoString(WithProgressBar);         InfoTree.Fill();
+   Key = "isMultiHFShift";          Value = InfoString(isMultiHFShift);          InfoTree.Fill();
+   //Key = "HFShifts";                Value = InfoString(HFShifts);                InfoTree.Fill();
+
 
    TH2D H2D("H2D", "", 100, -6, 6, 100, -M_PI, M_PI);
 
@@ -805,6 +816,10 @@ int main(int argc, char *argv[]){
             if(DoBackground == true && (GoodGenZ == true || GoodRecoZ == true) ) 
             {
                // find the background event location based on HF
+
+               if(isMultiHFShift && MZHadron.NVertex > 0 && MZHadron.NVertex <= HFShifts.size())
+                  HFShift = HFShifts[MZHadron.NVertex-1];     
+
                double SignalHF = ForceGenMatch ? MZHadron.SignalGenHF : MZHadron.SignalHF;
                double LowerHF = min(SignalHF - HFTolerance, SignalHF * (1 - HFToleranceFraction)) - HFShift;
                double HigherHF = max(SignalHF + HFTolerance, SignalHF * (1 + HFToleranceFraction)) - HFShift;
@@ -955,7 +970,7 @@ int main(int argc, char *argv[]){
 
                   double TrackP  = TrackPT*cosh(TrackEta);
                   double TrackPZ = TrackPT*sinh(TrackEta);
-                  double TrackE  = sqrt(TrackP*TrackP+M_PI*M_PI); // Here we assume track mass = pi mass (suggested by Olga).
+                  double TrackE  = sqrt(TrackP*TrackP+PI_MASS*PI_MASS); // Here we assume track mass = pi mass (suggested by Olga).
                   double TrackY  = 0.5*log((TrackE+TrackPZ)/(TrackE-TrackPZ));
 
                   bool MuTagged = false;
@@ -1041,7 +1056,7 @@ int main(int argc, char *argv[]){
 
                   double TrackP  = TrackPT*cosh(TrackEta);
                   double TrackPZ = TrackPT*sinh(TrackEta);
-                  double TrackE  = sqrt(TrackP*TrackP+M_PI*M_PI); // Here we assume track mass = pi mass (suggested by Olga).
+                  double TrackE  = sqrt(TrackP*TrackP+PI_MASS*PI_MASS); // Here we assume track mass = pi mass (suggested by Olga).
                   double TrackY  = 0.5*log((TrackE+TrackPZ)/(TrackE-TrackPZ));
 
                   //std::cout<<"MZHadron.genMuEta1->size()= "<<MZHadron.genMuEta1->size()<<std::endl;

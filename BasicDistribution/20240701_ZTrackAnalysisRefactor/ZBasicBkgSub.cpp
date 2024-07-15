@@ -61,12 +61,12 @@ TFile *file_ppMC;
 TFile *file_ppbkgMC;
 
 
-const char *typeofdata = "ZHadron2024/BasicBkgSub/ov1_v2a_Gen_sub0/20240713/";
-const char *typeofdata1 = "ov1_v2a_Gen_sub0_ov1";
+const char *typeofdata = "ZHadron2024/BasicBkgSub/ov1_v2a_Reco_sub0/20240714/";
+const char *typeofdata1 = "ov1_v2a_Reco_sub0";
 
 
 bool selfmix = false;
-bool isgen   = true;
+bool isgen   = false;
 bool drawlog = false;
 bool drawrat = false;
 bool drawlow = true;
@@ -522,7 +522,7 @@ int main(int argc, char *argv[]){
    if(isgen)
       file_sigMC = TFile::Open((filebase + "GraphMCSigGen_v1c_ee.root").c_str(), "read");
    else
-      file_sigMC = TFile::Open((filebase + "GraphMCSig_v2a_ee.root").c_str(), "read");
+      file_sigMC = TFile::Open((filebase + "GraphMCSig_v2b_ee.root").c_str(), "read");
    
    if(selfmix)
       file_bkgMC = TFile::Open("~/eos_base/BasicPlots/GraphMCSigBkg_v17d_PFmuon_350_10HF_ov20.root","read");
@@ -530,7 +530,7 @@ int main(int argc, char *argv[]){
       if(isgen)
          file_bkgMC = TFile::Open((filebase + "GraphMCBkgGen_v2a_ee_ov1.root").c_str(), "read");
       else
-         file_bkgMC = TFile::Open((filebase + "GraphMCBkg_v2a_ee_2.root").c_str(), "read");
+         file_bkgMC = TFile::Open((filebase + "GraphMCBkg_v2b_ee.root").c_str(), "read");
    }
 
    if(isgen)
