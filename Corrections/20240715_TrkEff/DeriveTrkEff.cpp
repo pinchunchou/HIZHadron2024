@@ -16,6 +16,7 @@ using namespace std;
 #include "Messenger.h"
 #include "CommonFunctions.h"
 #include "SetStyle.h"
+#include "TLorentzVector.h"
 
 // Include necessary headers for weight calculations and corrections
 #include "trackingEfficiency2017pp.h"
@@ -273,7 +274,7 @@ int main(int argc, char *argv[])
             if(fabs(MSignalGG.EleSCEta->at(iele1)) > 2.5)  isRecoZ = false;
             if(fabs(MSignalGG.EleEta->at(iele1)) > 2.1)    isRecoZ = false;
             if(fabs(MSignalGG.ElePt->at(iele1)) < 20)      isRecoZ = false;
-            if(IsPP == false && MSignalGG.DielectronPassVetoCut(iele1, MZHadron.hiBin) == false) isRecoZ = false;
+            if(IsPP == false && MSignalGG.DielectronPassVetoCut(iele1, MEvent.hiBin) == false) isRecoZ = false;
             if(IsPP == true  && MSignalGG.DielectronPassVetoCutPP(iele1) == false) isRecoZ = false;
 
             if(IsPP == false){ // per Kaya, HCAL failure gives rise to misidentified electrons.
@@ -291,7 +292,7 @@ int main(int argc, char *argv[])
                if(fabs(MSignalGG.EleSCEta->at(iele2)) > 2.5)                         isRecoZ = false;
                if(fabs(MSignalGG.EleEta->at(iele2)) > 2.1)                           isRecoZ = false;
                if(fabs(MSignalGG.ElePt->at(iele2)) < 20)                             isRecoZ = false;
-               if(IsPP == false && MSignalGG.DielectronPassVetoCut(iele2, MZHadron.hiBin) == false)   isRecoZ = false;
+               if(IsPP == false && MSignalGG.DielectronPassVetoCut(iele2, MEvent.hiBin) == false)   isRecoZ = false;
                if(IsPP == true  && MSignalGG.DielectronPassVetoCutPP(iele2) == false)   isRecoZ = false;
 
                if(IsPP == false){ // per Kaya, HCAL failure gives rise to misidentified electrons.
