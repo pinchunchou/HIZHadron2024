@@ -43,6 +43,13 @@
    * Fix pi mass for track Y.
    * Implement different HFShifts for different NVertex.
 
+* Version 2d - 2024 July 16
+   * Fix track residual corrections.
+
+* Version 2e - 2024 July 20
+   * Fix NColl weight: we should consider HiBin shift.
+
+
 ## Arguments
 
 | Argument | type | default | comments |

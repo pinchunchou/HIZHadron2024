@@ -8,8 +8,8 @@ Data="--DoGenLevel false --IsData true"
 AODPF="--PFTree \"pfcandAnalyzer/pfTree\""
 MiniAODPF="--PFTree \"particleFlowAnalyser/pftree\""
 
-TrackResidualPathPbPb="${ProjectBase}/CommonCode/root/20230522_TrackResidualCorrection_V9_0_20.root,${ProjectBase}/CommonCode/root/20230522_TrackResidualCorrection_V9_20_60.root,${ProjectBase}/CommonCode/root/20230522_TrackResidualCorrection_V9_60_100.root,${ProjectBase}/CommonCode/root/20230522_TrackResidualCorrection_V9_100_200.root"
-TrackResidualPathPP="${ProjectBase}/CommonCode/root/20230531_TrackResidualCorrection_V12_pp.root"
+TrackResidualPathPbPb="${ProjectBase}/CommonCode/root/20240716_TrackResidualCorrection_V3_0_20.root,${ProjectBase}/CommonCode/root/20240716_TrackResidualCorrection_V3_20_60.root,${ProjectBase}/CommonCode/root/20240716_TrackResidualCorrection_V3_60_100.root,${ProjectBase}/CommonCode/root/20230522_TrackResidualCorrection_V9_100_200.root"
+TrackResidualPathPP="${ProjectBase}/CommonCode/root/20240716_TrackResidualCorrection_V3_pp.root"
 
 GenTrack="--DoTrackEfficiency false --TrackEfficiencyPath ${ProjectBase}/CommonCode/root/ --DoTrackResidual false"
 PPRecoTrack="--DoTrackEfficiency true --TrackEfficiencyPath ${ProjectBase}/CommonCode/root/ --DoTrackResidual true --TrackResidualPath $TrackResidualPathPP"

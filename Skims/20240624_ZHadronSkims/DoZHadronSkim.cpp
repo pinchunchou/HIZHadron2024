@@ -65,7 +65,7 @@ public:
 
 int main(int argc, char *argv[]){
 
-   string Version = "V2c";
+   string Version = "V2e";
    CommandLine CL(argc, argv);
 
    vector<string> InputFileNames      = CL.GetStringVector("Input");
@@ -147,7 +147,7 @@ int main(int argc, char *argv[]){
       ReuseBackground             = CL.GetBool("ReuseBackground", false);
       ForceGenMatch               = CL.GetBool("ForceGenMatch", false);
       isMultiHFShift              = CL.GetBool("isMultiHFShift", false);
-      HFShifts                    = CL.GetDoubleVector("HFShifts");
+      HFShifts                    = CL.GetDoubleVector("HFShifts", vector<double> {0});
 
    }
 
@@ -464,7 +464,7 @@ int main(int argc, char *argv[]){
                MZHadron.NCollWeight = 1;
             }
             else
-               MZHadron.NCollWeight = FindNColl(MSignalEvent.hiBin);
+               MZHadron.NCollWeight = FindNColl(MSignalEvent.hiBin + MCHiBinShift);
            	   //MZHadron.NCollWeight = 1;
          } // End event selection and triggers
 
@@ -1014,7 +1014,7 @@ int main(int argc, char *argv[]){
                   double TrackResidualCorrection = 1;
                   if(DoTrackResidual == true && DoGenCorrelation == false)
                   {
-                     TrackResidualCorrection = TrackResidual.GetCorrectionFactor(TrackPT, TrackEta, TrackPhi, MZHadron.hiBin + MCHiBinShift );
+                     TrackResidualCorrection = TrackResidual.GetCorrectionFactor(TrackPT, TrackEta, TrackPhi, MZHadron.hiBin );
                   }
                   MZHadron.trackWeight->push_back(TrackCorrection);
                   MZHadron.trackResidualWeight->push_back(TrackResidualCorrection);
