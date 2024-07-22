@@ -25,6 +25,7 @@ using namespace std;
 #include "CustomAssert.h"
 
 #define MAX 10000
+#define E_MASS 0.0005111
 
 TH1D* ProjectX(TH3* h3, const char* name = "_px", Option_t* option = "")
 {
@@ -72,6 +73,13 @@ int main(int argc, char *argv[])
    int MinHiBin                        = CL.GetInt("MinHiBin", 0);
    int MaxHiBin                        = CL.GetInt("MaxHiBin", 200);
    bool DoIteration                    = (DoTrackResidual == true) ? CL.GetBool("DoIteration", false): false;
+
+   string GGTreeName                  = IsPP ? "ggHiNtuplizerGED/EventTree" : "ggHiNtuplizer/EventTree";
+   GGTreeName                         = CL.Get("GGTree", GGTreeName);
+
+   bool DoZSelection                  = CL.GetBool("DoZSelection", false);
+   bool DoElectron                    = CL.GetBool("DoElectron", true);
+
 
    if(DoTrackResidual == true)
       Assert(TrackResidualPath.size() == 1 || TrackResidualPath.size() == 4, "You need 1 file for residual correction or 4 files for centrality-dependence");
@@ -169,6 +177,7 @@ int main(int argc, char *argv[])
       GenParticleTreeMessenger MGen(InputFile);
       TrackTreeMessenger MSignalTrackPP(InputFile);
       PbPbTrackTreeMessenger MSignalTrack(InputFile);
+      GGTreeMessenger          MSignalGG(InputFile, GGTreeName);
 
       int EntryCount = MEvent.GetEntries() * Fraction;
       ProgressBar Bar(cout, EntryCount);
@@ -183,6 +192,7 @@ int main(int argc, char *argv[])
 
          MEvent.GetEntry(iE);
          MGen.GetEntry(iE);
+         MSignalGG.GetEntry(iE);
 
          if(IsPP == true)
             MSignalTrackPP.GetEntry(iE);
@@ -193,6 +203,117 @@ int main(int argc, char *argv[])
          {
             MEvent.hiBin = MEvent.hiBin - MCHiBinShift;   // MC shift
             if((MEvent.hiBin < MinHiBin) || (MEvent.hiBin >= MaxHiBin))   // out of range after shifting.  Skip!
+               continue;
+         }
+
+
+         //Do Z selection
+
+         bool isRecoZ = true, isGenZ = true;
+
+         TLorentzVector VGenZ, VGenEle1, VGenEle2;
+
+         if( DoZSelection == true && DoElectron == true && MSignalGG.NMC > 1 )
+         {
+            for(int igen1 = 0; igen1 < MSignalGG.NMC; igen1++){
+
+               // We only want muon from Z's
+               if(fabs(MSignalGG.MCPID->at(igen1)) != 11)
+                  isGenZ = false;
+               if(MSignalGG.MCMomPID->at(igen1) != 23)
+                  isGenZ = false;
+               if(MSignalGG.MCPt->at(igen1) < 20)
+                  isGenZ = false;
+               if(fabs(MSignalGG.MCEta->at(igen1)) > 2.1)
+                  isGenZ = false;
+   
+               VGenEle1.SetPtEtaPhiM(MSignalGG.MCPt->at(igen1),
+                     MSignalGG.MCEta->at(igen1),
+                     MSignalGG.MCPhi->at(igen1),
+                     E_MASS);
+
+               for(int igen2 = igen1 + 1; igen2 < MSignalGG.NMC; igen2++){
+
+                  // We only want electron from Z's
+                  if(MSignalGG.MCPID->at(igen2) != -MSignalGG.MCPID->at(igen1))
+                     isGenZ = false;
+                  if(MSignalGG.MCMomPID->at(igen2) != 23)
+                     isGenZ = false;
+                  if(MSignalGG.MCPt->at(igen2) < 20)
+                     isGenZ = false;
+                  if(fabs(MSignalGG.MCEta->at(igen2)) > 2.1)
+                     isGenZ = false;
+   
+                  VGenEle2.SetPtEtaPhiM(MSignalGG.MCPt->at(igen2),
+                        MSignalGG.MCEta->at(igen2),
+                        MSignalGG.MCPhi->at(igen2),
+                        E_MASS);
+   
+                  VGenZ = VGenEle1 + VGenEle2;
+
+                  if(VGenZ.M() < 60 || VGenZ.M() > 120)
+                     isGenZ = false;
+
+               }
+            }// GenZ loop end
+            
+         }
+
+         int N_eles;
+            
+         if(DoZSelection == true && DoElectron == true)
+            N_eles = MSignalGG.NEle;
+         else
+            N_eles = 0;
+
+         for(int iele1 = 0; iele1 < N_eles; iele1++)
+         {
+
+            // Some basic electron kinematic cuts
+            if(fabs(MSignalGG.EleSCEta->at(iele1)) > 2.5)  isRecoZ = false;
+            if(fabs(MSignalGG.EleEta->at(iele1)) > 2.1)    isRecoZ = false;
+            if(fabs(MSignalGG.ElePt->at(iele1)) < 20)      isRecoZ = false;
+            if(IsPP == false && MSignalGG.DielectronPassVetoCut(iele1, MZHadron.hiBin) == false) isRecoZ = false;
+            if(IsPP == true  && MSignalGG.DielectronPassVetoCutPP(iele1) == false) isRecoZ = false;
+
+            if(IsPP == false){ // per Kaya, HCAL failure gives rise to misidentified electrons.
+               if(MSignalGG.EleSCEta->at(iele1) < -1.39 && MSignalGG.EleSCPhi->at(iele1) > -1.6 &&  MSignalGG.EleSCPhi->at(iele1) < -0.9 ) isRecoZ = false;
+            }
+
+            TLorentzVector Ele1;  
+            Ele1.SetPtEtaPhiM(MSignalGG.ElePt->at(iele1), MSignalGG.EleEta->at(iele1), MSignalGG.ElePhi->at(iele1), E_MASS);
+
+            // Loop over 2nd reco electron
+            for(int iele2 = iele1+1; iele2 < N_eles; iele2++)
+            {
+               // We want opposite-charge electrons with some basic kinematic cuts
+               if(MSignalGG.EleCharge->at(iele1) == MSignalGG.EleCharge->at(iele2))  isRecoZ = false;
+               if(fabs(MSignalGG.EleSCEta->at(iele2)) > 2.5)                         isRecoZ = false;
+               if(fabs(MSignalGG.EleEta->at(iele2)) > 2.1)                           isRecoZ = false;
+               if(fabs(MSignalGG.ElePt->at(iele2)) < 20)                             isRecoZ = false;
+               if(IsPP == false && MSignalGG.DielectronPassVetoCut(iele2, MZHadron.hiBin) == false)   isRecoZ = false;
+               if(IsPP == true  && MSignalGG.DielectronPassVetoCutPP(iele2) == false)   isRecoZ = false;
+
+               if(IsPP == false){ // per Kaya, HCAL failure gives rise to misidentified electrons.
+                  if(MSignalGG.EleSCEta->at(iele2) < -1.39 && MSignalGG.EleSCPhi->at(iele2) > -1.6 &&  MSignalGG.EleSCPhi->at(iele2) < -0.9 ) isRecoZ = false;
+               }
+
+               TLorentzVector Ele2;  
+               Ele2.SetPtEtaPhiM(MSignalGG.ElePt->at(iele2), MSignalGG.EleEta->at(iele2), MSignalGG.ElePhi->at(iele2), E_MASS);
+
+               TLorentzVector Z = Ele1+Ele2;
+               double Zmass = Z.M();
+
+               if(Zmass < 60 || Zmass > 120) isRecoZ = false;
+               //if(fabs(Z.Rapidity()) > 2.4) continue;
+
+            } // Loop over 2nd reco electron ended
+
+         } // Loop over 1st reco electron ended
+
+         if(DoZSelection == true && DoElectron == true)
+         {
+            if(isGenZ == false || isRecoZ == false)
                continue;
          }
 
