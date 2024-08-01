@@ -48,7 +48,10 @@
 
 * Version 2e - 2024 July 20
    * Fix NColl weight: we should consider HiBin shift.
+   * For Gen, do not require mom=23.
 
+* Version 2f - 2024 July 24
+   * For Gen, also consider 23->11->11. 
 
 ## Arguments
 

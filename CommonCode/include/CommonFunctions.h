@@ -677,8 +677,8 @@ double GetZeeWeightPbPb(double PT, double Y, double HiBin)
 {
 
    double logPT = log(PT) / log(10);
-   double YWeight = 0;
-   double PTWeight = 0;
+   double YWeight = 0;//0
+   double PTWeight = 0;//0
    double CWeight = 1;
 
    if(HiBin <= 20){//TODO
@@ -807,13 +807,13 @@ double GetZWeightPPMC(double PT, double Y)
 double GetZeeWeightPPMC(double PT, double Y)
 {
    double PY[9] = {1.09921, -0.0125087, -0.0866617, 0.00679303, -0.0739058, -0.00297747, 0.0320475, 0.000506456, -0.00217581};
-   double YWeight = 0;
+   double YWeight = 0;//0
    for(int i = 8; i >= 0; i--)
       YWeight = YWeight * Y + PY[i];
 
    double logPT = log(PT) / log(10);
-   double PTWeight = 0.852004 - 0.0421117*logPT + 0.000339198*PT;// + 0.00625970*logPT*logPT - 0.0119495*logPT*logPT*logPT + 0.00444359*logPT*logPT*logPT;
-   //double PTWeight = 1;
+   //double PTWeight = 0.852004 - 0.0421117*logPT + 0.000339198*PT;// + 0.00625970*logPT*logPT - 0.0119495*logPT*logPT*logPT + 0.00444359*logPT*logPT*logPT;
+   double PTWeight = 1;
    return 1 / (YWeight * PTWeight);
 }
 

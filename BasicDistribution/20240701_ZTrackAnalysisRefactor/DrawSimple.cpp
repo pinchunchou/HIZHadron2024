@@ -18,6 +18,8 @@
 
 using namespace std;
 
+#include "CommandLine.h"
+
 int main(int argc, char *argv[]);
 
 void style(){
@@ -52,8 +54,8 @@ void style(){
   gROOT->ForceStyle();
 }
 
-const char *typeofdata = "ZHadron2024/SkimBkgSub/ov1_v2d_Reco_sub0/20240719/";
-const char *typeofdata1 = "ov1_v2d_Reco_sub0";
+const char *typeofdata = "ZHadron2024/SkimBkgSub/ov1_v3a_sub0/20240730/";
+const char *typeofdata1 = "ov1_v3a_sub0";
 
 TChain *TreeSig = new TChain("Tree"); 
 TChain *TreeBkg = new TChain("Tree"); 
@@ -197,16 +199,22 @@ void DrawSimple_single(float ptL=20,float ptH=2000,float centL=0,float centH=90,
 	double t4N = HNSgG.GetBinContent(1);
 	double t5N = HNBgG.GetBinContent(1);
 
+	double t1NError = HNSig.GetBinError(1);
+	double t2NError = HNBkg.GetBinError(1);
+	double t3NError = HNPP0.GetBinError(1);
+	double t4NError = HNSgG.GetBinError(1);
+	double t5NError = HNBgG.GetBinError(1);
+
 	std::cout<<"t1N = "<<t1N<<", t2N = "<<t2N<<", t3N = "<<t3N<<", t4N = "<<t4N<<", t5N = "<<t5N<<std::endl;
 
 	std::cout<<"=============================="<<std::endl;
 
-	std::cout<<"Number of Weighted Reco Z events in sig = "<<t1N<<std::endl;
-	std::cout<<"Number of Weighted Reco Z events in bkg = "<<t2N<<std::endl;
+	std::cout<<"Number of Weighted Reco Z events in sig = "<<t1N<<"+-"<<t1NError<<std::endl;
+	std::cout<<"Number of Weighted Reco Z events in bkg = "<<t2N<<"+-"<<t2NError<<std::endl;
 	std::cout<<"Sig-Bkg = "<<t1N-t2N<<std::endl;
-	std::cout<<"Number of Weighted Z events in pp0 = "<<t3N<<std::endl;
-	std::cout<<"Number of Weighted Gen Z events in sig = "<<t4N<<std::endl;
-	std::cout<<"Number of Weighted Gen Z events in bkg = "<<t5N<<std::endl;
+	std::cout<<"Number of Weighted Z events in pp0 = "<<t3N<<"+-"<<t3NError<<std::endl;
+	std::cout<<"Number of Weighted Gen Z events in sig = "<<t4N<<"+-"<<t4NError<<std::endl;
+	std::cout<<"Number of Weighted Gen Z events in bkg = "<<t5N<<"+-"<<t5NError<<std::endl;
 	std::cout<<"Sig-Bkg = "<<t4N-t5N<<std::endl;
 
 	std::cout<<"=============================="<<std::endl;
@@ -242,24 +250,29 @@ void DrawSimple_single(float ptL=20,float ptH=2000,float centL=0,float centH=90,
 	std::cout<<"=============================="<<std::endl;
 
 	
-	d10->Scale(1./t1N/d10->GetBinWidth(1));//sig reco
-	d20->Scale(1./t2N/d20->GetBinWidth(1));//bkg reco
-	d3 ->Scale(1./t3N/ d3->GetBinWidth(1));//pp reco or sig gen sube=0
-	d4 ->Scale(1./t4N/ d4->GetBinWidth(1));//sig gen
-	d5 ->Scale(1./t5N/ d5->GetBinWidth(1));//bkg gen
+	d10->Scale(1./t1N, "width");//sig reco
+	d20->Scale(1./t2N, "width");//bkg reco
+	d3 ->Scale(1./t3N, "width");//pp reco or sig gen sube=0
+	d4 ->Scale(1./t4N, "width");//sig gen
+	d5 ->Scale(1./t5N, "width");//bkg gen
 
-	//d10->Scale(1./t1N/6.4*20);//sig reco
-	//d20->Scale(1./t2N/6.4*20);//bkg reco
-	//d3 ->Scale(1./t3N/6.4*20);//pp reco or sig gen sube=0
-	//d4 ->Scale(1./t4N/6.4*20);//sig gen
-	//d5 ->Scale(1./t5N/6.4*20);//bkg gen
-
-	//d10->Scale(1./t1N/(TptH-TptL)*20);
-	//d20->Scale(1./t2N/(TptH-TptL)*20);
-	//d3 ->Scale(1./t3N/(TptH-TptL)*20);
-	//d4 ->Scale(1./t4N/(TptH-TptL)*20);
-	//d5 ->Scale(1./t5N/(TptH-TptL)*20);
-
+/*
+	auto updateErrors = [](TH1D* hist, double N, double NError) {
+	  double relativeError = NError / N;
+	  for (int i = 1; i <= hist->GetNbinsX(); i++) {
+	      double content = hist->GetBinContent(i);
+	      double error = hist->GetBinError(i);
+	      double newRelativeError = sqrt(pow(error/content, 2) + pow(relativeError, 2));
+	      hist->SetBinError(i, content * newRelativeError);
+	  }
+	};
+	
+	updateErrors(d10, t1N, t1NError);
+	updateErrors(d20, t2N, t2NError);
+	updateErrors(d3, t3N, t3NError);
+	updateErrors(d4, t4N, t4NError);
+	updateErrors(d5, t5N, t5NError);
+*/
 	TH1D *d1 = (TH1D*) d10->Clone("d1");//sig-bkg reco
 	TH1D *d2 = (TH1D*) d4->Clone("d2");//sig-bkg gen
 
@@ -289,11 +302,12 @@ void DrawSimple_single(float ptL=20,float ptH=2000,float centL=0,float centH=90,
 
 	d4->SetFillStyle(3345);
 	d5->SetFillStyle(3354);
-	d2->SetFillStyle(3395);
+	d2->SetFillStyle(1001);//3395
 
 	d4->SetFillColor(kGray+2);
 	d5->SetFillColor(TColor::GetColor("#377eb8"));
-	d2->SetFillColor(kViolet);
+	//d2->SetFillColor(kViolet);
+	d2->SetFillColorAlpha(kViolet, 0.35);
 
 
 	Double_t err1, err2, err3, err4, err5, err10, err20;
@@ -404,25 +418,25 @@ void DrawSimple_single(float ptL=20,float ptH=2000,float centL=0,float centH=90,
 	// err3 *= d3->GetBinWidth(1);
 
 
-	 TLatex *ptInt1 = new TLatex(0.25,0.58,Form("#Sigma raw RECO = %.2f,  #Sigma bkg RECO = %.2f", t10N ,t20N));
+	 TLatex *ptInt1 = new TLatex(0.25,0.58,Form("#Sigma raw RECO = %.2f #pm %.2f,  #Sigma bkg RECO = %.2f #pm %.2f", t10N , err10, t20N, err20));
    ptInt1->SetTextFont(42);
    ptInt1->SetTextSize(0.03);
    ptInt1->SetNDC(kTRUE);
    ptInt1->Draw();
 
-   TLatex *ptInt11 = new TLatex(0.25,0.52,Form("#Sigma raw GEN = %.2f,  #Sigma bkg GEN = %.2f", t4N ,t5N));
+   TLatex *ptInt11 = new TLatex(0.25,0.52,Form("#Sigma raw GEN = %.2f #pm %.2f,  #Sigma bkg GEN = %.2f #pm %.2f", t4N ,err4, t5N, err5));
    ptInt11->SetTextFont(42);
    ptInt11->SetTextSize(0.03);
    ptInt11->SetNDC(kTRUE);
    ptInt11->Draw();
 
-   TLatex *ptInt2 = new TLatex(0.25,0.46,Form("#Sigma (raw-bkg) RECO = %.2f, #Sigma (raw-bkg) GEN = %.2f",t1N,t2N));
+   TLatex *ptInt2 = new TLatex(0.25,0.46,Form("#Sigma (raw-bkg) RECO = %.2f #pm %.2f, #Sigma (raw-bkg) GEN = %.2f #pm %.2f",t1N, err1, t2N, err2));
    ptInt2->SetTextFont(42);
    ptInt2->SetTextSize(0.03);
    ptInt2->SetNDC(kTRUE);
    ptInt2->Draw();
 
-   TLatex *ptInt3 = new TLatex(0.25,0.40,Form("#Sigma sig gen RECO = %.2f",t3N));
+   TLatex *ptInt3 = new TLatex(0.25,0.40,Form("#Sigma sig GEN (sube=0) = %.2f #pm %.2f",t3N, err3));
    ptInt3->SetTextFont(42);
    ptInt3->SetTextSize(0.03);
    ptInt3->SetNDC(kTRUE);
@@ -436,8 +450,8 @@ void DrawSimple_single(float ptL=20,float ptH=2000,float centL=0,float centH=90,
   //pt2->SetNDC(kTRUE);
   //pt2->Draw();
 
-  d10->SetMaximum(2*max1);
-  d20->SetMaximum(2*max1);
+  d10->SetMaximum(2.5*max1);
+  d20->SetMaximum(2.5*max1);
 
   if(min1<0){
   		d10->SetMinimum(2*min1);
@@ -464,20 +478,31 @@ void DrawSimple_single(float ptL=20,float ptH=2000,float centL=0,float centH=90,
   horiz_line->SetLineColor(kBlack);
   PbPb_to_pp->SetLineColor(kRed);
   Gen_to_pp->SetLineColor(kViolet);
+  Gen_to_pp->SetMarkerStyle(kFullSquare);
+  Gen_to_pp->SetMarkerColor(kViolet);
+  Gen_to_pp->SetMarkerSize(0.5);
+
+  //Gen_to_pp->SetFillStyle(1001);
+  //Gen_to_pp->SetFillColorAlpha(kViolet, 0.35);
+
 
   PbPb_to_pp->SetXTitle("");
   PbPb_to_pp->SetYTitle("Difference");
 
+  PbPb_to_pp->SetMaximum(2);
+  PbPb_to_pp->SetMinimum(-2);
+
+
   PbPb_to_pp->Draw("ep");
-  Gen_to_pp->Draw("hist same");
+  Gen_to_pp->Draw("hist ep same");
   horiz_line->Draw("hist same");
 
   c->SaveAs(Form("/eos/user/p/pchou/figs/%s/%s/Ztrack_%s_com_%.0f_%.0f_%.0f_%.0f_%.0f_%.0f.png",typeofdata,HistName.c_str(),typeofdata1,ptL,ptH,centL,centH,TptL,TptH)); 
    
   d4->SetFillStyle(0);
   d5->SetFillStyle(0);
-  d10->SetMaximum(8);
-  d20->SetMaximum(8);
+  d10->SetMaximum(12);
+  d20->SetMaximum(12);
 
   c->SaveAs(Form("/eos/user/p/pchou/figs/%s/%s/Ztrack_%s_com_%.0f_%.0f_%.0f_%.0f_%.0f_%.0f_low.png",typeofdata,HistName.c_str(),typeofdata1,ptL,ptH,centL,centH,TptL,TptH)); 
 
@@ -487,13 +512,24 @@ int main(int argc, char *argv[]){
 
 	style();
 
+	CommandLine CL(argc, argv);
+
+	double ptL                   = CL.GetDouble("ptL", 40);
+	double ptH                   = CL.GetDouble("ptH", 200);
+	double centL                 = CL.GetDouble("centL", 0);
+	double centH                 = CL.GetDouble("centH", 90);
+	double TptL                  = CL.GetDouble("TptL", 1);
+	double TptH                  = CL.GetDouble("TptH", 1000);
+
+
 	string filebase = "/eos/cms/store/group/phys_heavyions/pchou/SkimZHadron2024/";
 
-	TreeSig->Add((filebase + "OutputMC_v2d_ee_new/Result*.root").c_str());
-	TreeBkg->Add((filebase + "OutputMCBkg_v2d_ee_new/Result*.root").c_str());
-	//TreePP0->Add((filebase + "OutputPPMC_v2d_ee_new/*.root").c_str());
-	TreeSgG->Add((filebase + "OutputMCGen_v1c_ee/Result*.root").c_str());
-	TreeBgG->Add((filebase + "OutputMCbkgGen_v2d_ee/Result*.root").c_str());
+	TreeSig->Add((filebase + "OutputMC_v3a_ee/Result*.root").c_str());
+	TreeBkg->Add((filebase + "OutputMCBkg_v3a_ee/Result*.root").c_str());
+	//TreeBkg->Add((filebase + "OutputMCBkg_v3a_ee_RresDY/Result*.root").c_str());
+	//TreePP0->Add((filebase + "OutputPPMC_v3a_ee/*.root").c_str());
+	TreeSgG->Add((filebase + "OutputMCGen_v3a_ee/Result*.root").c_str());
+	TreeBgG->Add((filebase + "OutputMCbkgGen_v3a_ee/Result*.root").c_str());
 
 	//TreeSig->Add("/eos/cms/store/group/phys_heavyions/pchou/SkimMC_v14.root");
 	////TreeBkg->Add("/eos/cms/store/group/phys_heavyions/pchou/SkimMCbkg_v14.root");
@@ -501,7 +537,11 @@ int main(int argc, char *argv[]){
 	//TreeSgG->Add("/eos/cms/store/group/phys_heavyions/pchou/SkimMCGen_v14.root");
 	////TreeBgG->Add("/eos/cms/store/group/phys_heavyions/pchou/SkimMCbkgGen_v14.root");
 
-	DrawSimple_single(40,200,0,10,1,2);
+
+	DrawSimple_single(ptL,ptH,centL,centH,TptL,TptH);
+
+
+	//DrawSimple_single(40,200,0,10,1,2);
 
 	//DrawSimple_single(20,2000,0,10,10,20);
 	//DrawSimple_single(20,2000,0,10,20,50);

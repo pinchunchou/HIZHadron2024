@@ -27,6 +27,7 @@ using namespace std;
 
 #define MAX 10000
 #define E_MASS 0.0005111
+#define Z_MASS 91.1880
 
 TH1D* ProjectX(TH3* h3, const char* name = "_px", Option_t* option = "")
 {
@@ -80,6 +81,11 @@ int main(int argc, char *argv[])
 
    bool DoZSelection                  = CL.GetBool("DoZSelection", false);
    bool DoElectron                    = CL.GetBool("DoElectron", true);
+
+   double MinZPT                   = CL.GetDouble("MinZPT", 40.00);
+   double MaxZPT                   = CL.GetDouble("MaxZPT", 200.00);
+
+   double LeptonVeto                    = CL.GetDouble("LeptonVeto", 0.01);
 
 
    if(DoTrackResidual == true)
@@ -210,23 +216,41 @@ int main(int argc, char *argv[])
 
          //Do Z selection
 
-         bool isRecoZ = true, isGenZ = true;
+         bool isRecoZ = false, isGenZ = false;
 
          TLorentzVector VGenZ, VGenEle1, VGenEle2;
+
+         //std::cout << "MSignalGG.NMC = "<<MSignalGG.NMC<<std::endl;
+
+         std::vector<double> ZEta_gen, ZPhi_gen, ZMass_gen, Zpt_gen;
+         std::vector<double> ZEta_reco, ZPhi_reco, ZMass_reco, Zpt_reco;
+         std::vector<double> eleEta1_gen, elePhi1_gen, elePt1_gen;
+         std::vector<double> eleEta2_gen, elePhi2_gen, elePt2_gen;
+         std::vector<double> eleEta1_reco, elePhi1_reco, elePt1_reco;
+         std::vector<double> eleEta2_reco, elePhi2_reco, elePt2_reco;
 
          if( DoZSelection == true && DoElectron == true && MSignalGG.NMC > 1 )
          {
             for(int igen1 = 0; igen1 < MSignalGG.NMC; igen1++){
 
-               // We only want muon from Z's
+
+               //std::cout << "MSignalGG.MCPID->at(igen1) = "<<MSignalGG.MCPID->at(igen1)<<std::endl;
+               //std::cout << "MSignalGG.MCMomPID->at(igen1) = "<<MSignalGG.MCMomPID->at(igen1)<<std::endl;
+               //std::cout << "MSignalGG.MCPt->at(igen1) = "<<MSignalGG.MCPt->at(igen1)<<std::endl;
+               //std::cout << "MSignalGG.MCEta->at(igen1) = "<<MSignalGG.MCEta->at(igen1)<<std::endl;
+
+               //if(fabs(MSignalGG.MCPID->at(igen1)) == 11 && MSignalGG.MCMomPID->at(igen1) == 23)
+               //   std::cout<<"hi1!"<<std::endl;
+
+               // We only want electron from Z's
                if(fabs(MSignalGG.MCPID->at(igen1)) != 11)
-                  isGenZ = false;
-               if(MSignalGG.MCMomPID->at(igen1) != 23)
-                  isGenZ = false;
+                  continue;
+               if(MSignalGG.MCMomPID->at(igen1) != 23 && ((MSignalGG.MCMomPID->at(igen1) != MSignalGG.MCPID->at(igen1)) || MSignalGG.MCGMomPID->at(igen1) != 23) )
+                  continue;
                if(MSignalGG.MCPt->at(igen1) < 20)
-                  isGenZ = false;
+                  continue;
                if(fabs(MSignalGG.MCEta->at(igen1)) > 2.1)
-                  isGenZ = false;
+                  continue;
    
                VGenEle1.SetPtEtaPhiM(MSignalGG.MCPt->at(igen1),
                      MSignalGG.MCEta->at(igen1),
@@ -235,15 +259,23 @@ int main(int argc, char *argv[])
 
                for(int igen2 = igen1 + 1; igen2 < MSignalGG.NMC; igen2++){
 
+                  //std::cout << "MSignalGG.MCPID->at(igen2) = "<<MSignalGG.MCPID->at(igen2)<<std::endl;
+                  //std::cout << "MSignalGG.MCMomPID->at(igen2) = "<<MSignalGG.MCMomPID->at(igen2)<<std::endl;
+                  //std::cout << "MSignalGG.MCPt->at(igen2) = "<<MSignalGG.MCPt->at(igen2)<<std::endl;
+                  //std::cout << "MSignalGG.MCEta->at(igen2) = "<<MSignalGG.MCEta->at(igen2)<<std::endl;
+
+                  //if(fabs(MSignalGG.MCPID->at(igen2)) == 11 && MSignalGG.MCMomPID->at(igen2) == 23)
+                  //   std::cout<<"hi2!"<<std::endl;
+
                   // We only want electron from Z's
                   if(MSignalGG.MCPID->at(igen2) != -MSignalGG.MCPID->at(igen1))
-                     isGenZ = false;
-                  if(MSignalGG.MCMomPID->at(igen2) != 23)
-                     isGenZ = false;
+                     continue;
+                  if(MSignalGG.MCMomPID->at(igen2) != 23 && ((MSignalGG.MCMomPID->at(igen2) != MSignalGG.MCPID->at(igen2)) || MSignalGG.MCGMomPID->at(igen2) != 23) )
+                     continue;
                   if(MSignalGG.MCPt->at(igen2) < 20)
-                     isGenZ = false;
+                     continue;
                   if(fabs(MSignalGG.MCEta->at(igen2)) > 2.1)
-                     isGenZ = false;
+                     continue;
    
                   VGenEle2.SetPtEtaPhiM(MSignalGG.MCPt->at(igen2),
                         MSignalGG.MCEta->at(igen2),
@@ -252,9 +284,28 @@ int main(int argc, char *argv[])
    
                   VGenZ = VGenEle1 + VGenEle2;
 
-                  if(VGenZ.M() < 60 || VGenZ.M() > 120)
-                     isGenZ = false;
+                  //std::cout << "VGenZ.M() = "<<VGenZ.M()<<std::endl;
 
+                  if(VGenZ.M() < 60 || VGenZ.M() > 120)
+                     continue;
+
+                  if(VGenZ.Pt() < MinZPT || VGenZ.Pt() > MaxZPT) continue;
+
+                  ZEta_gen.push_back(VGenZ.Eta());
+                  ZPhi_gen.push_back(VGenZ.Phi());
+                  ZMass_gen.push_back(VGenZ.M());
+                  Zpt_gen.push_back(VGenZ.Pt());
+
+                  eleEta1_gen.push_back(MSignalGG.MCEta->at(igen1));
+                  elePhi1_gen.push_back(MSignalGG.MCPhi->at(igen1));
+                  elePt1_gen.push_back(MSignalGG.MCPt->at(igen1));
+
+                  eleEta2_gen.push_back(MSignalGG.MCEta->at(igen2));
+                  elePhi2_gen.push_back(MSignalGG.MCPhi->at(igen2));
+                  elePt2_gen.push_back(MSignalGG.MCPt->at(igen2));
+
+
+                  isGenZ = true;
                }
             }// GenZ loop end
             
@@ -271,14 +322,14 @@ int main(int argc, char *argv[])
          {
 
             // Some basic electron kinematic cuts
-            if(fabs(MSignalGG.EleSCEta->at(iele1)) > 2.5)  isRecoZ = false;
-            if(fabs(MSignalGG.EleEta->at(iele1)) > 2.1)    isRecoZ = false;
-            if(fabs(MSignalGG.ElePt->at(iele1)) < 20)      isRecoZ = false;
-            if(IsPP == false && MSignalGG.DielectronPassVetoCut(iele1, MEvent.hiBin) == false) isRecoZ = false;
-            if(IsPP == true  && MSignalGG.DielectronPassVetoCutPP(iele1) == false) isRecoZ = false;
+            if(fabs(MSignalGG.EleSCEta->at(iele1)) > 2.5)  continue;
+            if(fabs(MSignalGG.EleEta->at(iele1)) > 2.1)    continue;
+            if(fabs(MSignalGG.ElePt->at(iele1)) < 20)      continue;
+            if(IsPP == false && MSignalGG.DielectronPassVetoCut(iele1, MEvent.hiBin) == false) continue;
+            if(IsPP == true  && MSignalGG.DielectronPassVetoCutPP(iele1) == false) continue;
 
             if(IsPP == false){ // per Kaya, HCAL failure gives rise to misidentified electrons.
-               if(MSignalGG.EleSCEta->at(iele1) < -1.39 && MSignalGG.EleSCPhi->at(iele1) > -1.6 &&  MSignalGG.EleSCPhi->at(iele1) < -0.9 ) isRecoZ = false;
+               if(MSignalGG.EleSCEta->at(iele1) < -1.39 && MSignalGG.EleSCPhi->at(iele1) > -1.6 &&  MSignalGG.EleSCPhi->at(iele1) < -0.9 ) continue;
             }
 
             TLorentzVector Ele1;  
@@ -288,15 +339,15 @@ int main(int argc, char *argv[])
             for(int iele2 = iele1+1; iele2 < N_eles; iele2++)
             {
                // We want opposite-charge electrons with some basic kinematic cuts
-               if(MSignalGG.EleCharge->at(iele1) == MSignalGG.EleCharge->at(iele2))  isRecoZ = false;
-               if(fabs(MSignalGG.EleSCEta->at(iele2)) > 2.5)                         isRecoZ = false;
-               if(fabs(MSignalGG.EleEta->at(iele2)) > 2.1)                           isRecoZ = false;
-               if(fabs(MSignalGG.ElePt->at(iele2)) < 20)                             isRecoZ = false;
-               if(IsPP == false && MSignalGG.DielectronPassVetoCut(iele2, MEvent.hiBin) == false)   isRecoZ = false;
-               if(IsPP == true  && MSignalGG.DielectronPassVetoCutPP(iele2) == false)   isRecoZ = false;
+               if(MSignalGG.EleCharge->at(iele1) == MSignalGG.EleCharge->at(iele2))  continue;
+               if(fabs(MSignalGG.EleSCEta->at(iele2)) > 2.5)                         continue;
+               if(fabs(MSignalGG.EleEta->at(iele2)) > 2.1)                           continue;
+               if(fabs(MSignalGG.ElePt->at(iele2)) < 20)                             continue;
+               if(IsPP == false && MSignalGG.DielectronPassVetoCut(iele2, MEvent.hiBin) == false)   continue;
+               if(IsPP == true  && MSignalGG.DielectronPassVetoCutPP(iele2) == false)   continue;
 
                if(IsPP == false){ // per Kaya, HCAL failure gives rise to misidentified electrons.
-                  if(MSignalGG.EleSCEta->at(iele2) < -1.39 && MSignalGG.EleSCPhi->at(iele2) > -1.6 &&  MSignalGG.EleSCPhi->at(iele2) < -0.9 ) isRecoZ = false;
+                  if(MSignalGG.EleSCEta->at(iele2) < -1.39 && MSignalGG.EleSCPhi->at(iele2) > -1.6 &&  MSignalGG.EleSCPhi->at(iele2) < -0.9 ) continue;
                }
 
                TLorentzVector Ele2;  
@@ -305,18 +356,102 @@ int main(int argc, char *argv[])
                TLorentzVector Z = Ele1+Ele2;
                double Zmass = Z.M();
 
-               if(Zmass < 60 || Zmass > 120) isRecoZ = false;
+               //std::cout << "Z.M() = "<<Z.M()<<std::endl;
+
+               if(Zmass < 60 || Zmass > 120) continue;
                //if(fabs(Z.Rapidity()) > 2.4) continue;
+
+               if(Z.Pt() < MinZPT || Z.Pt() > MaxZPT) continue;
+
+               ZEta_reco.push_back(Z.Eta());
+               ZPhi_reco.push_back(Z.Phi());
+               ZMass_reco.push_back(Z.M());
+               Zpt_reco.push_back(Z.Pt());
+
+               eleEta1_reco.push_back(MSignalGG.EleEta->at(iele1));
+               elePhi1_reco.push_back(MSignalGG.ElePhi->at(iele1));
+               elePt1_reco.push_back(MSignalGG.ElePt->at(iele1));
+
+               eleEta2_reco.push_back(MSignalGG.EleEta->at(iele2));
+               elePhi2_reco.push_back(MSignalGG.ElePhi->at(iele2));
+               elePt2_reco.push_back(MSignalGG.ElePt->at(iele2));
+
+               isRecoZ = true;
 
             } // Loop over 2nd reco electron ended
 
          } // Loop over 1st reco electron ended
+
+
+         
 
          if(DoZSelection == true && DoElectron == true)
          {
             if(isGenZ == false || isRecoZ == false)
                continue;
          }
+
+         float Zmass_temp = -1;
+
+         float bestEtaGen, bestPhiGen, bestEtaReco, bestPhiReco;
+
+         int bestZidx = 0, bestZgenIdx = 0;
+
+         float bestEta1Gen , bestPhi1Gen , bestPt1Gen ;
+         float bestEta2Gen , bestPhi2Gen , bestPt2Gen ;
+         float bestEta1Reco, bestPhi1Reco, bestPt1Reco;
+         float bestEta2Reco, bestPhi2Reco, bestPt2Reco;
+
+         // Loop to select the best Z mass
+         for(int idx=0; idx < size(ZMass_reco) ; idx++){
+            if((Zpt_reco[idx] < MinZPT) || (Zpt_reco[idx] > MaxZPT)){
+                cout<<"ZpT might be wrong!"<<endl;
+                continue;
+            }
+
+            if(abs(Zmass_temp - Z_MASS) > abs(ZMass_reco[idx] - Z_MASS)){
+               Zmass_temp = ZMass_reco[idx];
+               bestZidx = idx;
+               bestEtaReco = ZEta_reco[idx];
+               bestPhiReco = ZPhi_reco[idx];
+
+               bestEta1Reco = eleEta1_reco[idx];
+               bestPhi1Reco = elePhi1_reco[idx];
+               bestPt1Reco = elePt1_reco[idx];
+
+               bestEta2Reco = eleEta2_reco[idx];
+               bestPhi2Reco = elePhi2_reco[idx];
+               bestPt2Reco = elePt2_reco[idx];
+
+
+            }
+         }
+
+
+         Zmass_temp = -1;
+
+         for(int idx=0; idx < size(ZMass_gen) ; idx++){
+            if((Zpt_gen[idx] < MinZPT) || (Zpt_gen[idx] > MaxZPT)){
+               cout<<"ZpT might be wrong!"<<endl;  
+               continue;
+            }
+
+            if(abs(Zmass_temp - Z_MASS) > abs(ZMass_gen[idx] - Z_MASS)){
+               Zmass_temp = ZMass_gen[idx];
+               bestZgenIdx = idx;
+               bestEtaGen = ZEta_gen[idx];
+               bestPhiGen = ZPhi_gen[idx];
+
+               bestEta1Gen = eleEta1_gen[idx];
+               bestPhi1Gen = elePhi1_gen[idx];
+               bestPt1Gen = elePt1_gen[idx];
+
+               bestEta2Gen = eleEta2_gen[idx];
+               bestPhi2Gen = elePhi2_gen[idx];
+               bestPt2Gen = elePt2_gen[idx];
+
+            }
+         } 
 
 
          // Loop over gen particles
@@ -332,11 +467,27 @@ int main(int argc, char *argv[])
                continue;
             if(MGen.Eta->at(iG) < -2.4 || MGen.Eta->at(iG) > 2.4)
                continue;
-     
+
+            if(DoZSelection == true){
+               double DeltaEtaEle1 = bestEta1Gen - MGen.Eta->at(iG);
+               double DeltaPhiEle1 = DeltaPhi(bestPhi1Gen,MGen.Phi->at(iG));
+               double DeltaR1 = sqrt(DeltaEtaEle1*DeltaEtaEle1 + DeltaPhiEle1*DeltaPhiEle1);
+            
+               double DeltaEtaEle2 = bestEta2Gen - MGen.Eta->at(iG);
+               double DeltaPhiEle2 = DeltaPhi(bestPhi2Gen,MGen.Phi->at(iG));
+               double DeltaR2 = sqrt(DeltaEtaEle2*DeltaEtaEle2 + DeltaPhiEle2*DeltaPhiEle2);
+            
+               if(DeltaR1 <  LeptonVeto || DeltaR2 < LeptonVeto)
+                  continue;
+            }
+
             HGenTrack.Fill(MGen.Eta->at(iG), MGen.Phi->at(iG) < 0 ? MGen.Phi->at(iG)+2*M_PI : MGen.Phi->at(iG), MGen.PT->at(iG));
+
          }
 
          // Loop over reco tracks
+
+         //cout<<"Loop over reco tracks"<<endl;
 
          if(IsPP)
          {
@@ -352,6 +503,19 @@ int main(int argc, char *argv[])
                double RecoEta = MSignalTrackPP.trkEta[iT];
                double RecoPhi = MSignalTrackPP.trkPhi[iT];
                double RecoPT = MSignalTrackPP.trkPt[iT];
+
+               if(DoZSelection == true){
+                  double DeltaEtaEle1 = bestEta1Reco - RecoEta;
+                  double DeltaPhiEle1 = DeltaPhi(bestPhi1Reco, RecoPhi);
+                  double DeltaR1 = sqrt(DeltaEtaEle1*DeltaEtaEle1 + DeltaPhiEle1*DeltaPhiEle1);
+               
+                  double DeltaEtaEle2 = bestEta2Reco - RecoEta;
+                  double DeltaPhiEle2 = DeltaPhi(bestPhi2Reco, RecoPhi);
+                  double DeltaR2 = sqrt(DeltaEtaEle2*DeltaEtaEle2 + DeltaPhiEle2*DeltaPhiEle2);
+               
+                  if(DeltaR1 <  LeptonVeto || DeltaR2 < LeptonVeto)
+                     continue;
+               }
 
                HRecoTrack.Fill(RecoEta, RecoPhi < 0 ? RecoPhi+2*M_PI : RecoPhi, RecoPT);
 
@@ -386,6 +550,19 @@ int main(int argc, char *argv[])
                double RecoEta = MSignalTrack.TrackEta->at(iT);
                double RecoPhi = MSignalTrack.TrackPhi->at(iT);
                double RecoPT = MSignalTrack.TrackPT->at(iT);
+
+               if(DoZSelection == true){
+                  double DeltaEtaEle1 = bestEta1Reco - RecoEta;
+                  double DeltaPhiEle1 = DeltaPhi(bestPhi1Reco, RecoPhi);
+                  double DeltaR1 = sqrt(DeltaEtaEle1*DeltaEtaEle1 + DeltaPhiEle1*DeltaPhiEle1);
+   
+                  double DeltaEtaEle2 = bestEta2Reco - RecoEta;
+                  double DeltaPhiEle2 = DeltaPhi(bestPhi2Reco, RecoPhi);
+                  double DeltaR2 = sqrt(DeltaEtaEle2*DeltaEtaEle2 + DeltaPhiEle2*DeltaPhiEle2);
+   
+                  if(DeltaR1 <  LeptonVeto || DeltaR2 < LeptonVeto)
+                     continue;
+               }
 
                HRecoTrack.Fill(RecoEta, RecoPhi < 0 ? RecoPhi+2*M_PI : RecoPhi, RecoPT);
 

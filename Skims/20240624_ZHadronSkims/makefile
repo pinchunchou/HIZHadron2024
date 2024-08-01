@@ -21,9 +21,9 @@ Execute: DoZHadronSkim.cpp
 		# $(FJExtra) $(FJCExtra)
 
 TestRun: Execute
-	./Execute --Input  $(PbPbSignalSingleMuon)/0000/HiForestMiniAOD_696.root \
+	./Execute --Input $(PbPbSignalSingleMuon)/0000/HiForestMiniAOD_696.root,$(PbPbSignalSingleMuon)/0000/HiForestMiniAOD_697.root,$(PbPbSignalSingleMuon)/0000/HiForestMiniAOD_698.root,$(PbPbSignalSingleMuon)/0000/HiForestMiniAOD_699.root,$(PbPbSignalSingleMuon)/0000/HiForestMiniAOD_700.root \
 		--Output /tmp/$(USER)/Test.root --Fraction 1 --WithProgressBar true \
-		`./Expand Setting.dh PbPbSignalData Nominal`
+		`./Expand Setting.dh PbPbSignalData Nominal` --DoElectron false
 
 TestRun3: Execute
 	./Execute --Input `ls $(PbPbSignalDataRun3)/0000/*root | head -n 100 | tr '\n' ','` \
@@ -31,9 +31,9 @@ TestRun3: Execute
 		`./Expand Setting.dh PbPbSignalData Nominal`
 
 TestRunMC: Execute
-	time ./Execute --Input $(PbPbSignalMC)/HiForestMiniAOD_1.root \
-		--Output /tmp/$(USER)/TestMC.root --Fraction 0.1 --WithProgressBar true \
-		`./Expand Setting.dh PbPbSignalMC Nominal`
+	time ./Execute --Input $(PbPbSignalMC)/HiForestMiniAOD_1.root,$(PbPbSignalMC)/HiForestMiniAOD_2.root,$(PbPbSignalMC)/HiForestMiniAOD_3.root,$(PbPbSignalMC)/HiForestMiniAOD_4.root,$(PbPbSignalMC)/HiForestMiniAOD_5.root \
+		--Output /tmp/$(USER)/TestMC.root --Fraction 1 --WithProgressBar true \
+		`./Expand Setting.dh PbPbSignalMC Nominal`  --DoElectron false
 
 TestMCRun3: Execute
 	time ./Execute --Input $(PbPbSignalMCRun3)/HiForestMiniAOD_MC_1.root \
@@ -74,8 +74,8 @@ TestRunMCBackground: Execute
 
 TestRunMCGenBackground: Execute
 	./Execute --Input $(PbPbSignalMC)/HiForestMiniAOD_10.root \
-		--Output /tmp/$(USER)/TestMCGenBkg.root --Fraction 0.1  --DoMuon false --WithProgressBar true \
-		--Background $(PbPbBackgroundMC)/HiForestMiniAOD_10.root \
+		--Output /tmp/$(USER)/TestMCGenBkg.root --Fraction 1  --DoMuon false --WithProgressBar true \
+		--Background $(PbPbBackgroundMC)/HiForestMiniAOD_17.root \
 		`./Expand Setting.dh PbPbBackgroundGenMC Nominal`
 
 EOSBase = /eos/cms/store/group/phys_heavyions/pchou/SkimZHadron2024
@@ -85,93 +85,93 @@ CERNBOX = /eos/home-p/pchou
 PrepareToRun:
 	bash PrepareInput.sh \
 		'$(PbPbSignalSingleMuon)/*/' \
-		20 LogData_v2e_ee/ $(EOSBase)/OutputData_v2e_ee/ \
+		20 LogData_v3a_ee/ $(EOSBase)/OutputData_v3a_ee/ \
 		--Fraction 1 --DoMuon false `./Expand Setting.dh PbPbSignalData Nominal`
 
 PrepareToRun3:
 	bash PrepareInput.sh \
 		'$(PbPbSignalDataRun3Multi)/*/' \
-		100 LogData3_v2e/ $(EOSBase)/OutputData3_v2e/ \
+		100 LogData3_v3a/ $(EOSBase)/OutputData3_v3a/ \
 		--Fraction 1 `./Expand Setting.dh PbPbSignalData Nominal`
 
 PrepareToRunMC:
 	bash PrepareInput.sh \
 		$(PbPbSignalMC)/ \
-		5 LogMC_v2e_ee_new/ $(EOSBase)/OutputMC_v2e_ee_new/ \
+		5 LogMC_v3a_ee/ $(EOSBase)/OutputMC_v3a_ee/ \
 		--Fraction 1 --DoMuon false `./Expand Setting.dh PbPbSignalMC Nominal`
 
 PrepareToRunMC3:
 	bash PrepareInput.sh \
 		$(PbPbSignalMCRun3)/ \
-		5 LogMC3_v2e/ $(EOSBase)/OutputMC3_v2e/ \
+		5 LogMC3_v3a/ $(EOSBase)/OutputMC3_v3a/ \
 		--Fraction 1 `./Expand Setting.dh PbPbSignalMC Nominal`
 
 PrepareToRunGenMC:
 	bash PrepareInput.sh \
 		$(PbPbSignalMC)/ \
-		5 LogGenMC_v2e_ee/ $(EOSBase)/OutputMCGen_v2e_ee/ \
+		5 LogGenMC_v3a_ee/ $(EOSBase)/OutputMCGen_v3a_ee/ \
  		--Fraction 1 --DoMuon false `./Expand Setting.dh PbPbSignalGenMC Nominal`
 
 PrepareToRunPP:
 	bash PrepareInput.sh \
 		$(PPSignalMC)/ \
-		10 LogPP_v2e_ee_new/ $(EOSBase)/OutputPPMC_v2e_ee_new/ \
+		10 LogPP_v3a_ee/ $(EOSBase)/OutputPPMC_v3a_ee/ \
  		--Fraction 1 --DoMuon false `./Expand Setting.dh PPSignalMC Nominal`
 
 PrepareToRunGenPP:
 	bash PrepareInput.sh \
 		$(PPSignalMC)/ \
-		10 LogGenPP_v2e_ee/ $(EOSBase)/OutputPPMCGen_v2e_ee/ \
+		10 LogGenPP_v3a_ee/ $(EOSBase)/OutputPPMCGen_v3a_ee/ \
  		--Fraction 1 --DoMuon false `./Expand Setting.dh PPSignalGenMC Nominal`
 
 PrepareToRunPPData:
 	bash PrepareInput.sh \
 		'$(PPSignalData)/*/' \
-		100 LogPPData_v2e_ee/ $(EOSBase)/OutputPPData_v2e_ee/ \
+		100 LogPPData_v3a_ee/ $(EOSBase)/OutputPPData_v3a_ee/ \
  		--Fraction 1 --DoMuon false `./Expand Setting.dh PPSignalData Nominal`
 
 PrepareToRunLoose:
 	bash PrepareInput.sh \
 		'$(PbPbSignalSingleMuon)/*/' \
-		5 LogDataLoose_v2e/ $(EOSBase)/OutputDataLoose_v2e/ \
+		5 LogDataLoose_v3a/ $(EOSBase)/OutputDataLoose_v3a/ \
 		--Fraction 1 `./Expand Setting.dh PbPbSignalData Loose`
 
 PrepareToRunMCLoose:
 	bash PrepareInput.sh \
 		$(PbPbSignalMC)/ \
-		5 LogMCLoose_v2e/ $(EOSBase)/OutputMCLoose_v2e/ \
+		5 LogMCLoose_v3a/ $(EOSBase)/OutputMCLoose_v3a/ \
 		--Fraction 1 `./Expand Setting.dh PbPbSignalMC Loose`
 
 PrepareToRunTight:
 	bash PrepareInput.sh \
 		'$(PbPbSignalSingleMuon)/*/' \
-		5 LogDataTight_v2e/ $(EOSBase)/OutputDataTight_v2e/ \
+		5 LogDataTight_v3a/ $(EOSBase)/OutputDataTight_v3a/ \
 		--Fraction 1 `./Expand Setting.dh PbPbSignalData Tight`
 
 PrepareToRunMCTight:
 	bash PrepareInput.sh \
 		$(PbPbSignalMC)/ \
-		5 LogMCTight_v2e/ $(EOSBase)/OutputMCTight_v2e/ \
+		5 LogMCTight_v3a/ $(EOSBase)/OutputMCTight_v3a/ \
 		--Fraction 1 `./Expand Setting.dh PbPbSignalMC Tight`
 
 PrepareToRunBackground:
 	bash PrepareInputRandomBackground.sh \
 		'$(PbPbSignalSingleMuon)/*/' \
-		10 LogDataBkg_v2e_ee/ $(EOSBase)/OutputDataBkg_v2e_ee/ \
+		10 LogDataBkg_v3a_ee/ $(EOSBase)/OutputDataBkg_v3a_ee/ \
 		$(PbPbBackgroundData)/ 100  --DoMuon false \
 		`./Expand Setting.dh PbPbBackgroundData Nominal`
 
 PrepareToRunMCBackground:
 	bash PrepareInputRandomBackground.sh \
 		$(PbPbSignalMC) \
-		1 LogMCBkg_v2e_ee_new/ $(EOSBase)/OutputMCBkg_v2e_ee_new/ \
+		5 LogMCBkg_v3a_ee/ $(EOSBase)/OutputMCBkg_v3a_ee/ \
 		$(PbPbBackgroundMC)/ 15 --DoMuon false \
 		`./Expand Setting.dh PbPbBackgroundMC Nominal`
 
 PrepareToRunRandomMCGenBackground:
 	bash PrepareInputRandomBackground.sh \
 		$(PbPbSignalMC) \
-		5 LogMCGenbkg_v2e_ee/ $(EOSBase)/OutputMCbkgGen_v2e_ee/ \
+		5 LogMCGenbkg_v3a_ee/ $(EOSBase)/OutputMCbkgGen_v3a_ee/ \
 		$(PbPbBackgroundMC)/ 15 --DoMuon false \
  		`./Expand Setting.dh PbPbBackgroundGenMC Nominal`
 

@@ -17,7 +17,7 @@ int main();
 void MakePlot(double XMin, double XMax, double YMin, double YMax, string Title,
    TProfile &P1, TProfile &P2, bool LogX, string Output);
 
-string OutputBase = "/eos/home-p/pchou/figs/ZHadron2024/ZeeEfficiency/20240714/";
+string OutputBase = "/eos/home-p/pchou/figs/ZHadron2024/ZeeEfficiency/20240723/vF/";
 
 int main()
 {
@@ -29,8 +29,8 @@ int main()
    //TTree *TPbPb = (TTree *)FPbPb.Get("Tree");
    //TTree *TPP = (TTree *)FPP.Get("Tree");
 
-   TChain* TPbPb = new TChain("Tree"); TPbPb->Add("../20240706_ZeeEfficiency/PbPb/*.root");
-   TChain* TPP = new TChain("Tree"); TPP->Add("../20240706_ZeeEfficiency/pp/*.root");
+   TChain* TPbPb = new TChain("Tree"); TPbPb->Add("../20240706_ZeeEfficiency/PbPb_0723_vF/*.root");
+   TChain* TPP = new TChain("Tree"); TPP->Add("../20240706_ZeeEfficiency/pp_0723_vF/*.root");
 
    const int binnum = 12;
 

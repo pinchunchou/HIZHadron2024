@@ -134,8 +134,8 @@ int main(int argc, char *argv[])
             // We only want electron from Z's
             if(fabs(MSignalGG.MCPID->at(iEle1)) != 11)
                 continue;
-            if(MSignalGG.MCMomPID->at(iEle1) != 23)
-               continue;
+            //if(MSignalGG.MCMomPID->at(iEle1) != 23)
+            //   continue;
             if(MSignalGG.MCPt->at(iEle1) < 20)
                continue;
             if(fabs(MSignalGG.MCEta->at(iEle1)) > 2.1)
@@ -149,8 +149,8 @@ int main(int argc, char *argv[])
                // We only want electron from Z's
                if(MSignalGG.MCPID->at(iEle2) != -MSignalGG.MCPID->at(iEle1))
                    continue;
-               if(MSignalGG.MCMomPID->at(iEle2) != 23)
-                  continue;
+               //if(MSignalGG.MCMomPID->at(iEle2) != 23)
+               //   continue;
                if(MSignalGG.MCPt->at(iEle2) < 20)
                   continue;
                if(fabs(MSignalGG.MCEta->at(iEle2)) > 2.1)
@@ -341,6 +341,7 @@ int main(int argc, char *argv[])
    HMatchDR.Write();
    HMatchZ.Write();
    HGenZHasReco.Write();
+   HEfficiency.Write();
    Tree.Write();
    OutputFile.Close();
 

@@ -61,12 +61,12 @@ TFile *file_ppMC;
 TFile *file_ppbkgMC;
 
 
-const char *typeofdata = "ZHadron2024/BasicBkgSub/ov1_v2d_Gen_sub0/20240719/";
-const char *typeofdata1 = "ov1_v2d_Gen_sub0";
+const char *typeofdata = "ZHadron2024/BasicBkgSub/ov1_v2f_Reco_sub0/20240724/";
+const char *typeofdata1 = "ov1_v2f_Reco_sub0";
 
 
 bool selfmix = false;
-bool isgen   = true;
+bool isgen   = false;
 bool drawlog = false;
 bool drawrat = false;
 bool drawlow = true;
@@ -520,25 +520,25 @@ int main(int argc, char *argv[]){
    string filebase = "/eos/home-p/pchou/BasicPlots/ZHadron2024/";
 
    if(isgen)
-      file_sigMC = TFile::Open((filebase + "GraphMCSigGen_v1c_ee.root").c_str(), "read");
+      file_sigMC = TFile::Open((filebase + "GraphMCSigGen_v2f_ee.root").c_str(), "read");
    else
-      file_sigMC = TFile::Open((filebase + "GraphMCSig_v2d_ee_new.root").c_str(), "read");
+      file_sigMC = TFile::Open((filebase + "GraphMCSig_v2f_ee.root").c_str(), "read");
    
    if(selfmix)
       file_bkgMC = TFile::Open("~/eos_base/BasicPlots/GraphMCSigBkg_v17d_PFmuon_350_10HF_ov20.root","read");
    else{
       if(isgen)
-         file_bkgMC = TFile::Open((filebase + "GraphMCBkgGen_v2d_ee.root").c_str(), "read");
+         file_bkgMC = TFile::Open((filebase + "GraphMCBkgGen_v2f_ee.root").c_str(), "read");
       else
-         file_bkgMC = TFile::Open((filebase + "GraphMCBkg_v2d_ee_new.root").c_str(), "read");
+         file_bkgMC = TFile::Open((filebase + "GraphMCBkg_v2f_ee.root").c_str(), "read");
    }
 
    if(isgen)
-      file_ppMC  = TFile::Open((filebase + "GraphPPMCGen0NPU_v1d_ee.root").c_str(), "read");
+      file_ppMC  = TFile::Open((filebase + "GraphPPMCGen0NPU_v2f_ee.root").c_str(), "read");
    else if(comparesub0)
-      file_ppMC  = TFile::Open((filebase + "GraphMCSigGen0Sub_v1c_ee.root").c_str(), "read");
+      file_ppMC  = TFile::Open((filebase + "GraphMCSigGen0Sub_v2f_ee.root").c_str(), "read");
    else
-      file_ppMC  = TFile::Open((filebase + "GraphPPMC0NPU_v2_ee.root").c_str(), "read");
+      file_ppMC  = TFile::Open((filebase + "GraphPPMC0NPU_v2f_ee.root").c_str(), "read");
 
    if(selfmix)
       file_ppbkgMC  = TFile::Open("~/eos_base/BasicPlots/GraphPPMCSigBkg_v17d_PFmuon_143_10HF.root","read");

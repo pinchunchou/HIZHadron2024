@@ -65,7 +65,7 @@ public:
 
 int main(int argc, char *argv[]){
 
-   string Version = "V2e";
+   string Version = "V3a";
    CommandLine CL(argc, argv);
 
    vector<string> InputFileNames      = CL.GetStringVector("Input");
@@ -184,6 +184,8 @@ int main(int argc, char *argv[]){
 
    if(DoBackground == true)
    {
+      std::cout<<"Filling backgrounds..."<<std::endl;
+      
       for(int iB = 0; iB < NBackground; iB++)
       {
          BackgroundFiles.push_back(new TFile(BackgroundFileNames[iB].c_str()));
@@ -195,8 +197,17 @@ int main(int argc, char *argv[]){
          //MBackgroundRho.push_back(new RhoTreeMessenger(BackgroundFiles[iB], RhoTreeName));
 
          int EntryCount = MBackgroundEvent[iB]->GetEntries();
+         ProgressBar BarBkg(cout, EntryCount);
+         BarBkg.SetStyle(-1);
+
          for(int iE = 0; iE < EntryCount; iE++)
          {
+            if(WithProgressBar && (EntryCount < 300 || (iE % (EntryCount / 250)) == 0))
+            {
+               BarBkg.Update(iE);
+               BarBkg.Print();
+            }
+
             MBackgroundEvent[iB]->GetEntry(iE);
             MBackgroundGen[iB]->GetEntry(iE);
             MBackgroundPF[iB]->GetEntry(iE);
@@ -213,8 +224,17 @@ int main(int argc, char *argv[]){
                   continue;
             }
             BackgroundIndices.push_back(E);
+         }//end looping bkg entries in a file.
+         
+         if(WithProgressBar){
+            BarBkg.Update(EntryCount);
+            BarBkg.Print();
+            BarBkg.PrintLine();
          }
-      }
+
+      }//end looping bkg files
+      
+      std::cout<<"Backgrounds filled."<<std::endl;
    }
    sort(BackgroundIndices.begin(), BackgroundIndices.end());
 
@@ -556,10 +576,15 @@ int main(int argc, char *argv[]){
                // Loop over 1st gen electron
                for(int igen1 = 0; igen1 < MSignalGG.NMC; igen1++)
                {
+                  if(igen1 > MSignalGG.MCPID->size() - 1){
+                     cout<<"Warning: MSignalGG.NMC and igen1 > MSignalGG.MCPID->size():"<< MSignalGG.NMC <<" or "<<igen1<<" > "<< MSignalGG.MCPID->size()<<endl;
+                     break;
+                  }
+
                   // We only want electron from Z's
-               	  if(fabs(MSignalGG.MCPID->at(igen1)) != 11)
+               	if(fabs(MSignalGG.MCPID->at(igen1)) != 11)
                      continue;
-                  if(MSignalGG.MCMomPID->at(igen1) != 23)
+                  if(MSignalGG.MCMomPID->at(igen1) != 23 && ((MSignalGG.MCMomPID->at(igen1) != MSignalGG.MCPID->at(igen1)) || MSignalGG.MCGMomPID->at(igen1) != 23) )
                      continue;
                   if(MSignalGG.MCPt->at(igen1) < 20)
                      continue;
@@ -574,10 +599,15 @@ int main(int argc, char *argv[]){
                   // Loop over 2nd gen electron
                   for(int igen2 = igen1 + 1; igen2 < MSignalGG.NMC; igen2++)
                   {
+                     if(igen2 > MSignalGG.MCPID->size() - 1){
+                        cout<<"Warning: MSignalGG.NMC and igen1 > MSignalGG.MCPID->size():"<< MSignalGG.NMC <<" or "<<igen2<<" > "<< MSignalGG.MCPID->size()<<endl;
+                        break;
+                     }
+
                      // We only want electron from Z's
                      if(MSignalGG.MCPID->at(igen2) != -MSignalGG.MCPID->at(igen1))
                      	continue;
-                  	 if(MSignalGG.MCMomPID->at(igen2) != 23)
+                  	if(MSignalGG.MCMomPID->at(igen2) != 23 && ((MSignalGG.MCMomPID->at(igen2) != MSignalGG.MCPID->at(igen2)) || MSignalGG.MCGMomPID->at(igen2) != 23) )
                         continue;
                      if(MSignalGG.MCPt->at(igen2) < 20)
                         continue;
@@ -900,7 +930,12 @@ int main(int argc, char *argv[]){
                GenParticleTreeMessenger *MGen = DoBackground ? MBackgroundGen[Location.File] : &MSignalGen;
 
                // Loop over reco tracks and build the correlation function
-               int NTrack = DoGenCorrelation ? MGen->Mult : (IsPP ? MTrackPP->nTrk : MTrack->TrackPT->size());
+
+               int NGenTrack = DoGenCorrelation ? ( (MGen->PT->size() > MGen->Mult) ? MGen->Mult : MGen->PT->size() ) : 0; // To prevent some weird out_of_range errors.
+
+               int NTrack = DoGenCorrelation ? NGenTrack : (IsPP ? MTrackPP->nTrk : MTrack->TrackPT->size());
+
+
                for(int itrack = 0; itrack < NTrack; itrack++)
                {
                   if(DoGenCorrelation == false)   // track selection on reco
@@ -1029,8 +1064,13 @@ int main(int argc, char *argv[]){
             {
                GenParticleTreeMessenger *MGen = DoBackground ? MBackgroundGen[Location.File] : &MSignalGen;
 
+               int NGenTrack = DoGenCorrelation ? ( (MGen->PT->size() > MGen->Mult) ? MGen->Mult : MGen->PT->size() ) : 0; // To prevent some weird out_of_range errors.
+               if(MGen->PT->size() < MGen->Mult){
+                  cout << "Warning!  Less tracks than Mult.  " << MGen->PT->size() << " < " << MGen->Mult << endl;
+               }
+
                //std::cout<<"MGen->Mult = "<<MGen->Mult<<std::endl;
-               for(int itrack = 0; itrack < MGen->Mult; itrack++)
+               for(int itrack = 0; itrack < NGenTrack; itrack++)
                {
                   //std::cout<<"MGen->PT->at(itrack) = "<<MGen->PT->at(itrack)<<std::endl;
                   if(MGen->PT->at(itrack) < MinGenTrackPT )
@@ -1063,10 +1103,17 @@ int main(int argc, char *argv[]){
                   //std::cout<<"MZHadron.genZPt->size()= "<<MZHadron.genZPt->size()<<std::endl;
 
                   //int idx = DoGenCorrelation ? MZHadron.bestZidx  : MZHadron.bestZgenIdx;
-                  double Mu1Eta = MZHadron.genMuEta1->at(MZHadron.bestZgenIdx);
-                  double Mu1Phi = MZHadron.genMuPhi1->at(MZHadron.bestZgenIdx);
-                  double Mu2Eta = MZHadron.genMuEta2->at(MZHadron.bestZgenIdx);
-                  double Mu2Phi = MZHadron.genMuPhi2->at(MZHadron.bestZgenIdx);
+
+                  int idx = MZHadron.bestZgenIdx;
+                  if(MZHadron.bestZgenIdx > MZHadron.genMuEta1->size() || idx < 0){
+                     cout<<"Warning: bestZgenIdx > genMuEta1->size():"<< MZHadron.bestZgenIdx <<" > "<<MZHadron.genMuEta1->size()<<endl;
+                     idx = 0;
+                  }
+
+                  double Mu1Eta = MZHadron.genMuEta1->at(idx);
+                  double Mu1Phi = MZHadron.genMuPhi1->at(idx);
+                  double Mu2Eta = MZHadron.genMuEta2->at(idx);
+                  double Mu2Phi = MZHadron.genMuPhi2->at(idx);
 
                   double DeltaEtaMu1 = TrackEta - Mu1Eta;
                   double DeltaEtaMu2 = TrackEta - Mu2Eta;
@@ -1082,9 +1129,9 @@ int main(int argc, char *argv[]){
 
                   //std::cout<<"MZHadron.genZEta->size()= "<<MZHadron.genZEta->size()<<std::endl;
 
-                  double ZEta = MZHadron.genZEta->at(MZHadron.bestZgenIdx);
-                  double ZPhi = MZHadron.genZPhi->at(MZHadron.bestZgenIdx);
-                  double ZY = MZHadron.genZY->at(MZHadron.bestZgenIdx);
+                  double ZEta = MZHadron.genZEta->at(idx);
+                  double ZPhi = MZHadron.genZPhi->at(idx);
+                  double ZY = MZHadron.genZY->at(idx);
 
                   double deltaEta = TrackEta - ZEta;
                   double deltaPhi = DeltaPhi(TrackPhi, ZPhi);
