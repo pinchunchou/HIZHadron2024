@@ -1,8 +1,8 @@
 default: Prepare TestRun
 
 DYMC    = /eos/cms/store/group/phys_heavyions/chenyi/PbPb2018/Forest/DYJetsToLL_MLL-50_TuneCP5_HydjetDrumMB_5p02TeV-amcatnloFXFX-pythia8/HINPbPbSpring21MiniAOD-mva98_112X_upgrade2018_realistic_HI_v9-v1/MINIAODSIM/DYJetsToLL_MLL-50_TuneCP5_HydjetDrumMB_5p02TeV-amcatnloFXFX-pythia8/20240605_ZHadronMCDY/240605_151412/0000/
-CERNBOX = /eos/home-p/pchou/figs/ZHadron2024/TrkEff/20240725/
-EOSBase = /eos/cms/store/group/phys_heavyions/pchou/HIZHadron2024/Corrections/20240715_TrkEff/20240725/
+CERNBOX = /eos/home-p/pchou/figs/ZHadron2024/TrkEff/20240805/
+EOSBase = /eos/cms/store/group/phys_heavyions/pchou/HIZHadron2024/Corrections/20240715_TrkEff/20240805/
 AFSBase = /afs/cern.ch/user/p/pchou/HIZHadron2024/Corrections/20240715_TrkEff/
 PPMC    = /eos/cms/store/group/phys_heavyions/chenyi/pp2017/Forest/DYJetsToLL_MLL-50_TuneCP5_5020GeV-amcatnloFXFX-pythia8/RunIIpp5Spring18DR-94X_mc2017_realistic_forppRef5TeV-v2/AODSIM/DYJetsToLL_MLL-50_TuneCP5_5020GeV-amcatnloFXFX-pythia8/20231020_ZHadronMLLWithMuTreePP/231020_152224/0000/
 MBMC    = /eos/cms/store/group/phys_heavyions/chenyi/Samples/store/user/mitaylor/PhotonJet/MinBias_Hydjet_Drum5F_2018_5p02TeV/HINPbPbSpring21MiniAOD-NoPUmva98_112X_upgrade2018_realistic_HI_v9-v1/MINIAODSIM/MinBias_Hydjet_Drum5F_2018_5p02TeV/20230127PbPbMCMB/230127_211118/
@@ -11,19 +11,19 @@ MBMC    = /eos/cms/store/group/phys_heavyions/chenyi/Samples/store/user/mitaylor
 #TrackResidualPathPbPbMB="${ProjectBase}/CommonCode/root/20230522_TrackResidualCorrection_V9_0_20.root,${ProjectBase}/CommonCode/root/20230522_TrackResidualCorrection_V9_20_60.root,${ProjectBase}/CommonCode/root/20230522_TrackResidualCorrection_V9_60_100.root,${ProjectBase}/CommonCode/root/20230522_TrackResidualCorrection_V9_100_200.root"
 #TrackResidualPathPP="${ProjectBase}/CommonCode/root/20230531_TrackResidualCorrection_V12_pp.root"
 
-#TrackResidualPathPbPb="${ProjectBase}/CommonCode/root/20240725_TrackResidualCorrection_V1_0_20.root,${ProjectBase}/CommonCode/root/20240725_TrackResidualCorrection_V1_20_60.root,${ProjectBase}/CommonCode/root/20240725_TrackResidualCorrection_V1_60_100.root,${ProjectBase}/CommonCode/root/20240725_TrackResidualCorrection_V1_100_200.root"
-#TrackResidualPathPbPbMB="${ProjectBase}/CommonCode/root/20240725_TrackResidualCorrection_V1_0_20_MB.root,${ProjectBase}/CommonCode/root/20240725_TrackResidualCorrection_V1_20_60_MB.root,${ProjectBase}/CommonCode/root/20240725_TrackResidualCorrection_V1_60_100_MB.root,${ProjectBase}/CommonCode/root/20240725_TrackResidualCorrection_V1_100_200_MB.root"
-#TrackResidualPathPP="${ProjectBase}/CommonCode/root/20240725_TrackResidualCorrection_V1_pp.root"
+#TrackResidualPathPbPb="${ProjectBase}/CommonCode/root/20240805_TrackResidualCorrection_V4_0_20.root,${ProjectBase}/CommonCode/root/20240805_TrackResidualCorrection_V4_20_60.root,${ProjectBase}/CommonCode/root/20240805_TrackResidualCorrection_V4_60_100.root,${ProjectBase}/CommonCode/root/20240805_TrackResidualCorrection_V4_100_200.root"
+#TrackResidualPathPbPbMB="${ProjectBase}/CommonCode/root/20240805_TrackResidualCorrection_V4_0_20_MB.root,${ProjectBase}/CommonCode/root/20240805_TrackResidualCorrection_V4_20_60_MB.root,${ProjectBase}/CommonCode/root/20240805_TrackResidualCorrection_V4_60_100_MB.root,${ProjectBase}/CommonCode/root/20240805_TrackResidualCorrection_V4_100_200_MB.root"
+#TrackResidualPathPP="${ProjectBase}/CommonCode/root/20240805_TrackResidualCorrection_V4_pp.root"
 
-#TrackResidualPathPbPb="${ProjectBase}/CommonCode/root/20240725_TrackResidualCorrection_V2_0_20.root,${ProjectBase}/CommonCode/root/20240725_TrackResidualCorrection_V2_20_60.root,${ProjectBase}/CommonCode/root/20240725_TrackResidualCorrection_V2_60_100.root,${ProjectBase}/CommonCode/root/20240725_TrackResidualCorrection_V2_100_200.root"
-#TrackResidualPathPbPbMB="${ProjectBase}/CommonCode/root/20240725_TrackResidualCorrection_V2_0_20_MB.root,${ProjectBase}/CommonCode/root/20240725_TrackResidualCorrection_V2_20_60_MB.root,${ProjectBase}/CommonCode/root/20240725_TrackResidualCorrection_V2_60_100_MB.root,${ProjectBase}/CommonCode/root/20240725_TrackResidualCorrection_V2_100_200_MB.root"
-#TrackResidualPathPP="${ProjectBase}/CommonCode/root/20240725_TrackResidualCorrection_V2_pp.root"
+#TrackResidualPathPbPb="${ProjectBase}/CommonCode/root/20240805_TrackResidualCorrection_V5_0_20.root,${ProjectBase}/CommonCode/root/20240805_TrackResidualCorrection_V5_20_60.root,${ProjectBase}/CommonCode/root/20240805_TrackResidualCorrection_V5_60_100.root,${ProjectBase}/CommonCode/root/20240805_TrackResidualCorrection_V5_100_200.root"
+#TrackResidualPathPbPbMB="${ProjectBase}/CommonCode/root/20240805_TrackResidualCorrection_V5_0_20_MB.root,${ProjectBase}/CommonCode/root/20240805_TrackResidualCorrection_V5_20_60_MB.root,${ProjectBase}/CommonCode/root/20240805_TrackResidualCorrection_V5_60_100_MB.root,${ProjectBase}/CommonCode/root/20240805_TrackResidualCorrection_V5_100_200_MB.root"
+#TrackResidualPathPP="${ProjectBase}/CommonCode/root/20240805_TrackResidualCorrection_V5_pp.root"
 
-TrackResidualPathPbPb="${ProjectBase}/CommonCode/root/20240725_TrackResidualCorrection_V3_0_20.root,${ProjectBase}/CommonCode/root/20240725_TrackResidualCorrection_V3_20_60.root,${ProjectBase}/CommonCode/root/20240725_TrackResidualCorrection_V3_60_100.root,${ProjectBase}/CommonCode/root/20240725_TrackResidualCorrection_V3_100_200.root"
-TrackResidualPathPbPbMB="${ProjectBase}/CommonCode/root/20240725_TrackResidualCorrection_V3_0_20_MB.root,${ProjectBase}/CommonCode/root/20240725_TrackResidualCorrection_V3_20_60_MB.root,${ProjectBase}/CommonCode/root/20240725_TrackResidualCorrection_V3_60_100_MB.root,${ProjectBase}/CommonCode/root/20240725_TrackResidualCorrection_V3_100_200_MB.root"
-TrackResidualPathPP="${ProjectBase}/CommonCode/root/20240725_TrackResidualCorrection_V3_pp.root"
+TrackResidualPathPbPb="${ProjectBase}/CommonCode/root/20240805_TrackResidualCorrection_V6_0_20.root,${ProjectBase}/CommonCode/root/20240805_TrackResidualCorrection_V6_20_60.root,${ProjectBase}/CommonCode/root/20240805_TrackResidualCorrection_V6_60_100.root,${ProjectBase}/CommonCode/root/20240805_TrackResidualCorrection_V6_100_200.root"
+TrackResidualPathPbPbMB="${ProjectBase}/CommonCode/root/20240805_TrackResidualCorrection_V6_0_20_MB.root,${ProjectBase}/CommonCode/root/20240805_TrackResidualCorrection_V6_20_60_MB.root,${ProjectBase}/CommonCode/root/20240805_TrackResidualCorrection_V6_60_100_MB.root,${ProjectBase}/CommonCode/root/20240805_TrackResidualCorrection_V6_100_200_MB.root"
+TrackResidualPathPP="${ProjectBase}/CommonCode/root/20240805_TrackResidualCorrection_V6_pp.root"
 
-VERSION = V4
+VERSION = V7
 
 Prepare:
 	ln -sf $(DYMC) DYMC
@@ -32,30 +32,30 @@ Prepare:
 
 TestRun: Execute
 	./Execute --Input `ls DYMC/* | head -n1 | tr '\n' ','` \
-		--Output EffPlotsPbPb_0725_0_20_${VERSION}.pdf --RootOutput TrkEffPbPb_0725_0_20_${VERSION}.root --Fraction 0.2 \
+		--Output EffPlotsPbPb_0805_0_20_${VERSION}.pdf --RootOutput TrkEffPbPb_0805_0_20_${VERSION}.root --Fraction 0.2 \
 		--TrackEfficiencyPath ${ProjectBase}/CommonCode/root/ \
 		--TrackResidualPath $(TrackResidualPathPbPb)  --DoIteration true \
 		--MinHiBin 0 --MaxHiBin 20 --DoZSelection true
 	mkdir -p $(CERNBOX)
-	mv EffPlotsPbPb_0725_0_20_${VERSION}.pdf $(CERNBOX)
+	mv EffPlotsPbPb_0805_0_20_${VERSION}.pdf $(CERNBOX)
 
 
 TestRunPP: Execute
 	./Execute --Input `ls PPMC/* | head -n1 | tr '\n' ','` \
-		--Output EffPlotsPP_0725_${VERSION}.pdf --RootOutput TrkEffPP_0725_${VERSION}.root --Fraction 1.00 --IsPP true \
+		--Output EffPlotsPP_0805_${VERSION}.pdf --RootOutput TrkEffPP_0805_${VERSION}.root --Fraction 1.00 --IsPP true \
 		--TrackEfficiencyPath ${ProjectBase}/CommonCode/root/ \
 		--TrackResidualPath $(TrackResidualPathPP) --DoIteration true  --DoZSelection true
 	mkdir -p $(CERNBOX)
-	mv EffPlotsPP_0725_${VERSION}.pdf $(CERNBOX)
+	mv EffPlotsPP_0805_${VERSION}.pdf $(CERNBOX)
 
 TestRunMB: Execute
 	./Execute --Input `ls MBMC/* | head -n1 | tr '\n' ','` \
-		--Output EffPlotsPbPbMB_0725_0_20_${VERSION}.pdf --RootOutput TrkEffPbPbMB_0725_0_20_${VERSION}.root --Fraction 0.2 \
+		--Output EffPlotsPbPbMB_0805_0_20_${VERSION}.pdf --RootOutput TrkEffPbPbMB_0805_0_20_${VERSION}.root --Fraction 0.2 \
 		--TrackEfficiencyPath ${ProjectBase}/CommonCode/root/ \
 		--TrackResidualPath $(TrackResidualPathPbPbMB)  --DoIteration true \
 		--MinHiBin 0 --MaxHiBin 20 --DoZSelection false
 	mkdir -p $(CERNBOX)
-	mv EffPlotsPbPbMB_0725_0_20_${VERSION}.pdf $(CERNBOX)
+	mv EffPlotsPbPbMB_0805_0_20_${VERSION}.pdf $(CERNBOX)
 
 TestRunAll: Execute
 	./Execute --Input `ls DYMC/* | tr '\n' ','` \
@@ -161,73 +161,73 @@ MergePbPb1: ExecuteMerge
 	mkdir -p $(CERNBOX) log
 	./ExecuteMerge --Input "$(EOSBase)/PbPb_0_20_${VERSION}/*.root" \
 	--Output $(CERNBOX)/AllPbPbEffPlots_0_20_${VERSION}.pdf \
-	--RootOutput  ${ProjectBase}/CommonCode/root/20240725_TrackResidualCorrection_${VERSION}_0_20.root \
+	--RootOutput  ${ProjectBase}/CommonCode/root/20240805_TrackResidualCorrection_${VERSION}_0_20.root \
 	--DoIteration true --TrackResidualPath $(TrackResidualPathPbPb) --TrackResIdx 0 \
-	> log/20240725_TrackResidualCorrection_${VERSION}_0_20.out 2> log/20240725_TrackResidualCorrection_${VERSION}_0_20.err < /dev/null &
+	> log/20240805_TrackResidualCorrection_${VERSION}_0_20.out 2> log/20240805_TrackResidualCorrection_${VERSION}_0_20.err < /dev/null &
 
 MergePbPb2: ExecuteMerge
 	mkdir -p $(CERNBOX) log
 	./ExecuteMerge --Input "$(EOSBase)/PbPb_20_60_${VERSION}/*.root" \
 	--Output $(CERNBOX)/AllPbPbEffPlots_20_60_${VERSION}.pdf \
-	--RootOutput ${ProjectBase}/CommonCode/root/20240725_TrackResidualCorrection_${VERSION}_20_60.root \
+	--RootOutput ${ProjectBase}/CommonCode/root/20240805_TrackResidualCorrection_${VERSION}_20_60.root \
 	--DoIteration true --TrackResidualPath $(TrackResidualPathPbPb) --TrackResIdx 1 \
-	> log/20240725_TrackResidualCorrection_${VERSION}_20_60.out 2> log/20240725_TrackResidualCorrection_${VERSION}_20_60.err < /dev/null &
+	> log/20240805_TrackResidualCorrection_${VERSION}_20_60.out 2> log/20240805_TrackResidualCorrection_${VERSION}_20_60.err < /dev/null &
 
 MergePbPb3: ExecuteMerge
 	mkdir -p $(CERNBOX) log
 	./ExecuteMerge --Input "$(EOSBase)/PbPb_60_100_${VERSION}/*.root" \
 	--Output $(CERNBOX)/AllPbPbEffPlots_60_100_${VERSION}.pdf \
-	--RootOutput ${ProjectBase}/CommonCode/root/20240725_TrackResidualCorrection_${VERSION}_60_100.root \
+	--RootOutput ${ProjectBase}/CommonCode/root/20240805_TrackResidualCorrection_${VERSION}_60_100.root \
 	--DoIteration true --TrackResidualPath $(TrackResidualPathPbPb) --TrackResIdx 2 \
-	> log/20240725_TrackResidualCorrection_${VERSION}_60_100.out 2> log/20240725_TrackResidualCorrection_${VERSION}_60_100.err < /dev/null &
+	> log/20240805_TrackResidualCorrection_${VERSION}_60_100.out 2> log/20240805_TrackResidualCorrection_${VERSION}_60_100.err < /dev/null &
 
 MergePbPb4: ExecuteMerge
 	mkdir -p $(CERNBOX) log
 	./ExecuteMerge --Input "$(EOSBase)/PbPb_100_200_${VERSION}/*.root" \
 	--Output $(CERNBOX)/AllPbPbEffPlots_100_200_${VERSION}.pdf \
-	--RootOutput ${ProjectBase}/CommonCode/root/20240725_TrackResidualCorrection_${VERSION}_100_200.root \
+	--RootOutput ${ProjectBase}/CommonCode/root/20240805_TrackResidualCorrection_${VERSION}_100_200.root \
 	--DoIteration true --TrackResidualPath $(TrackResidualPathPbPb) --TrackResIdx 3 \
-	> log/20240725_TrackResidualCorrection_${VERSION}_100_200.out 2> log/20240725_TrackResidualCorrection_${VERSION}_100_200.err < /dev/null &
+	> log/20240805_TrackResidualCorrection_${VERSION}_100_200.out 2> log/20240805_TrackResidualCorrection_${VERSION}_100_200.err < /dev/null &
 
 MergePP: ExecuteMerge
 	mkdir -p $(CERNBOX) log
 	./ExecuteMerge --Input "$(EOSBase)/pp_${VERSION}/*.root" \
 	--Output $(CERNBOX)/AllPPEffPlots_${VERSION}.pdf \
-	--RootOutput ${ProjectBase}/CommonCode/root/20240725_TrackResidualCorrection_${VERSION}_pp.root \
+	--RootOutput ${ProjectBase}/CommonCode/root/20240805_TrackResidualCorrection_${VERSION}_pp.root \
 	--DoIteration true --TrackResidualPath $(TrackResidualPathPP) --TrackResIdx 0 \
-	> log/20240725_TrackResidualCorrection_${VERSION}_pp.out 2> log/20240725_TrackResidualCorrection_${VERSION}_pp.err < /dev/null &
+	> log/20240805_TrackResidualCorrection_${VERSION}_pp.out 2> log/20240805_TrackResidualCorrection_${VERSION}_pp.err < /dev/null &
 
 MergePbPbMB1: ExecuteMerge
 	mkdir -p $(CERNBOX) log
 	./ExecuteMerge --Input "$(EOSBase)/PbPbMB_0_20_${VERSION}/*.root" \
 	--Output $(CERNBOX)/AllPbPbMBEffPlots_0_20_${VERSION}.pdf \
-	--RootOutput  ${ProjectBase}/CommonCode/root/20240725_TrackResidualCorrection_${VERSION}_0_20_MB.root \
+	--RootOutput  ${ProjectBase}/CommonCode/root/20240805_TrackResidualCorrection_${VERSION}_0_20_MB.root \
 	--DoIteration true --TrackResidualPath $(TrackResidualPathPbPbMB) --TrackResIdx 0 \
-	> log/20240725_TrackResidualCorrection_${VERSION}_0_20_MB.out 2> log/20240725_TrackResidualCorrection_${VERSION}_0_20_MB.err < /dev/null &
+	> log/20240805_TrackResidualCorrection_${VERSION}_0_20_MB.out 2> log/20240805_TrackResidualCorrection_${VERSION}_0_20_MB.err < /dev/null &
 
 MergePbPbMB2: ExecuteMerge
 	mkdir -p $(CERNBOX) log
 	./ExecuteMerge --Input "$(EOSBase)/PbPbMB_20_60_${VERSION}/*.root" \
 	--Output $(CERNBOX)/AllPbPbMBEffPlots_20_60_${VERSION}.pdf \
-	--RootOutput ${ProjectBase}/CommonCode/root/20240725_TrackResidualCorrection_${VERSION}_20_60_MB.root \
+	--RootOutput ${ProjectBase}/CommonCode/root/20240805_TrackResidualCorrection_${VERSION}_20_60_MB.root \
 	--DoIteration true --TrackResidualPath $(TrackResidualPathPbPbMB) --TrackResIdx 1 \
-	> log/20240725_TrackResidualCorrection_${VERSION}_20_60_MB.out 2> log/20240725_TrackResidualCorrection_${VERSION}_20_60_MB.err < /dev/null &
+	> log/20240805_TrackResidualCorrection_${VERSION}_20_60_MB.out 2> log/20240805_TrackResidualCorrection_${VERSION}_20_60_MB.err < /dev/null &
 
 MergePbPbMB3: ExecuteMerge
 	mkdir -p $(CERNBOX) log
 	./ExecuteMerge --Input "$(EOSBase)/PbPbMB_60_100_${VERSION}/*.root" \
 	--Output $(CERNBOX)/AllPbPbMBEffPlots_60_100_${VERSION}.pdf \
-	--RootOutput ${ProjectBase}/CommonCode/root/20240725_TrackResidualCorrection_${VERSION}_60_100_MB.root \
+	--RootOutput ${ProjectBase}/CommonCode/root/20240805_TrackResidualCorrection_${VERSION}_60_100_MB.root \
 	--DoIteration true --TrackResidualPath $(TrackResidualPathPbPbMB) --TrackResIdx 2 \
-	> log/20240725_TrackResidualCorrection_${VERSION}_60_100_MB.out 2> log/20240725_TrackResidualCorrection_${VERSION}_60_100_MB.err < /dev/null &
+	> log/20240805_TrackResidualCorrection_${VERSION}_60_100_MB.out 2> log/20240805_TrackResidualCorrection_${VERSION}_60_100_MB.err < /dev/null &
 
 MergePbPbMB4: ExecuteMerge
 	mkdir -p $(CERNBOX) log
 	./ExecuteMerge --Input "$(EOSBase)/PbPbMB_100_200_${VERSION}/*.root" \
 	--Output $(CERNBOX)/AllPbPbMBEffPlots_100_200_${VERSION}.pdf \
-	--RootOutput ${ProjectBase}/CommonCode/root/20240725_TrackResidualCorrection_${VERSION}_100_200_MB.root \
+	--RootOutput ${ProjectBase}/CommonCode/root/20240805_TrackResidualCorrection_${VERSION}_100_200_MB.root \
 	--DoIteration true --TrackResidualPath $(TrackResidualPathPbPbMB) --TrackResIdx 3 \
-	> log/20240725_TrackResidualCorrection_${VERSION}_100_200_MB.out 2> log/20240725_TrackResidualCorrection_${VERSION}_100_200_MB.err < /dev/null &
+	> log/20240805_TrackResidualCorrection_${VERSION}_100_200_MB.out 2> log/20240805_TrackResidualCorrection_${VERSION}_100_200_MB.err < /dev/null &
 
 ExecuteMerge: mergeHist.cpp
 	g++ mergeHist.cpp  -I. -I$(ProjectBase)/CommonCode/include \

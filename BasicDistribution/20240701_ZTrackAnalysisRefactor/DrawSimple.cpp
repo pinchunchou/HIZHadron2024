@@ -54,8 +54,8 @@ void style(){
   gROOT->ForceStyle();
 }
 
-const char *typeofdata = "ZHadron2024/SkimBkgSub/ov1_v3a_sub0/20240730/";
-const char *typeofdata1 = "ov1_v3a_sub0";
+const char *typeofdata = "ZHadron2024/SkimBkgSub/ov1_v2fv3bgen_sub0/20240807/";
+const char *typeofdata1 = "ov1_v2fv3bgen_sub0";
 
 TChain *TreeSig = new TChain("Tree"); 
 TChain *TreeBkg = new TChain("Tree"); 
@@ -524,12 +524,12 @@ int main(int argc, char *argv[]){
 
 	string filebase = "/eos/cms/store/group/phys_heavyions/pchou/SkimZHadron2024/";
 
-	TreeSig->Add((filebase + "OutputMC_v3a_ee/Result*.root").c_str());
-	TreeBkg->Add((filebase + "OutputMCBkg_v3a_ee/Result*.root").c_str());
-	//TreeBkg->Add((filebase + "OutputMCBkg_v3a_ee_RresDY/Result*.root").c_str());
-	//TreePP0->Add((filebase + "OutputPPMC_v3a_ee/*.root").c_str());
-	TreeSgG->Add((filebase + "OutputMCGen_v3a_ee/Result*.root").c_str());
-	TreeBgG->Add((filebase + "OutputMCbkgGen_v3a_ee/Result*.root").c_str());
+	TreeSig->Add((filebase + "OutputMC_v2f_ee/Result*.root").c_str());
+	//TreeBkg->Add((filebase + "OutputMCBkg_v2f_ee_Rres/Result*.root").c_str());
+	TreeBkg->Add((filebase + "OutputMCBkg_v2f_ee/Result*.root").c_str());
+	//TreePP0->Add((filebase + "OutputPPMC_v3b_ee/*.root").c_str());
+	TreeSgG->Add((filebase + "OutputMCGen_v3b_ee/Result*.root").c_str());
+	TreeBgG->Add((filebase + "OutputMCbkgGen_v3b_ee/Result*.root").c_str());
 
 	//TreeSig->Add("/eos/cms/store/group/phys_heavyions/pchou/SkimMC_v14.root");
 	////TreeBkg->Add("/eos/cms/store/group/phys_heavyions/pchou/SkimMCbkg_v14.root");

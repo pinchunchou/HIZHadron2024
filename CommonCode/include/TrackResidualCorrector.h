@@ -20,7 +20,7 @@ public:
       delete f;
    }
 
-   double GetCorrectionFactor(double pt, double eta, double phi)
+   double GetCorrectionFactor(double pt, double eta, double phi, int type = 0)
    {
       if(phi < 0)
          phi += 2 * M_PI;
@@ -35,9 +35,28 @@ public:
       if(pt >= PTMax)
          bin_pt = hPtCorrTotal->GetNbinsX();
       
-      double corr = hPtCorrTotal->GetBinContent(bin_pt) *
-         hEtaCorrTotal->GetBinContent(bin_eta) *
-         hPhiCorrTotal->GetBinContent(bin_phi);
+
+      double ptCorr, etaCorr, phiCorr;
+
+      // Handle different types for PT correction
+      switch(type) {
+        case 1:
+            ptCorr = hPtCorrTotal->GetBinContent(bin_pt) + hPtCorrTotal->GetBinError(bin_pt);
+            etaCorr = hEtaCorrTotal->GetBinContent(bin_eta) + hEtaCorrTotal->GetBinError(bin_eta);
+            phiCorr = hPhiCorrTotal->GetBinContent(bin_phi) + hPhiCorrTotal->GetBinError(bin_phi);
+            break;
+        case -1:
+            ptCorr = hPtCorrTotal->GetBinContent(bin_pt) - hPtCorrTotal->GetBinError(bin_pt);
+            etaCorr = hEtaCorrTotal->GetBinContent(bin_eta) - hEtaCorrTotal->GetBinError(bin_eta);
+            phiCorr = hPhiCorrTotal->GetBinContent(bin_phi) - hPhiCorrTotal->GetBinError(bin_phi);
+            break;
+        default:
+            ptCorr = hPtCorrTotal->GetBinContent(bin_pt);
+            etaCorr = hEtaCorrTotal->GetBinContent(bin_eta);
+            phiCorr = hPhiCorrTotal->GetBinContent(bin_phi);
+      }
+  
+      double corr = ptCorr * etaCorr * phiCorr;
 
       if(isnan(corr))
       {
@@ -100,12 +119,12 @@ public:
       if(TRC4 != nullptr)   delete TRC4;
    }
 
-   double GetCorrectionFactor(double pt, double eta, double phi, int hiBin)
+   double GetCorrectionFactor(double pt, double eta, double phi, int hiBin, int type = 0)
    {
-      if(hiBin < 20)         return TRC1->GetCorrectionFactor(pt, eta, phi);
-      else if(hiBin < 60)    return TRC2->GetCorrectionFactor(pt, eta, phi);
-      else if(hiBin < 100)   return TRC3->GetCorrectionFactor(pt, eta, phi);
-      else                   return TRC4->GetCorrectionFactor(pt, eta, phi);
+      if(hiBin < 20)         return TRC1->GetCorrectionFactor(pt, eta, phi, type);
+      else if(hiBin < 60)    return TRC2->GetCorrectionFactor(pt, eta, phi, type);
+      else if(hiBin < 100)   return TRC3->GetCorrectionFactor(pt, eta, phi, type);
+      else                   return TRC4->GetCorrectionFactor(pt, eta, phi, type);
       return 0;
    }
 

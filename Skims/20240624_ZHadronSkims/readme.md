@@ -53,6 +53,20 @@
 * Version 2f - 2024 July 24
    * For Gen, also consider 23->11->11. 
 
+* Version 3 - 2024 July 26
+   * For Gen, do not require mom=23. (?)
+
+* Version 3a - 2024 July 29
+   * For Gen, also consider 23->11->11. 
+   * Deal with cases like MSignalGG.NMC > MSignalGG.MCPID->size() .
+
+* Version 3b - 2024 August 5
+   * Allow residual corrections to be shifted by error.
+   * Fix residual corrections so that they have binomial error and deal with NMC > size cases.
+
+* Version 3c - 2024 August 12
+   * Deal with cases like MSignalGG.NEle > MSignalGG.ElePt->size() .
+
 ## Arguments
 
 | Argument | type | default | comments |

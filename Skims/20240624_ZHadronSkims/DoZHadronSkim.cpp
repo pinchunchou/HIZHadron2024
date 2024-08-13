@@ -65,7 +65,7 @@ public:
 
 int main(int argc, char *argv[]){
 
-   string Version = "V3a";
+   string Version = "V3c";
    CommandLine CL(argc, argv);
 
    vector<string> InputFileNames      = CL.GetStringVector("Input");
@@ -96,6 +96,8 @@ int main(int argc, char *argv[]){
 
    bool DoAlternateTrackSelection     = CL.GetBool("DoAlternateTrackSelection", false);
    int AlternateTrackSelection        = DoAlternateTrackSelection ? CL.GetInt("AlternateTrackSelection") : 0;
+
+   int AlternateResCorrection         = CL.GetInt("AlternateResidualCorrection", 0);
 
    bool DoTrackEfficiency             = CL.GetBool("DoTrackEfficiency", true);
    string TrackEfficiencyPath         = (DoTrackEfficiency == true) ? CL.Get("TrackEfficiencyPath") : "";
@@ -298,12 +300,17 @@ int main(int argc, char *argv[]){
    Key = "Oversample";              Value = InfoString(Oversample);              InfoTree.Fill();
    Key = "ReuseBackground";         Value = InfoString(ReuseBackground);         InfoTree.Fill();
    Key = "ForceGenMatch";           Value = InfoString(ForceGenMatch);           InfoTree.Fill();
+   Key = "DoMCHiBinShift";          Value = InfoString(DoMCHiBinShift);          InfoTree.Fill();
    Key = "MCHiBinShift";            Value = InfoString(MCHiBinShift);            InfoTree.Fill();
    Key = "DoAlternateTrackSelection"; Value = InfoString(DoAlternateTrackSelection); InfoTree.Fill();
    Key = "AlternateTrackSelection"; Value = InfoString(AlternateTrackSelection); InfoTree.Fill();
    //Key = "WithProgressBar";         Value = InfoString(WithProgressBar);         InfoTree.Fill();
    Key = "isMultiHFShift";          Value = InfoString(isMultiHFShift);          InfoTree.Fill();
    //Key = "HFShifts";                Value = InfoString(HFShifts);                InfoTree.Fill();
+   Key = "NBackground";             Value = InfoString(NBackground);             InfoTree.Fill();
+   Key = "AlternateResCorrection";  Value = InfoString(AlternateResCorrection); InfoTree.Fill();
+
+
 
 
    TH2D H2D("H2D", "", 100, -6, 6, 100, -M_PI, M_PI);
@@ -577,7 +584,7 @@ int main(int argc, char *argv[]){
                for(int igen1 = 0; igen1 < MSignalGG.NMC; igen1++)
                {
                   if(igen1 > MSignalGG.MCPID->size() - 1){
-                     cout<<"Warning: MSignalGG.NMC and igen1 > MSignalGG.MCPID->size():"<< MSignalGG.NMC <<" or "<<igen1<<" > "<< MSignalGG.MCPID->size()<<endl;
+                     cerr<<"Warning: MSignalGG.NMC and igen1 > MSignalGG.MCPID->size(): "<< MSignalGG.NMC <<" or "<<igen1<<" > "<< MSignalGG.MCPID->size()<<endl;
                      break;
                   }
 
@@ -600,7 +607,7 @@ int main(int argc, char *argv[]){
                   for(int igen2 = igen1 + 1; igen2 < MSignalGG.NMC; igen2++)
                   {
                      if(igen2 > MSignalGG.MCPID->size() - 1){
-                        cout<<"Warning: MSignalGG.NMC and igen1 > MSignalGG.MCPID->size():"<< MSignalGG.NMC <<" or "<<igen2<<" > "<< MSignalGG.MCPID->size()<<endl;
+                        cerr<<"Warning: MSignalGG.NMC and igen1 > MSignalGG.MCPID->size():"<< MSignalGG.NMC <<" or "<<igen2<<" > "<< MSignalGG.MCPID->size()<<endl;
                         break;
                      }
 
@@ -725,6 +732,11 @@ int main(int argc, char *argv[]){
             	N_eles = MSignalGG.NEle;
             else
             	N_eles = 0;
+
+            if(DoElectron == true && N_eles > MSignalGG.ElePt->size() ){
+               cerr<<"Warning: MSignalGG.NEle and N_eles > MSignalGG.ElePt->size(): "<< MSignalGG.NEle <<" or "<<N_eles<<" > "<< MSignalGG.ElePt->size()<<endl;
+               N_eles = MSignalGG.ElePt->size();
+            }
 
             for(int iele1 = 0; iele1 < N_eles; iele1++)
             {
@@ -931,7 +943,12 @@ int main(int argc, char *argv[]){
 
                // Loop over reco tracks and build the correlation function
 
+
+
                int NGenTrack = DoGenCorrelation ? ( (MGen->PT->size() > MGen->Mult) ? MGen->Mult : MGen->PT->size() ) : 0; // To prevent some weird out_of_range errors.
+               if(DoGenCorrelation && MGen->PT->size() < MGen->Mult){
+                  cerr << "Warning: Less Gen tracks than Mult: " << MGen->PT->size() << " < " << MGen->Mult << endl;
+               }
 
                int NTrack = DoGenCorrelation ? NGenTrack : (IsPP ? MTrackPP->nTrk : MTrack->TrackPT->size());
 
@@ -1049,7 +1066,7 @@ int main(int argc, char *argv[]){
                   double TrackResidualCorrection = 1;
                   if(DoTrackResidual == true && DoGenCorrelation == false)
                   {
-                     TrackResidualCorrection = TrackResidual.GetCorrectionFactor(TrackPT, TrackEta, TrackPhi, MZHadron.hiBin );
+                     TrackResidualCorrection = TrackResidual.GetCorrectionFactor(TrackPT, TrackEta, TrackPhi, MZHadron.hiBin, AlternateResCorrection );
                   }
                   MZHadron.trackWeight->push_back(TrackCorrection);
                   MZHadron.trackResidualWeight->push_back(TrackResidualCorrection);
@@ -1064,9 +1081,9 @@ int main(int argc, char *argv[]){
             {
                GenParticleTreeMessenger *MGen = DoBackground ? MBackgroundGen[Location.File] : &MSignalGen;
 
-               int NGenTrack = DoGenCorrelation ? ( (MGen->PT->size() > MGen->Mult) ? MGen->Mult : MGen->PT->size() ) : 0; // To prevent some weird out_of_range errors.
+               int NGenTrack =  (MGen->PT->size() > MGen->Mult) ? MGen->Mult : MGen->PT->size() ; // To prevent some weird out_of_range errors.
                if(MGen->PT->size() < MGen->Mult){
-                  cout << "Warning!  Less tracks than Mult.  " << MGen->PT->size() << " < " << MGen->Mult << endl;
+                  cerr << "Warning: Less Gen tracks than Mult: " << MGen->PT->size() << " < " << MGen->Mult << endl;
                }
 
                //std::cout<<"MGen->Mult = "<<MGen->Mult<<std::endl;
@@ -1106,7 +1123,7 @@ int main(int argc, char *argv[]){
 
                   int idx = MZHadron.bestZgenIdx;
                   if(MZHadron.bestZgenIdx > MZHadron.genMuEta1->size() || idx < 0){
-                     cout<<"Warning: bestZgenIdx > genMuEta1->size():"<< MZHadron.bestZgenIdx <<" > "<<MZHadron.genMuEta1->size()<<endl;
+                     cerr<<"Warning: bestZgenIdx > genMuEta1->size():"<< MZHadron.bestZgenIdx <<" > "<<MZHadron.genMuEta1->size()<<endl;
                      idx = 0;
                   }
 
@@ -1380,7 +1397,10 @@ double GetGenHFSum(GenParticleTreeMessenger *M, double MinGenTrackPT)
       return -1;
 
    double Sum = 0;
-   for(int iGen = 0; iGen < M->Mult; iGen++)
+
+   int NGenTrack =  (M->PT->size() > M->Mult) ? M->Mult : M->PT->size(); // To prevent some weird out_of_range errors.
+
+   for(int iGen = 0; iGen < NGenTrack; iGen++)
    {
       if(fabs(M->Eta->at(iGen)) < 3)
          continue;

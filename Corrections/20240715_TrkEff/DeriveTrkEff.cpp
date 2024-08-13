@@ -44,6 +44,28 @@ TH1D* ProjectZ(TH3* h3, const char* name = "_pz", Option_t* option = "")
     return h3->ProjectionZ(name, 1, h3->GetNbinsX(), 1, h3->GetNbinsY(), option);
 }
 
+// Updated function for error calculation
+TH1D* CalculateEfficiencyAndError(const char* name, TH1D* hNum, TH1D* hDen) {
+
+   TH1D* hResult = (TH1D*)hNum->Clone(name);
+    for (int i = 1; i <= hNum->GetNbinsX(); ++i) {
+        double num = hNum->GetBinContent(i);
+        double den = hDen->GetBinContent(i);
+        
+        // Efficiency
+        double eff = (den > 0) ? num / den : 0;
+        
+        // Error calculation using binomial error propagation
+        double err = (den > 0 && eff > 0 && eff < 1) ? sqrt(eff * (1 - eff) / den) : 0;
+        
+        hResult->SetBinContent(i, eff);
+        hResult->SetBinError(i, err);
+    }
+
+    hResult->SetStats(0);
+    return hResult;
+}
+
 int main(int argc, char *argv[])
 {
    SetThesisStyle();
@@ -242,6 +264,11 @@ int main(int argc, char *argv[])
                //if(fabs(MSignalGG.MCPID->at(igen1)) == 11 && MSignalGG.MCMomPID->at(igen1) == 23)
                //   std::cout<<"hi1!"<<std::endl;
 
+               if(igen1 > MSignalGG.MCPID->size() - 1){
+                  cerr<<"Warning: MSignalGG.NMC and igen1 > MSignalGG.MCPID->size(): "<< MSignalGG.NMC <<" or "<<igen1<<" > "<< MSignalGG.MCPID->size()<<endl;
+                  break;
+               }
+
                // We only want electron from Z's
                if(fabs(MSignalGG.MCPID->at(igen1)) != 11)
                   continue;
@@ -266,6 +293,11 @@ int main(int argc, char *argv[])
 
                   //if(fabs(MSignalGG.MCPID->at(igen2)) == 11 && MSignalGG.MCMomPID->at(igen2) == 23)
                   //   std::cout<<"hi2!"<<std::endl;
+
+                  if(igen2 > MSignalGG.MCPID->size() - 1){
+                     cout<<"Warning: MSignalGG.NMC and igen1 > MSignalGG.MCPID->size():"<< MSignalGG.NMC <<" or "<<igen2<<" > "<< MSignalGG.MCPID->size()<<endl;
+                     break;
+                  }
 
                   // We only want electron from Z's
                   if(MSignalGG.MCPID->at(igen2) != -MSignalGG.MCPID->at(igen1))
@@ -395,7 +427,7 @@ int main(int argc, char *argv[])
 
          float bestEtaGen, bestPhiGen, bestEtaReco, bestPhiReco;
 
-         int bestZidx = 0, bestZgenIdx = 0;
+         int bestZidx = -1, bestZgenIdx = -1;
 
          float bestEta1Gen , bestPhi1Gen , bestPt1Gen ;
          float bestEta2Gen , bestPhi2Gen , bestPt2Gen ;
@@ -455,7 +487,13 @@ int main(int argc, char *argv[])
 
 
          // Loop over gen particles
-         for(int iG = 0; iG < MGen.Mult; iG++)
+
+         int NGenTrack = (MGen.PT->size() > MGen.Mult) ? MGen.Mult : MGen.PT->size(); // To prevent some weird out_of_range errors.
+         if(MGen.PT->size() < MGen.Mult){
+            cerr << "Warning: Less Gen tracks than Mult: " << MGen.PT->size() << " < " << MGen.Mult << endl;
+         }
+
+         for(int iG = 0; iG < NGenTrack; iG++)
          {
             // Apply gen-level cuts (e.g., charged particles only, stable particles only)
             if(MGen.Charge->at(iG) == 0)
@@ -469,12 +507,15 @@ int main(int argc, char *argv[])
                continue;
 
             if(DoZSelection == true){
+
+               if(bestZgenIdx == -1) continue;
+
                double DeltaEtaEle1 = bestEta1Gen - MGen.Eta->at(iG);
-               double DeltaPhiEle1 = DeltaPhi(bestPhi1Gen,MGen.Phi->at(iG));
+               double DeltaPhiEle1 = DeltaPhi(bestPhi1Gen, MGen.Phi->at(iG));
                double DeltaR1 = sqrt(DeltaEtaEle1*DeltaEtaEle1 + DeltaPhiEle1*DeltaPhiEle1);
             
                double DeltaEtaEle2 = bestEta2Gen - MGen.Eta->at(iG);
-               double DeltaPhiEle2 = DeltaPhi(bestPhi2Gen,MGen.Phi->at(iG));
+               double DeltaPhiEle2 = DeltaPhi(bestPhi2Gen, MGen.Phi->at(iG));
                double DeltaR2 = sqrt(DeltaEtaEle2*DeltaEtaEle2 + DeltaPhiEle2*DeltaPhiEle2);
             
                if(DeltaR1 <  LeptonVeto || DeltaR2 < LeptonVeto)
@@ -505,6 +546,9 @@ int main(int argc, char *argv[])
                double RecoPT = MSignalTrackPP.trkPt[iT];
 
                if(DoZSelection == true){
+
+                  if(bestZidx == -1) continue;
+
                   double DeltaEtaEle1 = bestEta1Reco - RecoEta;
                   double DeltaPhiEle1 = DeltaPhi(bestPhi1Reco, RecoPhi);
                   double DeltaR1 = sqrt(DeltaEtaEle1*DeltaEtaEle1 + DeltaPhiEle1*DeltaPhiEle1);
@@ -530,7 +574,7 @@ int main(int argc, char *argv[])
                double TreeTrackResidualCorrection = 1;
                if(DoTrackResidual)
                {
-                  TreeTrackResidualCorrection = TrackResidual.GetCorrectionFactor(RecoPT, RecoEta, RecoPhi, MEvent.hiBin);
+                  TreeTrackResidualCorrection = TrackResidual.GetCorrectionFactor(RecoPT, RecoEta, RecoPhi, MEvent.hiBin, 0);
                }
                HRecoTrackCorrected.Fill(RecoEta, RecoPhi < 0 ? RecoPhi+2*M_PI : RecoPhi, RecoPT, TreeTrackCorrection );
                HRecoTrackResCorrected.Fill(RecoEta, RecoPhi < 0 ? RecoPhi+2*M_PI : RecoPhi, RecoPT, TreeTrackCorrection*TreeTrackResidualCorrection);
@@ -552,6 +596,9 @@ int main(int argc, char *argv[])
                double RecoPT = MSignalTrack.TrackPT->at(iT);
 
                if(DoZSelection == true){
+
+                  if(bestZidx == -1) continue;
+
                   double DeltaEtaEle1 = bestEta1Reco - RecoEta;
                   double DeltaPhiEle1 = DeltaPhi(bestPhi1Reco, RecoPhi);
                   double DeltaR1 = sqrt(DeltaEtaEle1*DeltaEtaEle1 + DeltaPhiEle1*DeltaPhiEle1);
@@ -577,7 +624,7 @@ int main(int argc, char *argv[])
                double TreeTrackResidualCorrection = 1;
                if(DoTrackResidual)
                {
-                  TreeTrackResidualCorrection = TrackResidual.GetCorrectionFactor(RecoPT, RecoEta, RecoPhi, MEvent.hiBin );
+                  TreeTrackResidualCorrection = TrackResidual.GetCorrectionFactor(RecoPT, RecoEta, RecoPhi, MEvent.hiBin, 0);
                }
 
                HRecoTrackCorrected.Fill(RecoEta, RecoPhi < 0 ? RecoPhi+2*M_PI : RecoPhi, RecoPT, TreeTrackCorrection);
@@ -598,66 +645,100 @@ int main(int argc, char *argv[])
    HEfficiencyCorrected.Divide(&HRecoTrackCorrected, &HGenTrack);
    HEfficiencyResCorrected.Divide(&HRecoTrackResCorrected, &HGenTrack);
 
-   TH1D *HEfficiency_eta = ProjectX(&HRecoTrack, "HEfficiency_eta"); 
-   HEfficiency_eta->Divide(ProjectX(&HGenTrack));
-   HEfficiency_eta->SetTitle("#eta efficiency");
-   HEfficiency_eta->SetStats(0);
-   TH1D *HEfficiency_phi = ProjectY(&HRecoTrack, "HEfficiency_phi");
-   HEfficiency_phi->Divide(ProjectY(&HGenTrack));
-   HEfficiency_phi->SetTitle("#phi efficiency");
-   HEfficiency_phi->SetStats(0);
-   TH1D *HEfficiency_pt  = ProjectZ(&HRecoTrack, "HEfficiency_pt");
-   HEfficiency_pt->Divide(ProjectZ(&HGenTrack));
-   HEfficiency_pt->SetTitle("p_{T} efficiency");
-   HEfficiency_pt->SetStats(0);
+   TH1D *HGenTrack_px = ProjectX(&HGenTrack, "HGenTrack_px"); 
+   TH1D *HGenTrack_py = ProjectY(&HGenTrack, "HGenTrack_py"); 
+   TH1D *HGenTrack_pz = ProjectZ(&HGenTrack, "HGenTrack_pz"); 
 
-   TH1D *HEfficiencyCorrected_eta = ProjectX(&HRecoTrackCorrected, "HEfficiencyCorrected_eta");
-   HEfficiencyCorrected_eta->Divide(ProjectX(&HGenTrack));
-   HEfficiencyCorrected_eta->SetTitle("#eta corrected efficiency");
-   HEfficiencyCorrected_eta->SetStats(0);
-   TH1D *HEfficiencyCorrected_phi = ProjectY(&HRecoTrackCorrected, "HEfficiencyCorrected_phi");
-   HEfficiencyCorrected_phi->Divide(ProjectY(&HGenTrack));
-   HEfficiencyCorrected_phi->SetTitle("#phi corrected efficiency");
-   HEfficiencyCorrected_phi->SetStats(0);
-   TH1D *HEfficiencyCorrected_pt = ProjectZ(&HRecoTrackCorrected, "HEfficiencyCorrected_pt");
-   HEfficiencyCorrected_pt->Divide(ProjectZ(&HGenTrack));
-   HEfficiencyCorrected_pt->SetTitle("p_{T} corrected efficiency");
-   HEfficiencyCorrected_pt->SetStats(0);
+
+   // Calculate efficiencies and errors
+   //TH1D* HEfficiency_eta = new TH1D("HEfficiency_eta", "#eta Efficiency", NEta, EtaBins);
+   //TH1D* HEfficiency_phi = new TH1D("HEfficiency_phi", "#phi Efficiency", NPhi, PhiBins);
+   //TH1D* HEfficiency_pt  = new TH1D("HEfficiency_pt", "p_{T} Efficiency", NPT, PTBins);
    
+   TH1D* HEfficiency_eta = CalculateEfficiencyAndError("HEfficiency_eta", ProjectX(&HRecoTrack,"hr_px"), HGenTrack_px);
+   TH1D* HEfficiency_phi = CalculateEfficiencyAndError("HEfficiency_phi", ProjectY(&HRecoTrack,"hr_py"), HGenTrack_py);
+   TH1D* HEfficiency_pt  = CalculateEfficiencyAndError("HEfficiency_pt" , ProjectZ(&HRecoTrack,"hr_pz"), HGenTrack_pz);
+
+   //TH1D *HEfficiencyCorrected_eta = ProjectX(&HRecoTrackCorrected, "HEfficiencyCorrected_eta");
+   //TH1D *HEfficiencyCorrected_phi = ProjectY(&HRecoTrackCorrected, "HEfficiencyCorrected_phi");
+   //TH1D *HEfficiencyCorrected_pt = ProjectZ(&HRecoTrackCorrected, "HEfficiencyCorrected_pt");
+
+   //TH1D *HEfficiencyCorrected_eta = new TH1D("HEfficiencyCorrected_eta", "#eta Corrected Efficiency", NEta, EtaBins);
+   //TH1D *HEfficiencyCorrected_phi = new TH1D("HEfficiencyCorrected_phi", "#phi Corrected Efficiency", NPhi, PhiBins);
+   //TH1D *HEfficiencyCorrected_pt  = new TH1D("HEfficiencyCorrected_pt", "p_{T} Corrected Efficiency", NPT, PTBins);
+
+   TH1D *HEfficiencyCorrected_eta = CalculateEfficiencyAndError("HEfficiencyCorrected_eta", ProjectX(&HRecoTrackCorrected,"hrc_px"), HGenTrack_px);
+   TH1D *HEfficiencyCorrected_phi = CalculateEfficiencyAndError("HEfficiencyCorrected_phi", ProjectY(&HRecoTrackCorrected,"hrc_py"), HGenTrack_py);
+   TH1D *HEfficiencyCorrected_pt  = CalculateEfficiencyAndError("HEfficiencyCorrected_pt" , ProjectZ(&HRecoTrackCorrected,"hrc_pz"), HGenTrack_pz);
+
+   //TH1D *HEfficiencyResCorrected_eta = ProjectX(&HRecoTrackResCorrected,"HEfficiencyResCorrected_eta");
+   //TH1D *HEfficiencyResCorrected_phi = ProjectY(&HRecoTrackResCorrected,"HEfficiencyResCorrected_phi");
+   //TH1D *HEfficiencyResCorrected_pt = ProjectZ(&HRecoTrackResCorrected,"HEfficiencyResCorrected_pt");
+
+
+   //TH1D *HEfficiencyResCorrected_eta = new TH1D("HEfficiencyResCorrected_eta", "#eta Residual Corrected Efficiency", NEta, EtaBins);
+   //TH1D *HEfficiencyResCorrected_phi = new TH1D("HEfficiencyResCorrected_phi", "#phi Residual Corrected Efficiency", NPhi, PhiBins);
+   //TH1D *HEfficiencyResCorrected_pt  = new TH1D("HEfficiencyResCorrected_pt", "p_{T} Residual Corrected Efficiency", NPT, PTBins);
+
+   TH1D *HEfficiencyResCorrected_eta = CalculateEfficiencyAndError("HEfficiencyResCorrected_eta", ProjectX(&HRecoTrackResCorrected,"hrr_px"), HGenTrack_px);
+   TH1D *HEfficiencyResCorrected_phi = CalculateEfficiencyAndError("HEfficiencyResCorrected_phi", ProjectY(&HRecoTrackResCorrected,"hrr_py"), HGenTrack_py);
+   TH1D *HEfficiencyResCorrected_pt  = CalculateEfficiencyAndError("HEfficiencyResCorrected_pt" , ProjectZ(&HRecoTrackResCorrected,"hrr_pz"), HGenTrack_pz);
+
+   cout<<"HEfficiency_eta->GetEntries() = "<<HEfficiency_eta->GetEntries()<<endl;
+   cout<<"HEfficiencyCorrected_eta->GetEntries() = "<<HEfficiencyCorrected_eta->GetEntries()<<endl;
+   cout<<"HEfficiencyResCorrected_eta->GetEntries() = "<<HEfficiencyResCorrected_eta->GetEntries()<<endl;
+
+   cout<<"HEfficiency_eta->Integral() = "<<HEfficiency_eta->Integral()<<endl;
+   cout<<"HEfficiencyCorrected_eta->Integral() = "<<HEfficiencyCorrected_eta->Integral()<<endl;
+   cout<<"HEfficiencyResCorrected_eta->Integral() = "<<HEfficiencyResCorrected_eta->Integral()<<endl;
+
+   cout<<"HEfficiency_phi->GetEntries() = "<<HEfficiency_phi->GetEntries()<<endl;
+   cout<<"HEfficiencyCorrected_phi->GetEntries() = "<<HEfficiencyCorrected_phi->GetEntries()<<endl;
+   cout<<"HEfficiencyResCorrected_phi->GetEntries() = "<<HEfficiencyResCorrected_phi->GetEntries()<<endl;
+
+   cout<<"HEfficiency_phi->Integral() = "<<HEfficiency_phi->Integral()<<endl;
+   cout<<"HEfficiencyCorrected_phi->Integral() = "<<HEfficiencyCorrected_phi->Integral()<<endl;
+   cout<<"HEfficiencyResCorrected_phi->Integral() = "<<HEfficiencyResCorrected_phi->Integral()<<endl;
    
-   TH1D *HEfficiencyResCorrected_eta = ProjectX(&HRecoTrackResCorrected,"HEfficiencyResCorrected_eta");
-   HEfficiencyResCorrected_eta->Divide(ProjectX(&HGenTrack));
-   HEfficiencyResCorrected_eta->SetTitle("#eta residual corrected efficiency");
-   HEfficiencyResCorrected_eta->SetStats(0);
-   TH1D *HEfficiencyResCorrected_phi = ProjectY(&HRecoTrackResCorrected,"HEfficiencyResCorrected_phi");
-   HEfficiencyResCorrected_phi->Divide(ProjectY(&HGenTrack));
-   HEfficiencyResCorrected_phi->SetTitle("#phi residual corrected efficiency");
-   HEfficiencyResCorrected_phi->SetStats(0);
-   TH1D *HEfficiencyResCorrected_pt = ProjectZ(&HRecoTrackResCorrected,"HEfficiencyResCorrected_pt");
-   HEfficiencyResCorrected_pt->Divide(ProjectZ(&HGenTrack));
-   HEfficiencyResCorrected_pt->SetTitle("p_{T} residual corrected efficiency");
-   HEfficiencyResCorrected_pt->SetStats(0);
+
+   cout<<"HEfficiency_pt->GetEntries() = "<<HEfficiency_pt->GetEntries()<<endl;
+   cout<<"HEfficiencyCorrected_pt->GetEntries() = "<<HEfficiencyCorrected_pt->GetEntries()<<endl;
+   cout<<"HEfficiencyResCorrected_pt->GetEntries() = "<<HEfficiencyResCorrected_pt->GetEntries()<<endl;
+
+   cout<<"HEfficiency_pt->Integral() = "<<HEfficiency_pt->Integral()<<endl;
+   cout<<"HEfficiencyCorrected_pt->Integral() = "<<HEfficiencyCorrected_pt->Integral()<<endl;
+   cout<<"HEfficiencyResCorrected_pt->Integral() = "<<HEfficiencyResCorrected_pt->Integral()<<endl;
+
+
+
 
    // Calculate correction factors  
 
-   for(int i = 1; i <= HEfficiencyResCorrected_eta->GetNbinsX(); i++)
-      if(DoIteration && HEfficiencyResCorrected_eta->GetNbinsX() == hEtaCorrTotal_old->GetNbinsX())
-         hEtaCorrTotal->SetBinContent(i, HEfficiencyResCorrected_eta->GetBinContent(i) > 0 ? hEtaCorrTotal_old->GetBinContent(i) / HEfficiencyResCorrected_eta->GetBinContent(i) : 1.0);
-      else
-         hEtaCorrTotal->SetBinContent(i, HEfficiencyCorrected_eta->GetBinContent(i) > 0 ? 1.0 / HEfficiencyCorrected_eta->GetBinContent(i) : 1.0);
+   for (int i = 1; i <= HEfficiencyResCorrected_eta->GetNbinsX(); ++i) {
+      bool DoEtaIteration = DoIteration && HEfficiencyResCorrected_eta->GetNbinsX() == hEtaCorrTotal_old->GetNbinsX();
+      double eff = DoEtaIteration ? HEfficiencyResCorrected_eta->GetBinContent(i)/hEtaCorrTotal_old->GetBinContent(i) : HEfficiencyCorrected_eta->GetBinContent(i);
+      double err = (HGenTrack_px->GetBinContent(i) > 0 && eff>0 && eff<1) ? sqrt(eff * (1-eff) / (HGenTrack_px->GetBinContent(i))) : 0;
+      hEtaCorrTotal->SetBinContent(i, eff > 0 ? 1.0 / eff : 1.0);
+      hEtaCorrTotal->SetBinError(i, eff > 0 ? err / (eff * eff) : 0.0);
+   }
 
-   for(int i = 1; i <= HEfficiencyResCorrected_phi->GetNbinsX(); i++)
-      if(DoIteration && HEfficiencyResCorrected_phi->GetNbinsX() == hPhiCorrTotal_old->GetNbinsX())
-         hPhiCorrTotal->SetBinContent(i, HEfficiencyResCorrected_phi->GetBinContent(i) > 0 ? hPhiCorrTotal_old->GetBinContent(i) / HEfficiencyResCorrected_phi->GetBinContent(i) : 1.0);
-      else
-         hPhiCorrTotal->SetBinContent(i, HEfficiencyCorrected_phi->GetBinContent(i) > 0 ? 1.0 / HEfficiencyCorrected_phi->GetBinContent(i) : 1.0);
+      
+   for(int i = 1; i <= HEfficiencyResCorrected_phi->GetNbinsX(); i++){
+      bool DoPhiIteration = DoIteration && HEfficiencyResCorrected_phi->GetNbinsX() == hPhiCorrTotal_old->GetNbinsX();
+      double eff = DoPhiIteration ? HEfficiencyResCorrected_phi->GetBinContent(i)/hPhiCorrTotal_old->GetBinContent(i) : HEfficiencyCorrected_phi->GetBinContent(i);
+      double err = (HGenTrack_py->GetBinContent(i) > 0 && eff>0 && eff<1) ? sqrt(eff * (1-eff) / (HGenTrack_py->GetBinContent(i))) : 0;
+      hPhiCorrTotal->SetBinContent(i, eff > 0 ? 1.0 / eff : 1.0);
+      hPhiCorrTotal->SetBinError(i, eff > 0 ? err / (eff * eff) : 0.0);
+   }
 
-   for(int i = 1; i <= HEfficiencyResCorrected_pt->GetNbinsX(); i++)
-      if(DoIteration && HEfficiencyResCorrected_pt->GetNbinsX() == hPtCorrTotal_old->GetNbinsX())
-         hPtCorrTotal->SetBinContent(i, HEfficiencyResCorrected_pt->GetBinContent(i) > 0 ? hPtCorrTotal_old->GetBinContent(i) / HEfficiencyResCorrected_pt->GetBinContent(i) : 1.0);
-      else
-         hPtCorrTotal->SetBinContent(i, HEfficiencyCorrected_pt->GetBinContent(i) > 0 ? 1.0 / HEfficiencyCorrected_pt->GetBinContent(i) : 1.0);
 
+   for(int i = 1; i <= HEfficiencyResCorrected_pt->GetNbinsX(); i++){
+      bool DoPtIteration = DoIteration && HEfficiencyResCorrected_pt->GetNbinsX() == hPtCorrTotal_old->GetNbinsX();
+      double eff = DoPtIteration ? HEfficiencyResCorrected_pt->GetBinContent(i)/hPtCorrTotal_old->GetBinContent(i) : HEfficiencyCorrected_pt->GetBinContent(i);
+      double err = (HGenTrack_pz->GetBinContent(i) > 0 && eff>0 && eff<1) ? sqrt(eff * (1-eff) / (HGenTrack_pz->GetBinContent(i))) : 0;
+      hPtCorrTotal->SetBinContent(i, eff > 0 ? 1.0 / eff : 1.0);
+      hPtCorrTotal->SetBinError(i, eff > 0 ? err / (eff * eff) : 0.0);
+   }
 
    // Normalize correction factors
 
@@ -686,6 +767,34 @@ int main(int argc, char *argv[])
 
    hEtaCorrTotal->Scale(hEtaCorrTotal->GetNbinsX() / etaIntegral);
    hPhiCorrTotal->Scale(hPhiCorrTotal->GetNbinsX() / phiIntegral);
+
+
+   cout<<"==================="<<endl;
+
+   cout<<"HEfficiency_eta->GetEntries() = "<<HEfficiency_eta->GetEntries()<<endl;
+   cout<<"HEfficiencyCorrected_eta->GetEntries() = "<<HEfficiencyCorrected_eta->GetEntries()<<endl;
+   cout<<"HEfficiencyResCorrected_eta->GetEntries() = "<<HEfficiencyResCorrected_eta->GetEntries()<<endl;
+
+   cout<<"HEfficiency_eta->Integral() = "<<HEfficiency_eta->Integral()<<endl;
+   cout<<"HEfficiencyCorrected_eta->Integral() = "<<HEfficiencyCorrected_eta->Integral()<<endl;
+   cout<<"HEfficiencyResCorrected_eta->Integral() = "<<HEfficiencyResCorrected_eta->Integral()<<endl;
+
+   cout<<"HEfficiency_phi->GetEntries() = "<<HEfficiency_phi->GetEntries()<<endl;
+   cout<<"HEfficiencyCorrected_phi->GetEntries() = "<<HEfficiencyCorrected_phi->GetEntries()<<endl;
+   cout<<"HEfficiencyResCorrected_phi->GetEntries() = "<<HEfficiencyResCorrected_phi->GetEntries()<<endl;
+
+   cout<<"HEfficiency_phi->Integral() = "<<HEfficiency_phi->Integral()<<endl;
+   cout<<"HEfficiencyCorrected_phi->Integral() = "<<HEfficiencyCorrected_phi->Integral()<<endl;
+   cout<<"HEfficiencyResCorrected_phi->Integral() = "<<HEfficiencyResCorrected_phi->Integral()<<endl;
+   
+
+   cout<<"HEfficiency_pt->GetEntries() = "<<HEfficiency_pt->GetEntries()<<endl;
+   cout<<"HEfficiencyCorrected_pt->GetEntries() = "<<HEfficiencyCorrected_pt->GetEntries()<<endl;
+   cout<<"HEfficiencyResCorrected_pt->GetEntries() = "<<HEfficiencyResCorrected_pt->GetEntries()<<endl;
+
+   cout<<"HEfficiency_pt->Integral() = "<<HEfficiency_pt->Integral()<<endl;
+   cout<<"HEfficiencyCorrected_pt->Integral() = "<<HEfficiencyCorrected_pt->Integral()<<endl;
+   cout<<"HEfficiencyResCorrected_pt->Integral() = "<<HEfficiencyResCorrected_pt->Integral()<<endl;
 
    // Add plots to PDF
    PdfFile.AddTextPage("Track efficiency plots: #eta");
@@ -732,6 +841,20 @@ int main(int argc, char *argv[])
    hEtaCorrTotal_old->Write();
    hPhiCorrTotal_old->Write();
    hPtCorrTotal_old->Write();
+
+   HEfficiency_eta->Write();
+   HEfficiency_phi->Write();
+   HEfficiency_pt->Write();
+
+   HEfficiencyCorrected_eta->Write();
+   HEfficiencyCorrected_phi->Write();
+   HEfficiencyCorrected_pt->Write();
+
+   HEfficiencyResCorrected_eta->Write();
+   HEfficiencyResCorrected_phi->Write();
+   HEfficiencyResCorrected_pt->Write();
+
+
    
    OutputFile->Close();
 

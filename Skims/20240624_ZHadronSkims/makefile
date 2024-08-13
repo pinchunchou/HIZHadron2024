@@ -85,93 +85,100 @@ CERNBOX = /eos/home-p/pchou
 PrepareToRun:
 	bash PrepareInput.sh \
 		'$(PbPbSignalSingleMuon)/*/' \
-		20 LogData_v3a_ee/ $(EOSBase)/OutputData_v3a_ee/ \
+		20 LogData_v3c_ee/ $(EOSBase)/OutputData_v3c_ee/ \
 		--Fraction 1 --DoMuon false `./Expand Setting.dh PbPbSignalData Nominal`
 
 PrepareToRun3:
 	bash PrepareInput.sh \
 		'$(PbPbSignalDataRun3Multi)/*/' \
-		100 LogData3_v3a/ $(EOSBase)/OutputData3_v3a/ \
+		100 LogData3_v3c/ $(EOSBase)/OutputData3_v3c/ \
 		--Fraction 1 `./Expand Setting.dh PbPbSignalData Nominal`
 
 PrepareToRunMC:
 	bash PrepareInput.sh \
 		$(PbPbSignalMC)/ \
-		5 LogMC_v3a_ee/ $(EOSBase)/OutputMC_v3a_ee/ \
+		5 LogMC_v3c_ee/ $(EOSBase)/OutputMC_v3c_ee/ \
 		--Fraction 1 --DoMuon false `./Expand Setting.dh PbPbSignalMC Nominal`
 
 PrepareToRunMC3:
 	bash PrepareInput.sh \
 		$(PbPbSignalMCRun3)/ \
-		5 LogMC3_v3a/ $(EOSBase)/OutputMC3_v3a/ \
+		5 LogMC3_v3c/ $(EOSBase)/OutputMC3_v3c/ \
 		--Fraction 1 `./Expand Setting.dh PbPbSignalMC Nominal`
 
 PrepareToRunGenMC:
 	bash PrepareInput.sh \
 		$(PbPbSignalMC)/ \
-		5 LogGenMC_v3a_ee/ $(EOSBase)/OutputMCGen_v3a_ee/ \
+		5 LogGenMC_v3c_ee/ $(EOSBase)/OutputMCGen_v3c_ee/ \
  		--Fraction 1 --DoMuon false `./Expand Setting.dh PbPbSignalGenMC Nominal`
 
 PrepareToRunPP:
 	bash PrepareInput.sh \
 		$(PPSignalMC)/ \
-		10 LogPP_v3a_ee/ $(EOSBase)/OutputPPMC_v3a_ee/ \
+		10 LogPP_v3c_ee/ $(EOSBase)/OutputPPMC_v3c_ee/ \
  		--Fraction 1 --DoMuon false `./Expand Setting.dh PPSignalMC Nominal`
 
 PrepareToRunGenPP:
 	bash PrepareInput.sh \
 		$(PPSignalMC)/ \
-		10 LogGenPP_v3a_ee/ $(EOSBase)/OutputPPMCGen_v3a_ee/ \
+		10 LogGenPP_v3c_ee/ $(EOSBase)/OutputPPMCGen_v3c_ee/ \
  		--Fraction 1 --DoMuon false `./Expand Setting.dh PPSignalGenMC Nominal`
 
 PrepareToRunPPData:
 	bash PrepareInput.sh \
 		'$(PPSignalData)/*/' \
-		100 LogPPData_v3a_ee/ $(EOSBase)/OutputPPData_v3a_ee/ \
+		100 LogPPData_v3c_ee/ $(EOSBase)/OutputPPData_v3c_ee/ \
  		--Fraction 1 --DoMuon false `./Expand Setting.dh PPSignalData Nominal`
 
 PrepareToRunLoose:
 	bash PrepareInput.sh \
 		'$(PbPbSignalSingleMuon)/*/' \
-		5 LogDataLoose_v3a/ $(EOSBase)/OutputDataLoose_v3a/ \
+		5 LogDataLoose_v3c/ $(EOSBase)/OutputDataLoose_v3c/ \
 		--Fraction 1 `./Expand Setting.dh PbPbSignalData Loose`
 
 PrepareToRunMCLoose:
 	bash PrepareInput.sh \
 		$(PbPbSignalMC)/ \
-		5 LogMCLoose_v3a/ $(EOSBase)/OutputMCLoose_v3a/ \
+		5 LogMCLoose_v3c/ $(EOSBase)/OutputMCLoose_v3c/ \
 		--Fraction 1 `./Expand Setting.dh PbPbSignalMC Loose`
 
 PrepareToRunTight:
 	bash PrepareInput.sh \
 		'$(PbPbSignalSingleMuon)/*/' \
-		5 LogDataTight_v3a/ $(EOSBase)/OutputDataTight_v3a/ \
+		5 LogDataTight_v3c/ $(EOSBase)/OutputDataTight_v3c/ \
 		--Fraction 1 `./Expand Setting.dh PbPbSignalData Tight`
 
 PrepareToRunMCTight:
 	bash PrepareInput.sh \
 		$(PbPbSignalMC)/ \
-		5 LogMCTight_v3a/ $(EOSBase)/OutputMCTight_v3a/ \
+		5 LogMCTight_v3c/ $(EOSBase)/OutputMCTight_v3c/ \
 		--Fraction 1 `./Expand Setting.dh PbPbSignalMC Tight`
 
 PrepareToRunBackground:
 	bash PrepareInputRandomBackground.sh \
 		'$(PbPbSignalSingleMuon)/*/' \
-		10 LogDataBkg_v3a_ee/ $(EOSBase)/OutputDataBkg_v3a_ee/ \
+		10 LogDataBkg_v3c_ee/ $(EOSBase)/OutputDataBkg_v3c_ee/ \
 		$(PbPbBackgroundData)/ 100  --DoMuon false \
 		`./Expand Setting.dh PbPbBackgroundData Nominal`
 
 PrepareToRunMCBackground:
 	bash PrepareInputRandomBackground.sh \
 		$(PbPbSignalMC) \
-		5 LogMCBkg_v3a_ee/ $(EOSBase)/OutputMCBkg_v3a_ee/ \
+		5 LogMCBkg_v3c_ee/ $(EOSBase)/OutputMCBkg_v3c_ee/ \
 		$(PbPbBackgroundMC)/ 15 --DoMuon false \
 		`./Expand Setting.dh PbPbBackgroundMC Nominal`
+
+PrepareToRunMCBackgroundRes:
+	bash PrepareInputRandomBackground.sh \
+		$(PbPbSignalMC) \
+		5 LogMCBkg_v3c_ee_Rres/ $(EOSBase)/OutputMCBkg_v3c_ee_Rres/ \
+		$(PbPbBackgroundMC)/ 15 --DoMuon false \
+		`./Expand Setting.dh PbPbBackgroundMCRes Nominal`
 
 PrepareToRunRandomMCGenBackground:
 	bash PrepareInputRandomBackground.sh \
 		$(PbPbSignalMC) \
-		5 LogMCGenbkg_v3a_ee/ $(EOSBase)/OutputMCbkgGen_v3a_ee/ \
+		5 LogMCGenbkg_v3c_ee/ $(EOSBase)/OutputMCbkgGen_v3c_ee/ \
 		$(PbPbBackgroundMC)/ 15 --DoMuon false \
  		`./Expand Setting.dh PbPbBackgroundGenMC Nominal`
 
