@@ -54,8 +54,8 @@ void style(){
   gROOT->ForceStyle();
 }
 
-const char *typeofdata = "ZHadron2024/SkimBkgSub/ov1_v2fv3bgen_sub0/20240807/";
-const char *typeofdata1 = "ov1_v2fv3bgen_sub0";
+const char *typeofdata = "ZHadron2024/SkimBkgSub/ov1_v3c_sub0/20240814_3/";
+const char *typeofdata1 = "ov1_v3c_sub0";
 
 TChain *TreeSig = new TChain("Tree"); 
 TChain *TreeBkg = new TChain("Tree"); 
@@ -109,6 +109,7 @@ void DrawSimple_single(float ptL=20,float ptH=2000,float centL=0,float centH=90,
 	TCut evtCut = Form("zMass[0]>60&&zPt[0]>%f&&zPt[0]<%f&&hiBin>%f&&hiBin<%f",ptL,ptH,2*centL,2*centH);
 	TCut evtCutGen = Form("genZMass[0]>60&&genZPt[0]>%f&&genZPt[0]<%f&&hiBin>%f&&hiBin<%f",ptL,ptH,2*centL,2*centH);
 	TCut trkCut = Form("trackMuTagged==0&&trackPt>%f&&trackPt<%f",TptL,TptH);
+	TCut trkCutSum = Form("Sum$(trackMuTagged==0&&trackPt>%f&&trackPt<%f)>0",TptL,TptH);
 
 	TCut evtCutPP = Form("zMass[0]>60&&zPt[0]>%f&&zPt[0]<%f",ptL,ptH);
 
@@ -185,13 +186,13 @@ void DrawSimple_single(float ptL=20,float ptH=2000,float centL=0,float centH=90,
 	//TreePP0->Draw("0>>HNPP0", "NCollWeight"*(evtCutPP&&"NPU==0"),"goff");
 	//TreeBgG->Draw("0>>HNBgG", "NCollWeight"*evtCutGen,"goff");
 
-	TreeSig->Draw("0>>HNSig", "(NCollWeight*ZWeight*VZWeight)"*evtCut,"goff");
-	TreeBkg->Draw("0>>HNBkg", "(NCollWeight*ZWeight*VZWeight)"*evtCut,"goff");
-	TreeSgG->Draw("0>>HNSgG", "(NCollWeight*ZWeight*VZWeight)"*evtCutGen,"goff");
-	TreeBgG->Draw("0>>HNBgG", "(NCollWeight*ZWeight*VZWeight)"*evtCutGen,"goff");
+	TreeSig->Draw("0>>HNSig", "(NCollWeight*ZWeight*VZWeight)"*(evtCut&&trkCutSum),"goff");
+	TreeBkg->Draw("0>>HNBkg", "(NCollWeight*ZWeight*VZWeight)"*(evtCut&&trkCutSum),"goff");
+	TreeSgG->Draw("0>>HNSgG", "(NCollWeight*ZWeight*VZWeight)"*(evtCutGen&&trkCutSum),"goff");
+	TreeBgG->Draw("0>>HNBgG", "(NCollWeight*ZWeight*VZWeight)"*(evtCutGen&&trkCutSum),"goff");
 
 	//TreePP0->Draw("0>>HNPP0", "(NCollWeight*ZWeight*VZWeight)"*(evtCutPP&&"NPU==0"),"goff");
-	TreeSgG->Draw("0>>HNPP0", "(NCollWeight*ZWeight*VZWeight)"*(evtCutGen&&"Sum$(subevent==0)>0"),"goff");
+	TreeSgG->Draw("0>>HNPP0", "(NCollWeight*ZWeight*VZWeight)"*(evtCutGen&&trkCutSum&&"Sum$(subevent==0)>0"),"goff");
 
 	double t1N = HNSig.GetBinContent(1);
 	double t2N = HNBkg.GetBinContent(1);
@@ -524,12 +525,12 @@ int main(int argc, char *argv[]){
 
 	string filebase = "/eos/cms/store/group/phys_heavyions/pchou/SkimZHadron2024/";
 
-	TreeSig->Add((filebase + "OutputMC_v2f_ee/Result*.root").c_str());
-	//TreeBkg->Add((filebase + "OutputMCBkg_v2f_ee_Rres/Result*.root").c_str());
-	TreeBkg->Add((filebase + "OutputMCBkg_v2f_ee/Result*.root").c_str());
-	//TreePP0->Add((filebase + "OutputPPMC_v3b_ee/*.root").c_str());
-	TreeSgG->Add((filebase + "OutputMCGen_v3b_ee/Result*.root").c_str());
-	TreeBgG->Add((filebase + "OutputMCbkgGen_v3b_ee/Result*.root").c_str());
+	TreeSig->Add((filebase + "OutputMC_v3c_ee/Result*.root").c_str());
+	//TreeBkg->Add((filebase + "OutputMCBkg_v3c_ee_Rres/Result*.root").c_str());
+	TreeBkg->Add((filebase + "OutputMCBkg_v3c_ee/Result*.root").c_str());
+	//TreePP0->Add((filebase + "OutputPPMC_v3c_ee/*.root").c_str());
+	TreeSgG->Add((filebase + "OutputMCGen_v3c_ee/Result*.root").c_str());
+	TreeBgG->Add((filebase + "OutputMCbkgGen_v3c_ee/Result*.root").c_str());
 
 	//TreeSig->Add("/eos/cms/store/group/phys_heavyions/pchou/SkimMC_v14.root");
 	////TreeBkg->Add("/eos/cms/store/group/phys_heavyions/pchou/SkimMCbkg_v14.root");

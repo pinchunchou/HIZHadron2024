@@ -8,9 +8,9 @@ Data="--DoGenLevel false --IsData true"
 AODPF="--PFTree \"pfcandAnalyzer/pfTree\""
 MiniAODPF="--PFTree \"particleFlowAnalyser/pftree\""
 
-TrackResidualPathPbPb="${ProjectBase}/CommonCode/root/20240805_TrackResidualCorrection_V6_0_20.root,${ProjectBase}/CommonCode/root/20240805_TrackResidualCorrection_V6_20_60.root,${ProjectBase}/CommonCode/root/20240805_TrackResidualCorrection_V6_60_100.root,${ProjectBase}/CommonCode/root/20240805_TrackResidualCorrection_V6_100_200.root"
-TrackResidualPathPbPbMB="${ProjectBase}/CommonCode/root/20240805_TrackResidualCorrection_V6_0_20_MB.root,${ProjectBase}/CommonCode/root/20240805_TrackResidualCorrection_V6_20_60_MB.root,${ProjectBase}/CommonCode/root/20240805_TrackResidualCorrection_V6_60_100_MB.root,${ProjectBase}/CommonCode/root/20240805_TrackResidualCorrection_V6_100_200_MB.root"
-TrackResidualPathPP="${ProjectBase}/CommonCode/root/20240805_TrackResidualCorrection_V6_pp.root"
+TrackResidualPathPbPb="${ProjectBase}/CommonCode/root/20240812_TrackResidualCorrection_V3_0_20.root,${ProjectBase}/CommonCode/root/20240812_TrackResidualCorrection_V3_20_60.root,${ProjectBase}/CommonCode/root/20240812_TrackResidualCorrection_V3_60_100.root,${ProjectBase}/CommonCode/root/20240812_TrackResidualCorrection_V3_100_200.root"
+TrackResidualPathPbPbMB="${ProjectBase}/CommonCode/root/20240812_TrackResidualCorrection_V3_0_20_MB.root,${ProjectBase}/CommonCode/root/20240812_TrackResidualCorrection_V3_20_60_MB.root,${ProjectBase}/CommonCode/root/20240812_TrackResidualCorrection_V3_60_100_MB.root,${ProjectBase}/CommonCode/root/20240812_TrackResidualCorrection_V3_100_200_MB.root"
+TrackResidualPathPP="${ProjectBase}/CommonCode/root/20240812_TrackResidualCorrection_V3_pp.root"
 
 #TrackResidualPathPbPb="${ProjectBase}/CommonCode/root/20230522_TrackResidualCorrection_V9_0_20.root,${ProjectBase}/CommonCode/root/20230522_TrackResidualCorrection_V9_20_60.root,${ProjectBase}/CommonCode/root/20230522_TrackResidualCorrection_V9_60_100.root,${ProjectBase}/CommonCode/root/20230522_TrackResidualCorrection_V9_100_200.root"
 #TrackResidualPathPP="${ProjectBase}/CommonCode/root/20230531_TrackResidualCorrection_V12_pp.root"

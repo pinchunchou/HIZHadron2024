@@ -65,7 +65,7 @@ public:
 
 int main(int argc, char *argv[]){
 
-   string Version = "V3c";
+   string Version = "V3d";
    CommandLine CL(argc, argv);
 
    vector<string> InputFileNames      = CL.GetStringVector("Input");
@@ -944,6 +944,8 @@ int main(int argc, char *argv[]){
                // Loop over reco tracks and build the correlation function
 
 
+               int NSigTrk = IsPP ? MSignalTrackPP.nTrk : MSignalTrack.PT->size();
+               int NSigGenTrk = MSignalGen.PT->size();
 
                int NGenTrack = DoGenCorrelation ? ( (MGen->PT->size() > MGen->Mult) ? MGen->Mult : MGen->PT->size() ) : 0; // To prevent some weird out_of_range errors.
                if(DoGenCorrelation && MGen->PT->size() < MGen->Mult){
@@ -952,6 +954,9 @@ int main(int argc, char *argv[]){
 
                int NTrack = DoGenCorrelation ? NGenTrack : (IsPP ? MTrackPP->nTrk : MTrack->TrackPT->size());
 
+               // Skip this event if signal track size is zero
+               NTrack = NSigTrk>0 ? NTrack : 0;
+               NGenTrack = NSigGenTrk>0 ? NGenTrack : 0;
 
                for(int itrack = 0; itrack < NTrack; itrack++)
                {

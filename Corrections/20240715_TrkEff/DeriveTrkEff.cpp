@@ -350,6 +350,11 @@ int main(int argc, char *argv[])
          else
             N_eles = 0;
 
+         if(DoZSelection == true && DoElectron == true && N_eles > MSignalGG.ElePt->size() ){
+            cerr<<"Warning: MSignalGG.NEle and N_eles > MSignalGG.ElePt->size(): "<< MSignalGG.NEle <<" or "<<N_eles<<" > "<< MSignalGG.ElePt->size()<<endl;
+            N_eles = MSignalGG.ElePt->size();
+         }
+
          for(int iele1 = 0; iele1 < N_eles; iele1++)
          {
 

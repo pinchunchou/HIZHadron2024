@@ -67,6 +67,9 @@
 * Version 3c - 2024 August 12
    * Deal with cases like MSignalGG.NEle > MSignalGG.ElePt->size() .
 
+* Version 3d - 2024 August 14
+   * Skip background event if there is no tracks on the signal side.
+
 ## Arguments
 
 | Argument | type | default | comments |

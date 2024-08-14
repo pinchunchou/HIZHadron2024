@@ -167,12 +167,12 @@ ExecuteZMassDraw: ZMassDraw.cpp
 
 DrawSimple: ExecuteSimple
 	time ./ExecuteSimple -ptL 40 -ptH 200 -centL 0 -centH 10 -TptL 1 -TptH 2  &
-	time ./ExecuteSimple -ptL 40 -ptH 200 -centL 0 -centH 10 -TptL 2 -TptH 4  &
-	time ./ExecuteSimple -ptL 40 -ptH 200 -centL 0 -centH 10 -TptL 4 -TptH 10  &
-	time ./ExecuteSimple -ptL 40 -ptH 200 -centL 0 -centH 30 -TptL 1 -TptH 2  &
-	time ./ExecuteSimple -ptL 40 -ptH 200 -centL 10 -centH 30 -TptL 1 -TptH 2 &
-	time ./ExecuteSimple -ptL 40 -ptH 200 -centL 30 -centH 50 -TptL 1 -TptH 2 &
-	time ./ExecuteSimple -ptL 40 -ptH 200 -centL 50 -centH 90 -TptL 1 -TptH 2  &
+	#time ./ExecuteSimple -ptL 40 -ptH 200 -centL 0 -centH 10 -TptL 2 -TptH 4  &
+	#time ./ExecuteSimple -ptL 40 -ptH 200 -centL 0 -centH 10 -TptL 4 -TptH 10  &
+	#time ./ExecuteSimple -ptL 40 -ptH 200 -centL 0 -centH 30 -TptL 1 -TptH 2  &
+	#time ./ExecuteSimple -ptL 40 -ptH 200 -centL 10 -centH 30 -TptL 1 -TptH 2 &
+	#time ./ExecuteSimple -ptL 40 -ptH 200 -centL 30 -centH 50 -TptL 1 -TptH 2 &
+	#time ./ExecuteSimple -ptL 40 -ptH 200 -centL 50 -centH 90 -TptL 1 -TptH 2  &
 
 ExecuteSimple: DrawSimple.cpp
 	g++ DrawSimple.cpp -I. -I$(ProjectBase)/CommonCode/include \
