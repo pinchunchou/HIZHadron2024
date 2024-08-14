@@ -944,7 +944,7 @@ int main(int argc, char *argv[]){
                // Loop over reco tracks and build the correlation function
 
 
-               int NSigTrk = IsPP ? MSignalTrackPP.nTrk : MSignalTrack.PT->size();
+               int NSigTrk = IsPP ? MSignalTrackPP.nTrk : MSignalTrack.TrackPT->size();
                int NSigGenTrk = MSignalGen.PT->size();
 
                int NGenTrack = DoGenCorrelation ? ( (MGen->PT->size() > MGen->Mult) ? MGen->Mult : MGen->PT->size() ) : 0; // To prevent some weird out_of_range errors.
