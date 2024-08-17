@@ -70,6 +70,9 @@
 * Version 3d - 2024 August 14
    * Skip background event if there is no tracks on the signal side.
 
+* Version 4 - 2024 August 16
+   * Fix background matching: FillEntry before break.
+
 ## Arguments
 
 | Argument | type | default | comments |

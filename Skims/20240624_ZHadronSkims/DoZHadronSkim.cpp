@@ -65,7 +65,7 @@ public:
 
 int main(int argc, char *argv[]){
 
-   string Version = "V3d";
+   string Version = "V4";
    CommandLine CL(argc, argv);
 
    vector<string> InputFileNames      = CL.GetStringVector("Input");
@@ -382,6 +382,10 @@ int main(int argc, char *argv[]){
          MZHadron.Event = MSignalEvent.Event;
          MZHadron.hiBin = MSignalEvent.hiBin;
 
+         //if(MSignalEvent.Event!=11959886) //test
+         //   continue;
+
+
          if(IsPP == false && IsData == true)   // need hiBin shifts!
          {
             MZHadron.hiBinUp   = GetHiBin(MSignalEvent.hiHF, 1);
@@ -577,6 +581,8 @@ int main(int argc, char *argv[]){
             } // Loop over gen muons ended
 
             // Loop over gen electrons
+            if(MZHadron.Event==11959886)
+               cout<<"MSignalGG.NMC = "<<MSignalGG.NMC<<endl;
 
             if(DoGenLevel == true && DoElectron == true && MSignalGG.NMC > 1)
             {
@@ -627,6 +633,9 @@ int main(int argc, char *argv[]){
                            E_MASS);
    
                      VGenZ = VGenEle1 + VGenEle2;
+
+                     if(MZHadron.Event==11959886)
+                        cout<<"VGenZ.M() = "<<VGenZ.M()<<endl;
 
                      if(VGenZ.M() < 60 || VGenZ.M() > 120)
                         continue;
@@ -733,6 +742,9 @@ int main(int argc, char *argv[]){
             else
             	N_eles = 0;
 
+            if(MZHadron.Event==11959886)
+               cout<<"MSignalGG.NEle = "<<MSignalGG.NEle<<", MSignalGG.ElePt->size() = "<<MSignalGG.ElePt->size()<<endl;
+
             if(DoElectron == true && N_eles > MSignalGG.ElePt->size() ){
                cerr<<"Warning: MSignalGG.NEle and N_eles > MSignalGG.ElePt->size(): "<< MSignalGG.NEle <<" or "<<N_eles<<" > "<< MSignalGG.ElePt->size()<<endl;
                N_eles = MSignalGG.ElePt->size();
@@ -776,6 +788,9 @@ int main(int argc, char *argv[]){
 
             		TLorentzVector Z = Ele1+Ele2;
             		double Zmass = Z.M();
+
+                  if(MZHadron.Event==11959886)
+                     cout<<"Zmass = "<<Zmass<<endl;
 
             		if(Zmass < 60 || Zmass > 120) continue;
             		//if(fabs(Z.Rapidity()) > 2.4) continue;
@@ -855,6 +870,7 @@ int main(int argc, char *argv[]){
             // Background matching 
             EventIndex Location;
 
+            //if(DoBackground == true && ((DoGenCorrelation == true && GoodGenZ == true) || (DoGenCorrelation == false && GoodRecoZ == true)) ) 
             if(DoBackground == true && (GoodGenZ == true || GoodRecoZ == true) ) 
             {
                // find the background event location based on HF
@@ -867,8 +883,10 @@ int main(int argc, char *argv[]){
                double HigherHF = max(SignalHF + HFTolerance, SignalHF * (1 + HFToleranceFraction)) - HFShift;
 
                //if(SignalHF < HFShift)
-               if(HigherHF < 0)
-                  continue;
+               if(HigherHF < 0){
+                  MZHadron.FillEntry();
+                  break;
+               }
 
                if(HFCeiling >= 0 && LowerHF > HFCeiling)
                   LowerHF = HFCeiling;
@@ -893,6 +911,7 @@ int main(int argc, char *argv[]){
                   UnmatchedTree.Fill();
                   printf("Warning!  Too few events matched.  Please enlarge tolerance or add more background files.  %f < %f - %f < %f, %f \n",
                      LowerHF, SignalHF, HFShift, HigherHF, MZHadron.SignalVZ);
+                  MZHadron.FillEntry();
                   break;
                }
 
@@ -902,6 +921,7 @@ int main(int argc, char *argv[]){
                //Assert(GoodIndices.size() > 0,
                //   Form("Warning!  Too few events matched.  Please enlarge tolerance or add more background files.  %f < %f - %f < %f, %f",
                //      LowerHF, SignalHF, HFShift, HigherHF, MZHadron.SignalVZ));
+
 
                int Index = rand() % GoodIndices.size();
 
@@ -929,11 +949,13 @@ int main(int argc, char *argv[]){
                   else
                      MBackgroundTrack[Location.File]->GetEntry(Location.Event);
                }
+
+
             } // Background matching ended
 
             // Z-track correlation
 
-            if((DoGenCorrelation == true && GoodGenZ == true) || (DoGenCorrelation == false && GoodRecoZ == true))
+            if(((DoGenCorrelation == true && GoodGenZ == true) || (DoGenCorrelation == false && GoodRecoZ == true)))
             {
 
                
@@ -1082,6 +1104,8 @@ int main(int argc, char *argv[]){
 
 
             // Loop over gen tracks
+            //if(DoGenLevel == true && GoodGenZ == true)
+            //if(((DoGenCorrelation == true && GoodGenZ == true) || (DoGenCorrelation == false && GoodRecoZ == true)) && MZHadron.bestZgenIdx >= 0)
             if(DoGenLevel == true && GoodGenZ == true)
             {
                GenParticleTreeMessenger *MGen = DoBackground ? MBackgroundGen[Location.File] : &MSignalGen;

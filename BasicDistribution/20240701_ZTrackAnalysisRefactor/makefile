@@ -166,7 +166,8 @@ ExecuteZMassDraw: ZMassDraw.cpp
 		-o ExecuteDrawZMass `root-config --cflags --libs` -std=c++17
 
 DrawSimple: ExecuteSimple
-	time ./ExecuteSimple -ptL 40 -ptH 200 -centL 0 -centH 10 -TptL 1 -TptH 2  &
+	time ./ExecuteSimple -ptL 40 -ptH 200 -centL 0 -centH 10 -TptL 1 -TptH 2  -isRres true &
+	time ./ExecuteSimple -ptL 40 -ptH 200 -centL 0 -centH 10 -TptL 1 -TptH 2  -isRres false &
 	#time ./ExecuteSimple -ptL 40 -ptH 200 -centL 0 -centH 10 -TptL 2 -TptH 4  &
 	#time ./ExecuteSimple -ptL 40 -ptH 200 -centL 0 -centH 10 -TptL 4 -TptH 10  &
 	#time ./ExecuteSimple -ptL 40 -ptH 200 -centL 0 -centH 30 -TptL 1 -TptH 2  &

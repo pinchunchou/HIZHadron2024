@@ -54,8 +54,12 @@ void style(){
   gROOT->ForceStyle();
 }
 
-const char *typeofdata = "ZHadron2024/SkimBkgSub/ov1_v3c_sub0/20240814_3/";
-const char *typeofdata1 = "ov1_v3c_sub0";
+const char *typeofdata = "ZHadron2024/SkimBkgSub/ov1_v3d_sub0/20240815_2/";
+const char *typeofdata1 = "ov1_v3d_sub0";
+
+const char *typeofdataRres = "ZHadron2024/SkimBkgSub/ov1_v3d_sub0_Rres/20240815_2/";
+const char *typeofdataRres1 = "ov1_v3d_sub0_Rres";
+
 
 TChain *TreeSig = new TChain("Tree"); 
 TChain *TreeBkg = new TChain("Tree"); 
@@ -73,7 +77,7 @@ void DefinePhiRangeCorrelation() {
     );
 }
 
-void DrawSimple_single(float ptL=20,float ptH=2000,float centL=0,float centH=90,float TptL=0,float TptH=10000){
+void DrawSimple_single(float ptL=20,float ptH=2000,float centL=0,float centH=90,float TptL=0,float TptH=10000, bool isRres = false){
 
 	DefinePhiRangeCorrelation();
 
@@ -106,12 +110,12 @@ void DrawSimple_single(float ptL=20,float ptH=2000,float centL=0,float centH=90,
 	*/
 
 	//TCut evtCut = "zMass>60&&zPt>5";//
-	TCut evtCut = Form("zMass[0]>60&&zPt[0]>%f&&zPt[0]<%f&&hiBin>%f&&hiBin<%f",ptL,ptH,2*centL,2*centH);
-	TCut evtCutGen = Form("genZMass[0]>60&&genZPt[0]>%f&&genZPt[0]<%f&&hiBin>%f&&hiBin<%f",ptL,ptH,2*centL,2*centH);
+	TCut evtCut = Form("bestZidx==0&&zMass[0]>60&&zPt[0]>%f&&zPt[0]<%f&&hiBin>%f&&hiBin<%f",ptL,ptH,2*centL,2*centH);
+	TCut evtCutGen = Form("bestZgenIdx==0&&genZMass[0]>60&&genZPt[0]>%f&&genZPt[0]<%f&&hiBin>%f&&hiBin<%f",ptL,ptH,2*centL,2*centH);
 	TCut trkCut = Form("trackMuTagged==0&&trackPt>%f&&trackPt<%f",TptL,TptH);
 	TCut trkCutSum = Form("Sum$(trackMuTagged==0&&trackPt>%f&&trackPt<%f)>0",TptL,TptH);
 
-	TCut evtCutPP = Form("zMass[0]>60&&zPt[0]>%f&&zPt[0]<%f",ptL,ptH);
+	TCut evtCutPP = Form("bestZidx==0&&zMass[0]>60&&zPt[0]>%f&&zPt[0]<%f",ptL,ptH);
 
 /*
 	TreeSig->SetAlias("TrackEta", "(trackDeta+zEta[0])");
@@ -332,7 +336,7 @@ void DrawSimple_single(float ptL=20,float ptH=2000,float centL=0,float centH=90,
 
 	// == Start drawing == //
 
-   gSystem->Exec(Form("mkdir -p /eos/user/p/pchou/figs/%s/%s",typeofdata,HistName.c_str()));
+  
 
    double max1 = d10->GetMaximum();
    double max2 = d20->GetMaximum();
@@ -498,14 +502,25 @@ void DrawSimple_single(float ptL=20,float ptH=2000,float centL=0,float centH=90,
   Gen_to_pp->Draw("hist ep same");
   horiz_line->Draw("hist same");
 
-  c->SaveAs(Form("/eos/user/p/pchou/figs/%s/%s/Ztrack_%s_com_%.0f_%.0f_%.0f_%.0f_%.0f_%.0f.png",typeofdata,HistName.c_str(),typeofdata1,ptL,ptH,centL,centH,TptL,TptH)); 
+  if(isRres)
+  	gSystem->Exec(Form("mkdir -p /eos/user/p/pchou/figs/%s/%s",typeofdataRres,HistName.c_str()));
+  else
+  	gSystem->Exec(Form("mkdir -p /eos/user/p/pchou/figs/%s/%s",typeofdata,HistName.c_str()));
+
+  if(isRres)
+  	c->SaveAs(Form("/eos/user/p/pchou/figs/%s/%s/Ztrack_%s_com_%.0f_%.0f_%.0f_%.0f_%.0f_%.0f.png",typeofdataRres,HistName.c_str(),typeofdataRres1,ptL,ptH,centL,centH,TptL,TptH));
+  else
+  	c->SaveAs(Form("/eos/user/p/pchou/figs/%s/%s/Ztrack_%s_com_%.0f_%.0f_%.0f_%.0f_%.0f_%.0f.png",typeofdata,HistName.c_str(),typeofdata1,ptL,ptH,centL,centH,TptL,TptH)); 
    
   d4->SetFillStyle(0);
   d5->SetFillStyle(0);
   d10->SetMaximum(12);
   d20->SetMaximum(12);
 
-  c->SaveAs(Form("/eos/user/p/pchou/figs/%s/%s/Ztrack_%s_com_%.0f_%.0f_%.0f_%.0f_%.0f_%.0f_low.png",typeofdata,HistName.c_str(),typeofdata1,ptL,ptH,centL,centH,TptL,TptH)); 
+  if(isRres)
+  	c->SaveAs(Form("/eos/user/p/pchou/figs/%s/%s/Ztrack_%s_com_%.0f_%.0f_%.0f_%.0f_%.0f_%.0f.png",typeofdataRres,HistName.c_str(),typeofdataRres1,ptL,ptH,centL,centH,TptL,TptH));
+  else
+  	c->SaveAs(Form("/eos/user/p/pchou/figs/%s/%s/Ztrack_%s_com_%.0f_%.0f_%.0f_%.0f_%.0f_%.0f_low.png",typeofdata,HistName.c_str(),typeofdata1,ptL,ptH,centL,centH,TptL,TptH)); 
 
 }
 
@@ -522,15 +537,20 @@ int main(int argc, char *argv[]){
 	double TptL                  = CL.GetDouble("TptL", 1);
 	double TptH                  = CL.GetDouble("TptH", 1000);
 
+	bool isRres					 = CL.GetBool("isRres",false);
 
 	string filebase = "/eos/cms/store/group/phys_heavyions/pchou/SkimZHadron2024/";
 
 	TreeSig->Add((filebase + "OutputMC_v3c_ee/Result*.root").c_str());
-	//TreeBkg->Add((filebase + "OutputMCBkg_v3c_ee_Rres/Result*.root").c_str());
-	TreeBkg->Add((filebase + "OutputMCBkg_v3c_ee/Result*.root").c_str());
+
+	if(isRres)
+		TreeBkg->Add((filebase + "OutputMCBkg_v3d_ee_Rres/Result*.root").c_str());
+	else
+		TreeBkg->Add((filebase + "OutputMCBkg_v3d_ee/Result*.root").c_str());
+
 	//TreePP0->Add((filebase + "OutputPPMC_v3c_ee/*.root").c_str());
 	TreeSgG->Add((filebase + "OutputMCGen_v3c_ee/Result*.root").c_str());
-	TreeBgG->Add((filebase + "OutputMCbkgGen_v3c_ee/Result*.root").c_str());
+	TreeBgG->Add((filebase + "OutputMCbkgGen_v3d_ee/Result*.root").c_str());
 
 	//TreeSig->Add("/eos/cms/store/group/phys_heavyions/pchou/SkimMC_v14.root");
 	////TreeBkg->Add("/eos/cms/store/group/phys_heavyions/pchou/SkimMCbkg_v14.root");
@@ -539,7 +559,7 @@ int main(int argc, char *argv[]){
 	////TreeBgG->Add("/eos/cms/store/group/phys_heavyions/pchou/SkimMCbkgGen_v14.root");
 
 
-	DrawSimple_single(ptL,ptH,centL,centH,TptL,TptH);
+	DrawSimple_single(ptL,ptH,centL,centH,TptL,TptH,isRres);
 
 
 	//DrawSimple_single(40,200,0,10,1,2);
