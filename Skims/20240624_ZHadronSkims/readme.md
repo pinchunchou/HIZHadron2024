@@ -73,6 +73,9 @@
 * Version 4 - 2024 August 16
    * Fix background matching: FillEntry before break.
 
+* Version 4a - 2024 August 20
+   * Fix background gen: GetEntry when DoGenLevel, not only DoGenCorrelation.
+
 ## Arguments
 
 | Argument | type | default | comments |

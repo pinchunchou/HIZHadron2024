@@ -166,8 +166,11 @@ ExecuteZMassDraw: ZMassDraw.cpp
 		-o ExecuteDrawZMass `root-config --cflags --libs` -std=c++17
 
 DrawSimple: ExecuteSimple
-	time ./ExecuteSimple -ptL 40 -ptH 200 -centL 0 -centH 10 -TptL 1 -TptH 2  -isRres true &
-	time ./ExecuteSimple -ptL 40 -ptH 200 -centL 0 -centH 10 -TptL 1 -TptH 2  -isRres false &
+	mkdir -p log
+	time ./ExecuteSimple -ptL 40 -ptH 200 -centL 0 -centH 10 -TptL 1 -TptH 2  -isRres true \
+	 > log/DrawSimple_40_200_0_10_1_20_Rres.out 2> log/DrawSimple_40_200_0_10_1_20_Rres.err < /dev/null &
+	time ./ExecuteSimple -ptL 40 -ptH 200 -centL 0 -centH 10 -TptL 1 -TptH 2  -isRres false \
+	> log/DrawSimple_40_200_0_10_1_20.out 2> log/DrawSimple_40_200_0_10_1_20.err < /dev/null &
 	#time ./ExecuteSimple -ptL 40 -ptH 200 -centL 0 -centH 10 -TptL 2 -TptH 4  &
 	#time ./ExecuteSimple -ptL 40 -ptH 200 -centL 0 -centH 10 -TptL 4 -TptH 10  &
 	#time ./ExecuteSimple -ptL 40 -ptH 200 -centL 0 -centH 30 -TptL 1 -TptH 2  &
@@ -182,12 +185,12 @@ ExecuteSimple: DrawSimple.cpp
 
 DrawNTrk: ExecuteNTrk
 	time ./ExecuteNTrk -ptL 40 -ptH 200 -centL 0  -centH 10 -TptL 1 -TptH 2  -MaxNtrk 4000 &
-	time ./ExecuteNTrk -ptL 40 -ptH 200 -centL 0  -centH 10 -TptL 2 -TptH 4  -MaxNtrk 1000 &
-	time ./ExecuteNTrk -ptL 40 -ptH 200 -centL 0  -centH 10 -TptL 4 -TptH 10 -MaxNtrk 100 &
-	time ./ExecuteNTrk -ptL 40 -ptH 200 -centL 0  -centH 30 -TptL 1 -TptH 2  -MaxNtrk 4000 &
-	time ./ExecuteNTrk -ptL 40 -ptH 200 -centL 10 -centH 30 -TptL 1 -TptH 2  -MaxNtrk 4000 &
-	time ./ExecuteNTrk -ptL 40 -ptH 200 -centL 30 -centH 50 -TptL 1 -TptH 2  -MaxNtrk 1500 &
-	time ./ExecuteNTrk -ptL 40 -ptH 200 -centL 50 -centH 90 -TptL 1 -TptH 2  -MaxNtrk 600 &
+	#time ./ExecuteNTrk -ptL 40 -ptH 200 -centL 0  -centH 10 -TptL 2 -TptH 4  -MaxNtrk 1000 &
+	#time ./ExecuteNTrk -ptL 40 -ptH 200 -centL 0  -centH 10 -TptL 4 -TptH 10 -MaxNtrk 100 &
+	#time ./ExecuteNTrk -ptL 40 -ptH 200 -centL 0  -centH 30 -TptL 1 -TptH 2  -MaxNtrk 4000 &
+	#time ./ExecuteNTrk -ptL 40 -ptH 200 -centL 10 -centH 30 -TptL 1 -TptH 2  -MaxNtrk 4000 &
+	#time ./ExecuteNTrk -ptL 40 -ptH 200 -centL 30 -centH 50 -TptL 1 -TptH 2  -MaxNtrk 1500 &
+	#time ./ExecuteNTrk -ptL 40 -ptH 200 -centL 50 -centH 90 -TptL 1 -TptH 2  -MaxNtrk 600 &
 
 ExecuteNTrk: DrawNTrk_simple.cpp
 	g++ DrawNTrk_simple.cpp -I. -I$(ProjectBase)/CommonCode/include \

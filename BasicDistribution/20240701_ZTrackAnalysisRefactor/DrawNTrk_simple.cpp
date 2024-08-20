@@ -27,8 +27,8 @@ TChain *TreeBkg = new TChain("Tree");
 TChain *TreeSgG = new TChain("Tree"); 
 TChain *TreeBgG = new TChain("Tree"); 
 
-const char *typeofdata = "ZHadron2024/DrawNTrk/ov1_v3a_sub0/20240730/";
-const char *typeofdata1 = "ov1_v3a_sub0";
+const char *typeofdata = "ZHadron2024/DrawNTrk/ov1_v3cv4_sub0_Rres_tol120/20240819/";
+const char *typeofdata1 = "ov1_v3cv4_sub0_Rres_tol120";
     
 string filebase = "/eos/cms/store/group/phys_heavyions/pchou/SkimZHadron2024/";
 
@@ -51,16 +51,17 @@ int main(int argc, char *argv[]){
     gStyle->SetOptStat(0);
 
     
-    TreeSig->Add((filebase + "OutputMC_v3a_ee/Result*.root").c_str());
-    TreeBkg->Add((filebase + "OutputMCBkg_v3a_ee/Result*.root").c_str());
-    TreeSgG->Add((filebase + "OutputMCGen_v3a_ee/Result*.root").c_str());
-    TreeBgG->Add((filebase + "OutputMCbkgGen_v3a_ee/Result*.root").c_str());
+    TreeSig->Add((filebase + "OutputMC_v3c_ee/Result*.root").c_str());
+    TreeBkg->Add((filebase + "OutputMCBkg_v4_ee_Rres_tol120/Result*.root").c_str());
+    TreeSgG->Add((filebase + "OutputMCGen_v3c_ee/Result*.root").c_str());
+    TreeBgG->Add((filebase + "OutputMCbkgGen_v4_ee_tol120/Result*.root").c_str());
     
     //float ptL=40, ptH=200, centL=0, centH=10, TptL=1, TptH=2;
     
     TCut evtCut = Form("zMass[0]>60&&zPt[0]>%f&&zPt[0]<%f&&hiBin>%f&&hiBin<%f",ptL,ptH,2*centL,2*centH);
     TCut evtCutGen = Form("genZMass[0]>60&&genZPt[0]>%f&&genZPt[0]<%f&&hiBin>%f&&hiBin<%f",ptL,ptH,2*centL,2*centH);
     string trkCut = Form("trackMuTagged==0&&trackPt>%f&&trackPt<%f",TptL,TptH);
+    string trkCutGen = Form("GenTrackMuTagged==0&&GenTrackPt>%f&&GenTrackPt<%f",TptL,TptH);
     
     TH1D* d1 =  new TH1D( "d1","",Nbins,MinNtrk,MaxNtrk);
     TH1D* d2 =  new TH1D( "d2","",Nbins,MinNtrk,MaxNtrk);
@@ -70,6 +71,8 @@ int main(int argc, char *argv[]){
     TH1D* d6 =  new TH1D( "d6","",Nbins,MinNtrk,MaxNtrk);
     TH1D* d7 =  new TH1D( "d7","",Nbins,MinNtrk,MaxNtrk);
     TH1D* d8 =  new TH1D( "d8","",Nbins,MinNtrk,MaxNtrk);
+    TH1D* d9 =  new TH1D( "d9","",Nbins,MinNtrk,MaxNtrk);
+    TH1D* d10= new TH1D( "d10","",Nbins,MinNtrk,MaxNtrk);
     
     
     TreeSig->Draw(Form("Sum$(trackWeight*trackResidualWeight*(%s))>>d1",trkCut.c_str()),"(NCollWeight*ZWeight*VZWeight)"*(evtCut),"goff");
@@ -83,6 +86,10 @@ int main(int argc, char *argv[]){
     
     TreeBgG->Draw(Form("Sum$(trackWeight*trackResidualWeight*(%s))>>d7",trkCut.c_str()),"(NCollWeight*ZWeight*VZWeight)"*(evtCutGen),"goff");
     TreeBgG->Draw(Form("Sum$((%s))>>d8",trkCut.c_str()),(evtCutGen),"goff");
+
+    TreeBkg->Draw(Form("Sum$((%s))>>d9",trkCutGen.c_str()),(evtCutGen),"goff");
+    TreeBgG->Draw(Form("Sum$((%s))>>d10",trkCutGen.c_str()),(evtCutGen),"goff");
+
     
     d1->Sumw2();
     d2->Sumw2();
@@ -92,6 +99,9 @@ int main(int argc, char *argv[]){
     d6->Sumw2();
     d7->Sumw2();
     d8->Sumw2();
+    d9->Sumw2();
+    d10->Sumw2();
+
     
     
     d1->SetLineColor(kRed);
@@ -102,6 +112,8 @@ int main(int argc, char *argv[]){
     d6->SetLineColor(kGreen);
     d7->SetLineColor(kBlack);
     d8->SetLineColor(kBlack);
+    d9->SetLineColor(kViolet);
+    d10->SetLineColor(kViolet);
     
     d1->SetMarkerColor(kRed);
     d2->SetMarkerColor(kRed);
@@ -111,6 +123,10 @@ int main(int argc, char *argv[]){
     d6->SetMarkerColor(kGreen);
     d7->SetMarkerColor(kBlack);
     d8->SetMarkerColor(kBlack);
+    d9->SetMarkerColor(kViolet);
+    d10->SetMarkerColor(kViolet);
+    
+
     
     d1->SetMarkerStyle(20);
     d2->SetMarkerStyle(20);
@@ -120,6 +136,10 @@ int main(int argc, char *argv[]){
     d6->SetMarkerStyle(20);
     d7->SetMarkerStyle(20);
     d8->SetMarkerStyle(20);
+    d9->SetMarkerStyle(20);
+    d10->SetMarkerStyle(20);
+    
+
     
     d1->SetMarkerSize(0.5);
     d2->SetMarkerSize(0.5);
@@ -129,6 +149,10 @@ int main(int argc, char *argv[]){
     d6->SetMarkerSize(0.5);
     d7->SetMarkerSize(0.5);
     d8->SetMarkerSize(0.5);
+    d9->SetMarkerSize(0.5);
+    d10->SetMarkerSize(0.5);
+    
+
     
     d1->SetLineWidth(2);
     d2->SetLineWidth(2);
@@ -138,6 +162,10 @@ int main(int argc, char *argv[]){
     d6->SetLineWidth(2);
     d7->SetLineWidth(2);
     d8->SetLineWidth(2);
+    d9->SetLineWidth(2);
+    d10->SetLineWidth(2);
+    
+
 
     d1->SetFillStyle(3345);
     d2->SetFillStyle(3354);
@@ -147,6 +175,10 @@ int main(int argc, char *argv[]){
     d6->SetFillStyle(3354);
     d7->SetFillStyle(3345);
     d8->SetFillStyle(3354);
+    d9->SetFillStyle(3345);
+    d10->SetFillStyle(3354);
+    
+
 
     d1->SetFillColor(kRed);
     d3->SetFillColor(kBlue);
@@ -157,6 +189,9 @@ int main(int argc, char *argv[]){
     d6->SetFillColor(kGreen);
     d7->SetFillColor(kBlack);
     d8->SetFillColor(kBlack);
+    d9->SetFillColor(kViolet);
+    d10->SetFillColor(kViolet);
+
     
     d1->GetXaxis()->SetTitle("N_{trk}/Event");
     d2->GetXaxis()->SetTitle("N_{trk}/Event");
@@ -166,6 +201,9 @@ int main(int argc, char *argv[]){
     d6->GetXaxis()->SetTitle("N_{trk}/Event");
     d7->GetXaxis()->SetTitle("N_{trk}/Event");
     d8->GetXaxis()->SetTitle("N_{trk}/Event");
+    d9->GetXaxis()->SetTitle("N_{trk}/Event");
+    d10->GetXaxis()->SetTitle("N_{trk}/Event");
+
     
     d1->GetYaxis()->SetTitle("");
     d2->GetYaxis()->SetTitle("");
@@ -175,6 +213,10 @@ int main(int argc, char *argv[]){
     d6->GetYaxis()->SetTitle("");
     d7->GetYaxis()->SetTitle("");
     d8->GetYaxis()->SetTitle("");
+    d9->GetYaxis()->SetTitle("");
+    d10->GetYaxis()->SetTitle("");
+
+
 
     double x0 = 0.5, y0 = 0.46, deltay = 0.04;
 
@@ -217,6 +259,16 @@ int main(int argc, char *argv[]){
     latex8->SetNDC();
     latex8->SetTextFont(42);
     latex8->SetTextSize(0.025);
+
+    TLatex *latex9 = new TLatex(x0, y0-8*deltay, Form("#mu_{9} = %.2f #pm %.2f, #sigma_{9} = %.2f  #pm %.2f",  d9->GetMean(), d9->GetMeanError(),  d9->GetRMS(), d9->GetRMSError()));
+    latex9->SetNDC();
+    latex9->SetTextFont(42);
+    latex9->SetTextSize(0.025);
+
+    TLatex *latex10 = new TLatex(x0, y0-9*deltay, Form("#mu_{10} = %.2f #pm %.2f, #sigma_{10} = %.2f  #pm %.2f",  d10->GetMean(), d10->GetMeanError(),  d10->GetRMS(), d10->GetRMSError()));
+    latex10->SetNDC();
+    latex10->SetTextFont(42);
+    latex10->SetTextSize(0.025);
     
     d1->Scale(1./d1->Integral());
     d2->Scale(1./d2->Integral());
@@ -226,13 +278,19 @@ int main(int argc, char *argv[]){
     d6->Scale(1./d6->Integral());
     d7->Scale(1./d7->Integral());
     d8->Scale(1./d8->Integral());
+    d9->Scale(1./d9->Integral());
+    d10->Scale(1./d10->Integral());
+
+
 
     double max1 = max(d1->GetMaximum(),d2->GetMaximum());
     double max2 = max(d3->GetMaximum(),d4->GetMaximum());
     double max3 = max(d5->GetMaximum(),d6->GetMaximum());
     double max4 = max(d7->GetMaximum(),d8->GetMaximum());
+    double max5 = max(d9->GetMaximum(),d10->GetMaximum());
 
-    double max0 = max(max1,max(max2,max(max3,max4)));
+
+    double max0 = max(max1,max(max2,max(max3,max(max4,max5))));
     d1->SetMaximum(max0*1.2);
 
     
@@ -247,7 +305,10 @@ int main(int argc, char *argv[]){
     d6->Draw("hist same");
     d7->Draw("hist same");
     d8->Draw("hist same");
-    
+    d9->Draw("hist same");
+    d10->Draw("hist same");
+
+
     
     TLegend *leg = new TLegend(0.5,0.5,0.9,0.9);
     leg->AddEntry(d1,"1: Raw (weighted)","lf");
@@ -258,6 +319,8 @@ int main(int argc, char *argv[]){
     leg->AddEntry(d6,"6: Raw Gen (unweighted)","lf");
     leg->AddEntry(d7,"7: Background Gen (weighted)","lf");
     leg->AddEntry(d8,"8: Background Gen (unweighted)","lf");
+    leg->AddEntry(d9,"9: Background Reco Gen (unweighted)","lf");
+    leg->AddEntry(d10,"10: Background Gen Gen (unweighted)","lf");
     leg->SetFillColorAlpha(kWhite,0);
     leg->SetLineColor(kBlack);
     leg->SetLineWidth(1);
@@ -271,6 +334,10 @@ int main(int argc, char *argv[]){
     latex6->Draw();
     latex7->Draw();
     latex8->Draw();
+    latex9->Draw();
+    latex10->Draw();
+
+
 
     TLatex *latex = new TLatex(0.1, 0.92, Form("p_{T}^{Z} = %.0f-%.0f GeV/c, Centrality = %.0f-%.0f %%, p_{T}^{trk} = %.0f-%.0f GeV/c",ptL,ptH,centL,centH,TptL,TptH));
     latex->SetNDC();

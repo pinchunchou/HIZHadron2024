@@ -58,22 +58,22 @@ void ZPTCheck(TTree* Tree, string OutputBase, string OutputName);
 int main(int argc, char *argv[]){
    
    style();
-   string OutputBase = "/eos/user/p/pchou/figs/ZHadron2024/SumHFCheck/v2_PPMCReco/20240714/";
+   string OutputBase = "/eos/user/p/pchou/figs/ZHadron2024/SumHFCheck/v3c_PPMCReco/20240817/";
    string filebase = "/eos/cms/store/group/phys_heavyions/pchou/SkimZHadron2024/"; 
 
    TChain *TreePPGen  = new TChain("Tree");
    TChain *TreePPReco = new TChain("Tree");
    //TChain *TreePPData = new TChain("Tree");
 
-   TreePPGen->Add((filebase + "OutputPPMCGen_v1d_ee/*.root" ).c_str());
-   TreePPReco->Add((filebase + "OutputPPMC_v2_ee/*.root" ).c_str());
+   TreePPGen->Add((filebase + "OutputPPMCGen_v3c_ee/*.root" ).c_str());
+   TreePPReco->Add((filebase + "OutputPPMC_v3c_ee/*.root" ).c_str());
    //TreePPData->Add((filebase + "OutputPPData_v1d_ee/*.root" ).c_str());
 
-   PVCheck(TreePPGen, OutputBase, "SumHFCheck_v2_PPMCGen_NPU.png");
-   PVCheck(TreePPReco, OutputBase, "SumHFCheck_v2_PPMCReco_NPU.png");
+   PVCheck(TreePPGen, OutputBase, "SumHFCheck_v3c_PPMCGen_NPU.png");
+   PVCheck(TreePPReco, OutputBase, "SumHFCheck_v3c_PPMCReco_NPU.png");
 
-   ZPTCheck(TreePPGen, OutputBase, "SumHFCheck_v2_PPMCGen_ZPT.png");
-   ZPTCheck(TreePPReco, OutputBase, "SumHFCheck_v2_PPMCReco_ZPT.png");
+   ZPTCheck(TreePPGen, OutputBase, "SumHFCheck_v3c_PPMCGen_ZPT.png");
+   ZPTCheck(TreePPReco, OutputBase, "SumHFCheck_v3c_PPMCReco_ZPT.png");
 
 
    return 0;

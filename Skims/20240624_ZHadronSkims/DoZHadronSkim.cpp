@@ -65,7 +65,7 @@ public:
 
 int main(int argc, char *argv[]){
 
-   string Version = "V4";
+   string Version = "V4a";
    CommandLine CL(argc, argv);
 
    vector<string> InputFileNames      = CL.GetStringVector("Input");
@@ -214,7 +214,7 @@ int main(int argc, char *argv[]){
             MBackgroundGen[iB]->GetEntry(iE);
             MBackgroundPF[iB]->GetEntry(iE);
             EventIndex E;
-            E.HF = DoGenCorrelation ? GetGenHFSum(MBackgroundGen[iB], MinGenTrackPT) : (DoSumET ? MBackgroundEvent[iB]->hiHF : GetHFSum(MBackgroundPF[iB], MinPFPT));
+            E.HF = ( DoGenCorrelation || DoGenLevel && ForceGenMatch) ? GetGenHFSum(MBackgroundGen[iB], MinGenTrackPT) : (DoSumET ? MBackgroundEvent[iB]->hiHF : GetHFSum(MBackgroundPF[iB], MinPFPT));
             E.VZ = MBackgroundEvent[iB]->vz;
             E.GenHF = DoGenLevel ? GetGenHFSum(MBackgroundGen[iB], MinGenTrackPT) : -1;
             E.File = iB;
@@ -742,8 +742,8 @@ int main(int argc, char *argv[]){
             else
             	N_eles = 0;
 
-            if(MZHadron.Event==11959886)
-               cout<<"MSignalGG.NEle = "<<MSignalGG.NEle<<", MSignalGG.ElePt->size() = "<<MSignalGG.ElePt->size()<<endl;
+            //if(MZHadron.Event==11959886)
+            //   cout<<"MSignalGG.NEle = "<<MSignalGG.NEle<<", MSignalGG.ElePt->size() = "<<MSignalGG.ElePt->size()<<endl;
 
             if(DoElectron == true && N_eles > MSignalGG.ElePt->size() ){
                cerr<<"Warning: MSignalGG.NEle and N_eles > MSignalGG.ElePt->size(): "<< MSignalGG.NEle <<" or "<<N_eles<<" > "<< MSignalGG.ElePt->size()<<endl;
@@ -885,6 +885,9 @@ int main(int argc, char *argv[]){
                //if(SignalHF < HFShift)
                if(HigherHF < 0){
                   MZHadron.FillEntry();
+                  UnmatchedHF = SignalHF;
+                  UnmatchedVZ = MZHadron.SignalVZ;
+                  UnmatchedTree.Fill();
                   break;
                }
 
@@ -905,6 +908,8 @@ int main(int argc, char *argv[]){
                   if(fabs(BackgroundIndices[i].VZ - MZHadron.SignalVZ) < VZTolerance)
                      GoodIndices.push_back(i);
 
+               //cout<<"GoodIndices.size() = "<<GoodIndices.size()<<endl;
+
                if(LowerIndex >= HigherIndex || GoodIndices.size() == 0){
                   UnmatchedHF = SignalHF;
                   UnmatchedVZ = MZHadron.SignalVZ;
@@ -924,7 +929,8 @@ int main(int argc, char *argv[]){
 
 
                int Index = rand() % GoodIndices.size();
-
+               //cout<<"Index = "<<Index<<endl;
+               //cout<<"GoodIndices[Index] = "<<GoodIndices[Index]<<endl;
                Location = BackgroundIndices[GoodIndices[Index]];
 
                // cout << "Index inside the array " << Index << endl;
@@ -940,28 +946,33 @@ int main(int argc, char *argv[]){
 
                // cout << Location.HF << endl;
 
-               if(DoGenCorrelation == true)
+               if(DoGenLevel == true)
                   MBackgroundGen[Location.File]->GetEntry(Location.Event);
-               else
+
+               if(DoGenCorrelation == false)
                {
                   if(IsPP == true)
                      MBackgroundTrackPP[Location.File]->GetEntry(Location.Event);
                   else
                      MBackgroundTrack[Location.File]->GetEntry(Location.Event);
                }
-
+               //cout<<"Location.Event = "<<Location.Event<<", Location.File = "<<Location.File<<", Location.HF = "<<Location.HF<<", Location.GenHF = "<<Location.GenHF<<endl;
 
             } // Background matching ended
 
             // Z-track correlation
 
+            //bool noreco = true;
+            //GenParticleTreeMessenger *MGen;
+
             if(((DoGenCorrelation == true && GoodGenZ == true) || (DoGenCorrelation == false && GoodRecoZ == true)))
             {
-
                
                PbPbTrackTreeMessenger *MTrack = DoBackground ? MBackgroundTrack[Location.File] : &MSignalTrack;
                TrackTreeMessenger *MTrackPP   = DoBackground ? MBackgroundTrackPP[Location.File] : &MSignalTrackPP;
                GenParticleTreeMessenger *MGen = DoBackground ? MBackgroundGen[Location.File] : &MSignalGen;
+
+               //noreco = false;
 
                // Loop over reco tracks and build the correlation function
 
@@ -970,6 +981,8 @@ int main(int argc, char *argv[]){
                int NSigGenTrk = MSignalGen.PT->size();
 
                int NGenTrack = DoGenCorrelation ? ( (MGen->PT->size() > MGen->Mult) ? MGen->Mult : MGen->PT->size() ) : 0; // To prevent some weird out_of_range errors.
+               
+               
                if(DoGenCorrelation && MGen->PT->size() < MGen->Mult){
                   cerr << "Warning: Less Gen tracks than Mult: " << MGen->PT->size() << " < " << MGen->Mult << endl;
                }
@@ -1102,7 +1115,6 @@ int main(int argc, char *argv[]){
 
             } // Z-track correlation loop ended
 
-
             // Loop over gen tracks
             //if(DoGenLevel == true && GoodGenZ == true)
             //if(((DoGenCorrelation == true && GoodGenZ == true) || (DoGenCorrelation == false && GoodRecoZ == true)) && MZHadron.bestZgenIdx >= 0)
@@ -1198,10 +1210,9 @@ int main(int argc, char *argv[]){
                   MZHadron.GenTrackCharge->push_back(TrackCharge);
                   //std::cout<<"pushed back"<<std::endl;
                }
-               
             } // Loop over gen tracks ended
 
-
+           
             //Do Z weights
             MZHadron.ZWeight = 1;
             if(DoGenCorrelation == false && MZHadron.zPt->size() > 0 && MZHadron.bestZidx >= 0 )

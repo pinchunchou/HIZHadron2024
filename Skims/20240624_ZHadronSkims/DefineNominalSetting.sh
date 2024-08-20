@@ -23,8 +23,8 @@ PbPbMBRecoTrack="--DoTrackEfficiency true --TrackEfficiencyPath ${ProjectBase}/C
 
 #BackgroundMC="   --DoBackground true --HFShift 0 --Tolerance 100000 --ToleranceFraction 0.001 --Oversample 1 --HFCeiling 134000" # 
 #BackgroundMC="   --DoBackground true --HFShift 766.28 --Tolerance 187.5 --ToleranceFraction 0.001 --Oversample 1 --HFCeiling 134000 --VZTolerance 2" # 
-BackgroundMC="   --DoBackground true --HFShift 766.28 --isMultiHFShift true --HFShifts 766.28,1051.1,1335.08,1615.82,1901.39,2174.45,2476.8,2693.89,3023.67,3460.22,3501.73,4487.32 --Tolerance 187.5 --ToleranceFraction 0.001 --Oversample 1 --HFCeiling 134000 --VZTolerance 2" # 
-BackgroundGenMC="--DoBackground true --HFShift 747.177 --Tolerance 187.5 --ToleranceFraction 0.001 --Oversample 1 --HFCeiling 156000 --VZTolerance 2"
+BackgroundMC="   --DoBackground true --HFShift 766.203 --isMultiHFShift true --HFShifts 766.203,1051.16,1335.08,1615.61,1901.31,2174.46,2476.89,2693.89,3023.67,3460.22,3501.73,4487.32 --Tolerance 120 --ToleranceFraction 0.001 --Oversample 1 --HFCeiling 134000 --VZTolerance 2" # 
+BackgroundGenMC="--DoBackground true --HFShift 747.177 --Tolerance 120 --ToleranceFraction 0.001 --Oversample 1 --HFCeiling 156000 --VZTolerance 2"
 BackgroundData=" --DoBackground true --HFShift 660  --Tolerance 150.0   --ToleranceFraction 0.001 --Oversample 25 --HFCeiling  70000"
 
 #BackgroundMC="   --DoBackground true --HFShift 682  --Tolerance 90 --ToleranceFraction 0.005 --Oversample 10 --HFCeiling 134000"
@@ -53,6 +53,10 @@ DHSet Setting.dh PbPbSignalGenMC     Nominal  string "$Common $MCGen --IsPP fals
 DHSet Setting.dh PbPbSignalData      Nominal  string "$Common $Data  --IsPP false $MiniAODPF $PbPbRecoTrack"
 DHSet Setting.dh PbPbBackgroundMCRes Nominal  string "$Common $MC    --IsPP false $MiniAODPF $PbPbRecoTrack    $BackgroundMC"
 DHSet Setting.dh PbPbBackgroundMC    Nominal  string "$Common $MC    --IsPP false $MiniAODPF $PbPbMBRecoTrack  $BackgroundMC"
+
+DHSet Setting.dh PbPbBackgroundMCResGenMatch Nominal  string "$Common $MC --ForceGenMatch true --IsPP false $MiniAODPF $PbPbRecoTrack    $BackgroundGenMC"
+DHSet Setting.dh PbPbBackgroundMCGenMatch    Nominal  string "$Common $MC --ForceGenMatch true --IsPP false $MiniAODPF $PbPbMBRecoTrack  $BackgroundGenMC"
+
 DHSet Setting.dh PbPbBackgroundGenMC Nominal  string "$Common $MCGen --IsPP false $MiniAODPF $GenTrack    	   $BackgroundGenMC"
 DHSet Setting.dh PbPbBackgroundData  Nominal  string "$Common $Data  --IsPP false $MiniAODPF $PbPbMBRecoTrack  $BackgroundData"
 DHSet Setting.dh PbPbBackgroundMC    UEUp25   string "$Common $MC    --IsPP false $MiniAODPF $PbPbMBRecoTrack  $BackgroundMCUEUp25"

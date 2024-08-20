@@ -54,11 +54,11 @@ void style(){
   gROOT->ForceStyle();
 }
 
-const char *typeofdata = "ZHadron2024/SkimBkgSub/ov1_v3d_sub0/20240815_2/";
-const char *typeofdata1 = "ov1_v3d_sub0";
+const char *typeofdata = "ZHadron2024/SkimBkgSub/ov1_v4_sub0_tol120/20240819/";
+const char *typeofdata1 = "ov1_v4_sub0_tol120";
 
-const char *typeofdataRres = "ZHadron2024/SkimBkgSub/ov1_v3d_sub0_Rres/20240815_2/";
-const char *typeofdataRres1 = "ov1_v3d_sub0_Rres";
+const char *typeofdataRres = "ZHadron2024/SkimBkgSub/ov1_v4_sub0_Rres_tol120/20240819/";
+const char *typeofdataRres1 = "ov1_v4_sub0_Rres_tol120";
 
 
 TChain *TreeSig = new TChain("Tree"); 
@@ -110,12 +110,12 @@ void DrawSimple_single(float ptL=20,float ptH=2000,float centL=0,float centH=90,
 	*/
 
 	//TCut evtCut = "zMass>60&&zPt>5";//
-	TCut evtCut = Form("bestZidx==0&&zMass[0]>60&&zPt[0]>%f&&zPt[0]<%f&&hiBin>%f&&hiBin<%f",ptL,ptH,2*centL,2*centH);
-	TCut evtCutGen = Form("bestZgenIdx==0&&genZMass[0]>60&&genZPt[0]>%f&&genZPt[0]<%f&&hiBin>%f&&hiBin<%f",ptL,ptH,2*centL,2*centH);
+	TCut evtCut = Form("NVertex==1&&bestZidx==0&&zMass[0]>60&&zPt[0]>%f&&zPt[0]<%f&&hiBin>%f&&hiBin<%f",ptL,ptH,2*centL,2*centH);
+	TCut evtCutGen = Form("NVertex==1&&bestZgenIdx==0&&genZMass[0]>60&&genZPt[0]>%f&&genZPt[0]<%f&&hiBin>%f&&hiBin<%f",ptL,ptH,2*centL,2*centH);
 	TCut trkCut = Form("trackMuTagged==0&&trackPt>%f&&trackPt<%f",TptL,TptH);
 	TCut trkCutSum = Form("Sum$(trackMuTagged==0&&trackPt>%f&&trackPt<%f)>0",TptL,TptH);
 
-	TCut evtCutPP = Form("bestZidx==0&&zMass[0]>60&&zPt[0]>%f&&zPt[0]<%f",ptL,ptH);
+	TCut evtCutPP = Form("NVertex==1&&bestZidx==0&&zMass[0]>60&&zPt[0]>%f&&zPt[0]<%f",ptL,ptH);
 
 /*
 	TreeSig->SetAlias("TrackEta", "(trackDeta+zEta[0])");
@@ -518,7 +518,7 @@ void DrawSimple_single(float ptL=20,float ptH=2000,float centL=0,float centH=90,
   d20->SetMaximum(12);
 
   if(isRres)
-  	c->SaveAs(Form("/eos/user/p/pchou/figs/%s/%s/Ztrack_%s_com_%.0f_%.0f_%.0f_%.0f_%.0f_%.0f.png",typeofdataRres,HistName.c_str(),typeofdataRres1,ptL,ptH,centL,centH,TptL,TptH));
+  	c->SaveAs(Form("/eos/user/p/pchou/figs/%s/%s/Ztrack_%s_com_%.0f_%.0f_%.0f_%.0f_%.0f_%.0f_low.png",typeofdataRres,HistName.c_str(),typeofdataRres1,ptL,ptH,centL,centH,TptL,TptH));
   else
   	c->SaveAs(Form("/eos/user/p/pchou/figs/%s/%s/Ztrack_%s_com_%.0f_%.0f_%.0f_%.0f_%.0f_%.0f_low.png",typeofdata,HistName.c_str(),typeofdata1,ptL,ptH,centL,centH,TptL,TptH)); 
 
@@ -544,13 +544,13 @@ int main(int argc, char *argv[]){
 	TreeSig->Add((filebase + "OutputMC_v3c_ee/Result*.root").c_str());
 
 	if(isRres)
-		TreeBkg->Add((filebase + "OutputMCBkg_v3d_ee_Rres/Result*.root").c_str());
+		TreeBkg->Add((filebase + "OutputMCBkg_v4_ee_Rres_tol120/Result*.root").c_str());
 	else
-		TreeBkg->Add((filebase + "OutputMCBkg_v3d_ee/Result*.root").c_str());
+		TreeBkg->Add((filebase + "OutputMCBkg_v4_ee_tol120/Result*.root").c_str());
 
 	//TreePP0->Add((filebase + "OutputPPMC_v3c_ee/*.root").c_str());
 	TreeSgG->Add((filebase + "OutputMCGen_v3c_ee/Result*.root").c_str());
-	TreeBgG->Add((filebase + "OutputMCbkgGen_v3d_ee/Result*.root").c_str());
+	TreeBgG->Add((filebase + "OutputMCbkgGen_v4_ee_tol120/Result*.root").c_str());
 
 	//TreeSig->Add("/eos/cms/store/group/phys_heavyions/pchou/SkimMC_v14.root");
 	////TreeBkg->Add("/eos/cms/store/group/phys_heavyions/pchou/SkimMCbkg_v14.root");
