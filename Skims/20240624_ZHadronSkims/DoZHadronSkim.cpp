@@ -65,7 +65,7 @@ public:
 
 int main(int argc, char *argv[]){
 
-   string Version = "V4a";
+   string Version = "V4b";
    CommandLine CL(argc, argv);
 
    vector<string> InputFileNames      = CL.GetStringVector("Input");
@@ -211,7 +211,10 @@ int main(int argc, char *argv[]){
             }
 
             MBackgroundEvent[iB]->GetEntry(iE);
-            MBackgroundGen[iB]->GetEntry(iE);
+            
+            if(DoGenLevel)
+               MBackgroundGen[iB]->GetEntry(iE);
+            
             MBackgroundPF[iB]->GetEntry(iE);
             EventIndex E;
             E.HF = ( DoGenCorrelation || DoGenLevel && ForceGenMatch) ? GetGenHFSum(MBackgroundGen[iB], MinGenTrackPT) : (DoSumET ? MBackgroundEvent[iB]->hiHF : GetHFSum(MBackgroundPF[iB], MinPFPT));
@@ -940,6 +943,7 @@ int main(int argc, char *argv[]){
                // cout << "From background event HF = " << MBackgroundEvent[Location.File]->hiHF << endl;
 
                MZHadron.BackgroundHF = Location.HF;
+               MZHadron.hiBinBackground = Location.hiBin;
               
                if(DoGenLevel == true)
                   MZHadron.BackgroundGenHF = Location.GenHF;
@@ -965,6 +969,7 @@ int main(int argc, char *argv[]){
             //bool noreco = true;
             //GenParticleTreeMessenger *MGen;
 
+
             if(((DoGenCorrelation == true && GoodGenZ == true) || (DoGenCorrelation == false && GoodRecoZ == true)))
             {
                
@@ -976,6 +981,7 @@ int main(int argc, char *argv[]){
 
                // Loop over reco tracks and build the correlation function
 
+               int trkHiBin = DoBackground ? MZHadron.hiBinBackground : MZHadron.hiBin;
 
                int NSigTrk = IsPP ? MSignalTrackPP.nTrk : MSignalTrack.TrackPT->size();
                int NSigGenTrk = MSignalGen.PT->size();
@@ -1095,18 +1101,20 @@ int main(int argc, char *argv[]){
                   MZHadron.trackY->push_back(TrackY);
                   MZHadron.trackCharge->push_back(TrackCharge);
 
+
+
                   double TrackCorrection = 1;
                   if(DoTrackEfficiency == true && DoGenCorrelation == false)
                   {
                      if(IsPP == true)
                         TrackCorrection = TrackEfficiencyPP->getCorrection(TrackPT, TrackEta);
                      else
-                        TrackCorrection = TrackEfficiencyPbPb->getCorrection(TrackPT, TrackEta, MZHadron.hiBin + MCHiBinShift);
+                        TrackCorrection = TrackEfficiencyPbPb->getCorrection(TrackPT, TrackEta, trkHiBin + MCHiBinShift);
                   }
                   double TrackResidualCorrection = 1;
                   if(DoTrackResidual == true && DoGenCorrelation == false)
                   {
-                     TrackResidualCorrection = TrackResidual.GetCorrectionFactor(TrackPT, TrackEta, TrackPhi, MZHadron.hiBin, AlternateResCorrection );
+                     TrackResidualCorrection = TrackResidual.GetCorrectionFactor(TrackPT, TrackEta, TrackPhi, trkHiBin, AlternateResCorrection );
                   }
                   MZHadron.trackWeight->push_back(TrackCorrection);
                   MZHadron.trackResidualWeight->push_back(TrackResidualCorrection);

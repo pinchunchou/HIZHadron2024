@@ -556,6 +556,7 @@ public:
    int hiBin;
    int hiBinUp;
    int hiBinDown;
+   int hiBinBackground;
    float hiHF;
 
    float SignalHF;

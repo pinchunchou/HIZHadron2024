@@ -58,22 +58,22 @@ void ZPTCheck(TTree* Tree, string OutputBase, string OutputName);
 int main(int argc, char *argv[]){
    
    style();
-   string OutputBase = "/eos/user/p/pchou/figs/ZHadron2024/SumHFCheck/v3c_PPMCReco/20240817/";
+   string OutputBase = "/eos/user/p/pchou/figs/ZHadron2024/SumHFCheck/v4a_PPMCReco_PF04/20240820/";
    string filebase = "/eos/cms/store/group/phys_heavyions/pchou/SkimZHadron2024/"; 
 
    TChain *TreePPGen  = new TChain("Tree");
    TChain *TreePPReco = new TChain("Tree");
    //TChain *TreePPData = new TChain("Tree");
 
-   TreePPGen->Add((filebase + "OutputPPMCGen_v3c_ee/*.root" ).c_str());
-   TreePPReco->Add((filebase + "OutputPPMC_v3c_ee/*.root" ).c_str());
+   TreePPGen->Add((filebase + "OutputPPMCGen_v4a_ee_PF04/*.root" ).c_str());
+   TreePPReco->Add((filebase + "OutputPPMC_v4a_ee_PF04/*.root" ).c_str());
    //TreePPData->Add((filebase + "OutputPPData_v1d_ee/*.root" ).c_str());
 
-   PVCheck(TreePPGen, OutputBase, "SumHFCheck_v3c_PPMCGen_NPU.png");
-   PVCheck(TreePPReco, OutputBase, "SumHFCheck_v3c_PPMCReco_NPU.png");
+   PVCheck(TreePPGen, OutputBase, "SumHFCheck_v4a_PPMCGen_NPU.png");
+   PVCheck(TreePPReco, OutputBase, "SumHFCheck_v4a_PPMCReco_NPU.png");
 
-   ZPTCheck(TreePPGen, OutputBase, "SumHFCheck_v3c_PPMCGen_ZPT.png");
-   ZPTCheck(TreePPReco, OutputBase, "SumHFCheck_v3c_PPMCReco_ZPT.png");
+   ZPTCheck(TreePPGen, OutputBase, "SumHFCheck_v4a_PPMCGen_ZPT.png");
+   ZPTCheck(TreePPReco, OutputBase, "SumHFCheck_v4a_PPMCReco_ZPT.png");
 
 
    return 0;
@@ -99,8 +99,8 @@ void PVCheck(TTree* Tree, string OutputBase, string OutputName)
    PSignalHFVsNPU.SetMarkerColor(kBlue);
    PSignalHFVsNPU.SetLineColor(kBlue);
 
-   PSignalHFVsNPV.SetMinimum(500);
-   PSignalHFVsNPU.SetMinimum(500);
+   PSignalHFVsNPV.SetMinimum(0);//500
+   PSignalHFVsNPU.SetMinimum(0);
    
    TLegend Legend(0.18, 0.78, 0.48, 0.90);
 
@@ -148,8 +148,8 @@ void ZPTCheck(TTree* Tree, string OutputBase, string OutputName){
 	PSignalHFVsZPT_NPV1.Fit(&FSignalHFVsZPT_NPV1,"E");
 	PSignalHFVsZPT_NPU0.Fit(&FSignalHFVsZPT_NPU0,"E");
 
-	PSignalHFVsZPT_NPV1.SetMinimum(600);
-	PSignalHFVsZPT_NPU0.SetMinimum(600);
+	PSignalHFVsZPT_NPV1.SetMinimum(200);//600
+	PSignalHFVsZPT_NPU0.SetMinimum(200);
 
 	TLegend Legend(0.18, 0.78, 0.48, 0.90);
 	Legend.SetFillStyle(0);

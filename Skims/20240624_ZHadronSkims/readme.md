@@ -76,6 +76,9 @@
 * Version 4a - 2024 August 20
    * Fix background gen: GetEntry when DoGenLevel, not only DoGenCorrelation.
 
+* Version 4b - 2024 August 26
+   * Add background hiBin, and background track weights use background hibin instead of signal hibin.
+   
 ## Arguments
 
 | Argument | type | default | comments |

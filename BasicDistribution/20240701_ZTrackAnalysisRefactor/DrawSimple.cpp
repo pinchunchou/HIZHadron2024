@@ -54,11 +54,11 @@ void style(){
   gROOT->ForceStyle();
 }
 
-const char *typeofdata = "ZHadron2024/SkimBkgSub/ov1_v4_sub0_tol120/20240819/";
-const char *typeofdata1 = "ov1_v4_sub0_tol120";
+const char *typeofdata = "ZHadron2024/SkimBkgSub/ov1_v4b_sub0_tol120_GenMatch/20240826/";
+const char *typeofdata1 = "ov1_v4b_sub0_tol120_GenMatch";
 
-const char *typeofdataRres = "ZHadron2024/SkimBkgSub/ov1_v4_sub0_Rres_tol120/20240819/";
-const char *typeofdataRres1 = "ov1_v4_sub0_Rres_tol120";
+const char *typeofdataRres = "ZHadron2024/SkimBkgSub/ov1_v4b_sub0_Rres_tol120_GenMatch/20240826/";
+const char *typeofdataRres1 = "ov1_v4b_sub0_Rres_tol120_GenMatch";
 
 
 TChain *TreeSig = new TChain("Tree"); 
@@ -540,13 +540,14 @@ int main(int argc, char *argv[]){
 	bool isRres					 = CL.GetBool("isRres",false);
 
 	string filebase = "/eos/cms/store/group/phys_heavyions/pchou/SkimZHadron2024/";
+	string cernbox = "/eos/home-p/pchou/SkimZHadron2024/";
 
 	TreeSig->Add((filebase + "OutputMC_v3c_ee/Result*.root").c_str());
 
 	if(isRres)
-		TreeBkg->Add((filebase + "OutputMCBkg_v4_ee_Rres_tol120/Result*.root").c_str());
+		TreeBkg->Add((cernbox + "OutputMCBkg_v4b_ee_Rres_GenMatch_tol120/Result*.root").c_str());
 	else
-		TreeBkg->Add((filebase + "OutputMCBkg_v4_ee_tol120/Result*.root").c_str());
+		TreeBkg->Add((cernbox + "OutputMCBkg_v4b_ee_GenMatch_tol120/Result*.root").c_str());
 
 	//TreePP0->Add((filebase + "OutputPPMC_v3c_ee/*.root").c_str());
 	TreeSgG->Add((filebase + "OutputMCGen_v3c_ee/Result*.root").c_str());

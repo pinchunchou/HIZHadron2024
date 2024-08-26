@@ -2312,6 +2312,7 @@ bool ZHadronMessenger::Initialize()
    Tree->SetBranchAddress("hiBin", &hiBin);
    Tree->SetBranchAddress("hiBinUp", &hiBinUp);
    Tree->SetBranchAddress("hiBinDown", &hiBinDown);
+   Tree->SetBranchAddress("hiBinBackground", &hiBinBackground);
    Tree->SetBranchAddress("hiHF", &hiHF);
    
    Tree->SetBranchAddress("SignalHF", &SignalHF);
@@ -2524,6 +2525,7 @@ bool ZHadronMessenger::SetBranch(TTree *T)
    Tree->Branch("hiBin",                  &hiBin,        "hiBin/I");
    Tree->Branch("hiBinUp",                &hiBinUp,      "hiBinUp/I");
    Tree->Branch("hiBinDown",              &hiBinDown,    "hiBinDown/I");
+   Tree->Branch("hiBinBackground",        &hiBinBackground, "hiBinBackground/I");
    Tree->Branch("hiHF",                   &hiHF,         "hiHF/F");
 
    Tree->Branch("SignalHF",               &SignalHF,     "SignalHF/F");
@@ -2805,6 +2807,7 @@ void ZHadronMessenger::CopyNonTrack(ZHadronMessenger &M)
    hiBin        = M.hiBin;
    hiBinUp      = M.hiBinUp;
    hiBinDown    = M.hiBinDown;
+   hiBinBackground = M.hiBinBackground;
    hiHF         = M.hiHF;
 
    SignalHF     = M.SignalHF;

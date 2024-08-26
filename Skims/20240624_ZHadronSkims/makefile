@@ -72,20 +72,26 @@ TestRunMCBackground: Execute
 		--Background $(PbPbBackgroundMC)/HiForestMiniAOD_8.root \
 		`./Expand Setting.dh PbPbBackgroundMC Nominal`
 
+TestRunMCBackgroundResGenMatch: Execute
+	./Execute --Input $(PbPbSignalMC)/HiForestMiniAOD_1.root \
+		--Output TestMCBkgResGenMatch.root --Fraction 1 --DoMuon false  --WithProgressBar true \
+		--Background $(PbPbBackgroundMC)/HiForestMiniAOD_8.root \
+		`./Expand Setting.dh PbPbBackgroundMCResGenMatch Nominal`
+
 TestRunMCGenBackground: Execute
-	./Execute --Input $(PbPbSignalMC)/HiForestMiniAOD_10.root \
-		--Output /tmp/$(USER)/TestMCGenBkg.root --Fraction 1  --DoMuon false --WithProgressBar true \
-		--Background $(PbPbBackgroundMC)/HiForestMiniAOD_17.root \
+	./Execute --Input $(PbPbSignalMC)/HiForestMiniAOD_1.root \
+		--Output TestMCGenBkg.root --Fraction 1  --DoMuon false --WithProgressBar true \
+		--Background $(PbPbBackgroundMC)/HiForestMiniAOD_8.root \
 		`./Expand Setting.dh PbPbBackgroundGenMC Nominal`
 
 EOSBase = /eos/cms/store/group/phys_heavyions/pchou/SkimZHadron2024
 AFSBase = /afs/cern.ch/user/p/pchou
-CERNBOX = /eos/home-p/pchou
+CERNBOX = /eos/home-p/pchou/SkimZHadron2024
 
 PrepareToRun:
 	bash PrepareInput.sh \
 		'$(PbPbSignalSingleMuon)/*/' \
-		20 LogData_v4a_ee/ $(EOSBase)/OutputData_v4a_ee/ \
+		20 LogData_v4b_ee/ $(EOSBase)/OutputData_v4b_ee/ \
 		--Fraction 1 --DoMuon false `./Expand Setting.dh PbPbSignalData Nominal`
 
 PrepareToRun3:
@@ -97,8 +103,14 @@ PrepareToRun3:
 PrepareToRunMC:
 	bash PrepareInput.sh \
 		$(PbPbSignalMC)/ \
-		1 LogMC_v4a_ee/ $(EOSBase)/OutputMC_v4a_ee/ \
+		5 LogMC_v4b_ee/ $(EOSBase)/OutputMC_v4b_ee/ \
 		--Fraction 1 --DoMuon false `./Expand Setting.dh PbPbSignalMC Nominal`
+
+PrepareToRunMCPF04:
+	bash PrepareInput.sh \
+		$(PbPbSignalMC)/ \
+		5 LogMC_v4b_ee_PF04/ $(EOSBase)/OutputMC_v4b_ee_PF04/ \
+		--Fraction 1 --DoMuon false --MinPFPT 0.4 `./Expand Setting.dh PbPbSignalMC Nominal`
 
 PrepareToRunMC3:
 	bash PrepareInput.sh \
@@ -109,25 +121,37 @@ PrepareToRunMC3:
 PrepareToRunGenMC:
 	bash PrepareInput.sh \
 		$(PbPbSignalMC)/ \
-		5 LogGenMC_v4a_ee/ $(EOSBase)/OutputMCGen_v4a_ee/ \
+		5 LogGenMC_v4b_ee/ $(EOSBase)/OutputMCGen_v4b_ee/ \
  		--Fraction 1 --DoMuon false `./Expand Setting.dh PbPbSignalGenMC Nominal`
 
 PrepareToRunPP:
 	bash PrepareInput.sh \
 		$(PPSignalMC)/ \
-		10 LogPP_v4a_ee/ $(EOSBase)/OutputPPMC_v4a_ee/ \
+		10 LogPP_v4b_ee/ $(EOSBase)/OutputPPMC_v4b_ee/ \
  		--Fraction 1 --DoMuon false `./Expand Setting.dh PPSignalMC Nominal`
 
 PrepareToRunGenPP:
 	bash PrepareInput.sh \
 		$(PPSignalMC)/ \
-		10 LogGenPP_v4a_ee/ $(EOSBase)/OutputPPMCGen_v4a_ee/ \
+		10 LogGenPP_v4b_ee/ $(EOSBase)/OutputPPMCGen_v4b_ee/ \
  		--Fraction 1 --DoMuon false `./Expand Setting.dh PPSignalGenMC Nominal`
+
+PrepareToRunPPPF04:
+	bash PrepareInput.sh \
+		$(PPSignalMC)/ \
+		10 LogPP_v4b_ee_PF04/ $(EOSBase)/OutputPPMC_v4b_ee_PF04/ \
+ 		--Fraction 1 --DoMuon false  --MinPFPT 0.4  `./Expand Setting.dh PPSignalMC Nominal`
+
+PrepareToRunGenPPPF04:
+	bash PrepareInput.sh \
+		$(PPSignalMC)/ \
+		10 LogGenPP_v4b_ee_PF04/ $(EOSBase)/OutputPPMCGen_v4b_ee_PF04/ \
+ 		--Fraction 1 --DoMuon false  --MinPFPT 0.4  `./Expand Setting.dh PPSignalGenMC Nominal`
 
 PrepareToRunPPData:
 	bash PrepareInput.sh \
 		'$(PPSignalData)/*/' \
-		100 LogPPData_v4a_ee/ $(EOSBase)/OutputPPData_v4a_ee/ \
+		100 LogPPData_v4b_ee/ $(EOSBase)/OutputPPData_v4b_ee/ \
  		--Fraction 1 --DoMuon false `./Expand Setting.dh PPSignalData Nominal`
 
 PrepareToRunLoose:
@@ -157,42 +181,56 @@ PrepareToRunMCTight:
 PrepareToRunBackground:
 	bash PrepareInputRandomBackground.sh \
 		'$(PbPbSignalSingleMuon)/*/' \
-		10 LogDataBkg_v4a_ee/ $(EOSBase)/OutputDataBkg_v4a_ee/ \
+		10 LogDataBkg_v4b_ee/ $(EOSBase)/OutputDataBkg_v4b_ee/ \
 		$(PbPbBackgroundData)/ 100  --DoMuon false \
 		`./Expand Setting.dh PbPbBackgroundData Nominal`
 
 PrepareToRunMCBackground:
 	bash PrepareInputRandomBackground.sh \
 		$(PbPbSignalMC) \
-		5 LogMCBkg_v4a_ee_tol120/ $(EOSBase)/OutputMCBkg_v4a_ee_tol120/ \
+		5 LogMCBkg_v4b_ee_tol120/ $(CERNBOX)/OutputMCBkg_v4b_ee_tol120/ \
 		$(PbPbBackgroundMC)/ 15 --DoMuon false \
 		`./Expand Setting.dh PbPbBackgroundMC Nominal`
 
 PrepareToRunMCBackgroundRes:
 	bash PrepareInputRandomBackground.sh \
 		$(PbPbSignalMC) \
-		5 LogMCBkg_v4a_ee_Rres_tol120/ $(EOSBase)/OutputMCBkg_v4a_ee_Rres_tol120/ \
+		5 LogMCBkg_v4b_ee_Rres_tol120/ $(CERNBOX)/OutputMCBkg_v4b_ee_Rres_tol120/ \
 		$(PbPbBackgroundMC)/ 15 --DoMuon false \
 		`./Expand Setting.dh PbPbBackgroundMCRes Nominal`
+
+PrepareToRunMCBackgroundPF04:
+	bash PrepareInputRandomBackground.sh \
+		$(PbPbSignalMC) \
+		5 LogMCBkg_v4b_ee_tol120_PF04/ $(CERNBOX)/OutputMCBkg_v4b_ee_tol120_PF04/ \
+		$(PbPbBackgroundMC)/ 15 --DoMuon false --MinPFPT 0.4 \
+		`./Expand Setting.dh PbPbBackgroundMCPF04 Nominal`
+
+PrepareToRunMCBackgroundResPF04:
+	bash PrepareInputRandomBackground.sh \
+		$(PbPbSignalMC) \
+		5 LogMCBkg_v4b_ee_Rres_tol120_PF04/ $(CERNBOX)/OutputMCBkg_v4b_ee_Rres_tol120_PF04/ \
+		$(PbPbBackgroundMC)/ 15 --DoMuon false --MinPFPT 0.4 \
+		`./Expand Setting.dh PbPbBackgroundMCResPF04 Nominal`
 
 PrepareToRunMCBackgroundResGenMatch:
 	bash PrepareInputRandomBackground.sh \
 		$(PbPbSignalMC) \
-		5 LogMCBkg_v4a_ee_Rres_GenMatch_tol120/ $(EOSBase)/OutputMCBkg_v4a_ee_Rres_GenMatch_tol120/ \
+		5 LogMCBkg_v4b_ee_Rres_GenMatch_tol120/ $(CERNBOX)/OutputMCBkg_v4b_ee_Rres_GenMatch_tol120/ \
 		$(PbPbBackgroundMC)/ 15 --DoMuon false \
 		`./Expand Setting.dh PbPbBackgroundMCResGenMatch Nominal`
 
 PrepareToRunMCBackgroundGenMatch:
 	bash PrepareInputRandomBackground.sh \
 		$(PbPbSignalMC) \
-		5 LogMCBkg_v4a_ee_GenMatch_tol120/ $(EOSBase)/OutputMCBkg_v4a_ee_GenMatch_tol120/ \
+		5 LogMCBkg_v4b_ee_GenMatch_tol120/ $(CERNBOX)/OutputMCBkg_v4b_ee_GenMatch_tol120/ \
 		$(PbPbBackgroundMC)/ 15 --DoMuon false \
 		`./Expand Setting.dh PbPbBackgroundMCGenMatch Nominal`
 
 PrepareToRunRandomMCGenBackground:
 	bash PrepareInputRandomBackground.sh \
 		$(PbPbSignalMC) \
-		5 LogMCGenbkg_v4a_ee_tol120/ $(EOSBase)/OutputMCbkgGen_v4a_ee_tol120/ \
+		5 LogMCGenbkg_v4b_ee_tol120/ $(EOSBase)/OutputMCbkgGen_v4b_ee_tol120/ \
 		$(PbPbBackgroundMC)/ 15 --DoMuon false \
  		`./Expand Setting.dh PbPbBackgroundGenMC Nominal`
 
