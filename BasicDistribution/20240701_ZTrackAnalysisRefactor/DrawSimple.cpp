@@ -54,11 +54,14 @@ void style(){
   gROOT->ForceStyle();
 }
 
-const char *typeofdata = "ZHadron2024/SkimBkgSub/ov1_v4b_sub0_tol120_GenMatch/20240826/";
-const char *typeofdata1 = "ov1_v4b_sub0_tol120_GenMatch";
+const char *typeofdata = "ZHadron2024/SkimBkgSub/ov1_v4b_sub0_tol120/20240829/";
+const char *typeofdata1 = "ov1_v4b_sub0_tol120";
 
-const char *typeofdataRres = "ZHadron2024/SkimBkgSub/ov1_v4b_sub0_Rres_tol120_GenMatch/20240826/";
-const char *typeofdataRres1 = "ov1_v4b_sub0_Rres_tol120_GenMatch";
+const char *typeofdataRres = "ZHadron2024/SkimBkgSub/ov1_v4b_sub0_Rres_tol120/20240829/";
+const char *typeofdataRres1 = "ov1_v4b_sub0_Rres_tol120";
+
+const char *typeofdataNoZ = "ZHadron2024/SkimBkgSub/ov1_v4b_sub0_NoZ_tol120/20240829/";
+const char *typeofdataNoZ1 = "ov1_v4b_sub0_NoZ_tol120";
 
 
 TChain *TreeSig = new TChain("Tree"); 
@@ -77,7 +80,7 @@ void DefinePhiRangeCorrelation() {
     );
 }
 
-void DrawSimple_single(float ptL=20,float ptH=2000,float centL=0,float centH=90,float TptL=0,float TptH=10000, bool isRres = false){
+void DrawSimple_single(float ptL=20,float ptH=2000,float centL=0,float centH=90,float TptL=0,float TptH=10000, bool isRres = false, bool noZ = false){
 
 	DefinePhiRangeCorrelation();
 
@@ -110,12 +113,26 @@ void DrawSimple_single(float ptL=20,float ptH=2000,float centL=0,float centH=90,
 	*/
 
 	//TCut evtCut = "zMass>60&&zPt>5";//
-	TCut evtCut = Form("NVertex==1&&bestZidx==0&&zMass[0]>60&&zPt[0]>%f&&zPt[0]<%f&&hiBin>%f&&hiBin<%f",ptL,ptH,2*centL,2*centH);
-	TCut evtCutGen = Form("NVertex==1&&bestZgenIdx==0&&genZMass[0]>60&&genZPt[0]>%f&&genZPt[0]<%f&&hiBin>%f&&hiBin<%f",ptL,ptH,2*centL,2*centH);
+
+	TCut evtCutPP0 = Form("bestZidx==0&&zMass[0]>60&&zPt[0]>%f&&zPt[0]<%f",ptL,ptH);
+	TCut evtCutPP1 = Form("bestZidx==1&&zMass[1]>60&&zPt[1]>%f&&zPt[1]<%f",ptL,ptH);
+	TCut evtCutPP2 = Form("bestZidx==2&&zMass[2]>60&&zPt[2]>%f&&zPt[2]<%f",ptL,ptH);
+	TCut evtCutPP3 = Form("bestZidx==3&&zMass[3]>60&&zPt[3]>%f&&zPt[3]<%f",ptL,ptH);
+
+	TCut evtCutPP = evtCutPP0;// || evtCutPP1 || evtCutPP2 || evtCutPP3;
+	TCut evtCut = evtCutPP && Form("hiBin>%f&&hiBin<%f",2*centL,2*centH);
+
+	TCut evtCutGenPP0 = Form("bestZgenIdx==0&&genZMass[0]>60&&genZPt[0]>%f&&genZPt[0]<%f",ptL,ptH);
+	TCut evtCutGenPP1 = Form("bestZgenIdx==1&&genZMass[1]>60&&genZPt[1]>%f&&genZPt[1]<%f",ptL,ptH);
+	TCut evtCutGenPP2 = Form("bestZgenIdx==2&&genZMass[2]>60&&genZPt[2]>%f&&genZPt[2]<%f",ptL,ptH);
+	TCut evtCutGenPP3 = Form("bestZgenIdx==3&&genZMass[3]>60&&genZPt[3]>%f&&genZPt[3]<%f",ptL,ptH);
+
+	TCut evtCutGenPP = evtCutGenPP0;// || evtCutGenPP1 || evtCutGenPP2 || evtCutGenPP3;
+	TCut evtCutGen = evtCutGenPP && Form("hiBin>%f&&hiBin<%f",2*centL,2*centH);
+
 	TCut trkCut = Form("trackMuTagged==0&&trackPt>%f&&trackPt<%f",TptL,TptH);
 	TCut trkCutSum = Form("Sum$(trackMuTagged==0&&trackPt>%f&&trackPt<%f)>0",TptL,TptH);
 
-	TCut evtCutPP = Form("NVertex==1&&bestZidx==0&&zMass[0]>60&&zPt[0]>%f&&zPt[0]<%f",ptL,ptH);
 
 /*
 	TreeSig->SetAlias("TrackEta", "(trackDeta+zEta[0])");
@@ -504,11 +521,15 @@ void DrawSimple_single(float ptL=20,float ptH=2000,float centL=0,float centH=90,
 
   if(isRres)
   	gSystem->Exec(Form("mkdir -p /eos/user/p/pchou/figs/%s/%s",typeofdataRres,HistName.c_str()));
+  else if(noZ)
+  	gSystem->Exec(Form("mkdir -p /eos/user/p/pchou/figs/%s/%s",typeofdataNoZ,HistName.c_str()));
   else
   	gSystem->Exec(Form("mkdir -p /eos/user/p/pchou/figs/%s/%s",typeofdata,HistName.c_str()));
 
   if(isRres)
   	c->SaveAs(Form("/eos/user/p/pchou/figs/%s/%s/Ztrack_%s_com_%.0f_%.0f_%.0f_%.0f_%.0f_%.0f.png",typeofdataRres,HistName.c_str(),typeofdataRres1,ptL,ptH,centL,centH,TptL,TptH));
+  else if(noZ)
+  	c->SaveAs(Form("/eos/user/p/pchou/figs/%s/%s/Ztrack_%s_com_%.0f_%.0f_%.0f_%.0f_%.0f_%.0f.png",typeofdataNoZ,HistName.c_str(),typeofdataNoZ1,ptL,ptH,centL,centH,TptL,TptH)); 
   else
   	c->SaveAs(Form("/eos/user/p/pchou/figs/%s/%s/Ztrack_%s_com_%.0f_%.0f_%.0f_%.0f_%.0f_%.0f.png",typeofdata,HistName.c_str(),typeofdata1,ptL,ptH,centL,centH,TptL,TptH)); 
    
@@ -519,6 +540,8 @@ void DrawSimple_single(float ptL=20,float ptH=2000,float centL=0,float centH=90,
 
   if(isRres)
   	c->SaveAs(Form("/eos/user/p/pchou/figs/%s/%s/Ztrack_%s_com_%.0f_%.0f_%.0f_%.0f_%.0f_%.0f_low.png",typeofdataRres,HistName.c_str(),typeofdataRres1,ptL,ptH,centL,centH,TptL,TptH));
+  else if(noZ)
+  	c->SaveAs(Form("/eos/user/p/pchou/figs/%s/%s/Ztrack_%s_com_%.0f_%.0f_%.0f_%.0f_%.0f_%.0f_low.png",typeofdataNoZ,HistName.c_str(),typeofdataNoZ1,ptL,ptH,centL,centH,TptL,TptH)); 
   else
   	c->SaveAs(Form("/eos/user/p/pchou/figs/%s/%s/Ztrack_%s_com_%.0f_%.0f_%.0f_%.0f_%.0f_%.0f_low.png",typeofdata,HistName.c_str(),typeofdata1,ptL,ptH,centL,centH,TptL,TptH)); 
 
@@ -538,16 +561,22 @@ int main(int argc, char *argv[]){
 	double TptH                  = CL.GetDouble("TptH", 1000);
 
 	bool isRres					 = CL.GetBool("isRres",false);
+	bool noZ					 = CL.GetBool("noZ",false);
 
 	string filebase = "/eos/cms/store/group/phys_heavyions/pchou/SkimZHadron2024/";
 	string cernbox = "/eos/home-p/pchou/SkimZHadron2024/";
 
-	TreeSig->Add((filebase + "OutputMC_v3c_ee/Result*.root").c_str());
+	if(noZ)
+		TreeSig->Add((filebase + "OutputMC_v4b_ee_NoZ_v2/Result*.root").c_str());
+	else
+		TreeSig->Add((filebase + "OutputMC_v3c_ee/Result*.root").c_str());
 
 	if(isRres)
-		TreeBkg->Add((cernbox + "OutputMCBkg_v4b_ee_Rres_GenMatch_tol120/Result*.root").c_str());
+		TreeBkg->Add((cernbox + "OutputMCBkg_v4b_ee_Rres_tol120_v2/Result*.root").c_str());
+	else if(noZ)
+		TreeBkg->Add((cernbox + "OutputMCBkg_v4b_ee_NoZ_tol120_v2/Result*.root").c_str());
 	else
-		TreeBkg->Add((cernbox + "OutputMCBkg_v4b_ee_GenMatch_tol120/Result*.root").c_str());
+		TreeBkg->Add((cernbox + "OutputMCBkg_v4b_ee_tol120_v2/Result*.root").c_str());
 
 	//TreePP0->Add((filebase + "OutputPPMC_v3c_ee/*.root").c_str());
 	TreeSgG->Add((filebase + "OutputMCGen_v3c_ee/Result*.root").c_str());
@@ -560,7 +589,7 @@ int main(int argc, char *argv[]){
 	////TreeBgG->Add("/eos/cms/store/group/phys_heavyions/pchou/SkimMCbkgGen_v14.root");
 
 
-	DrawSimple_single(ptL,ptH,centL,centH,TptL,TptH,isRres);
+	DrawSimple_single(ptL,ptH,centL,centH,TptL,TptH,isRres,noZ);
 
 
 	//DrawSimple_single(40,200,0,10,1,2);

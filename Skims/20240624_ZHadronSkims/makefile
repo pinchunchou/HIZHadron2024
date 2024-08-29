@@ -103,8 +103,14 @@ PrepareToRun3:
 PrepareToRunMC:
 	bash PrepareInput.sh \
 		$(PbPbSignalMC)/ \
-		5 LogMC_v4b_ee/ $(EOSBase)/OutputMC_v4b_ee/ \
+		5 LogMC_v4b_ee_v2/ $(EOSBase)/OutputMC_v4b_ee_v2/ \
 		--Fraction 1 --DoMuon false `./Expand Setting.dh PbPbSignalMC Nominal`
+
+PrepareToRunMCNoZ:
+	bash PrepareInput.sh \
+		$(PbPbSignalMC)/ \
+		5 LogMC_v4b_ee_v2/ $(EOSBase)/OutputMC_v4b_ee_NoZ_v2/ \
+		--Fraction 1 --DoMuon false `./Expand Setting.dh PbPbSignalMCNoZ Nominal`
 
 PrepareToRunMCPF04:
 	bash PrepareInput.sh \
@@ -188,16 +194,23 @@ PrepareToRunBackground:
 PrepareToRunMCBackground:
 	bash PrepareInputRandomBackground.sh \
 		$(PbPbSignalMC) \
-		5 LogMCBkg_v4b_ee_tol120/ $(CERNBOX)/OutputMCBkg_v4b_ee_tol120/ \
+		5 LogMCBkg_v4b_ee_tol120_v2/ $(CERNBOX)/OutputMCBkg_v4b_ee_tol120_v2/ \
 		$(PbPbBackgroundMC)/ 15 --DoMuon false \
 		`./Expand Setting.dh PbPbBackgroundMC Nominal`
 
 PrepareToRunMCBackgroundRes:
 	bash PrepareInputRandomBackground.sh \
 		$(PbPbSignalMC) \
-		5 LogMCBkg_v4b_ee_Rres_tol120/ $(CERNBOX)/OutputMCBkg_v4b_ee_Rres_tol120/ \
+		5 LogMCBkg_v4b_ee_Rres_tol120_v2/ $(CERNBOX)/OutputMCBkg_v4b_ee_Rres_tol120_v2/ \
 		$(PbPbBackgroundMC)/ 15 --DoMuon false \
 		`./Expand Setting.dh PbPbBackgroundMCRes Nominal`
+
+PrepareToRunMCBackgroundNoZ:
+	bash PrepareInputRandomBackground.sh \
+		$(PbPbSignalMC) \
+		5 LogMCBkg_v4b_ee_NoZ_tol120_v2/ $(CERNBOX)/OutputMCBkg_v4b_ee_NoZ_tol120_v2/ \
+		$(PbPbBackgroundMC)/ 15 --DoMuon false \
+		`./Expand Setting.dh PbPbBackgroundMCNoZ Nominal`
 
 PrepareToRunMCBackgroundPF04:
 	bash PrepareInputRandomBackground.sh \
@@ -216,14 +229,21 @@ PrepareToRunMCBackgroundResPF04:
 PrepareToRunMCBackgroundResGenMatch:
 	bash PrepareInputRandomBackground.sh \
 		$(PbPbSignalMC) \
-		5 LogMCBkg_v4b_ee_Rres_GenMatch_tol120/ $(CERNBOX)/OutputMCBkg_v4b_ee_Rres_GenMatch_tol120/ \
+		5 LogMCBkg_v4b_ee_Rres_GenMatch_tol120_v2/ $(CERNBOX)/OutputMCBkg_v4b_ee_Rres_GenMatch_tol120_v2/ \
 		$(PbPbBackgroundMC)/ 15 --DoMuon false \
 		`./Expand Setting.dh PbPbBackgroundMCResGenMatch Nominal`
 
+PrepareToRunMCBackgroundNoZGenMatch:
+	bash PrepareInputRandomBackground.sh \
+		$(PbPbSignalMC) \
+		5 LogMCBkg_v4b_ee_NoZ_GenMatch_tol120_v2/ $(CERNBOX)/OutputMCBkg_v4b_ee_NoZ_GenMatch_tol120_v2/ \
+		$(PbPbBackgroundMC)/ 15 --DoMuon false \
+		`./Expand Setting.dh PbPbBackgroundMCNoZGenMatch Nominal`
+		
 PrepareToRunMCBackgroundGenMatch:
 	bash PrepareInputRandomBackground.sh \
 		$(PbPbSignalMC) \
-		5 LogMCBkg_v4b_ee_GenMatch_tol120/ $(CERNBOX)/OutputMCBkg_v4b_ee_GenMatch_tol120/ \
+		5 LogMCBkg_v4b_ee_GenMatch_tol120_v2/ $(CERNBOX)/OutputMCBkg_v4b_ee_GenMatch_tol120_v2/ \
 		$(PbPbBackgroundMC)/ 15 --DoMuon false \
 		`./Expand Setting.dh PbPbBackgroundMCGenMatch Nominal`
 

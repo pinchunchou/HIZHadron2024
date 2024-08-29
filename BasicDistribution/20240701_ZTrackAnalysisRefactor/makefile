@@ -168,9 +168,11 @@ ExecuteZMassDraw: ZMassDraw.cpp
 DrawSimple: ExecuteSimple
 	mkdir -p log
 	time ./ExecuteSimple -ptL 40 -ptH 200 -centL 0 -centH 10 -TptL 1 -TptH 2  -isRres true \
-	 > log/DrawSimple_40_200_0_10_1_20_Rres.out 2> log/DrawSimple_40_200_0_10_1_20_Rres.err < /dev/null &
+	 > log/DrawSimple_40_200_0_10_1_2_Rres.out 2> log/DrawSimple_40_200_0_10_1_2_Rres.err < /dev/null &
 	time ./ExecuteSimple -ptL 40 -ptH 200 -centL 0 -centH 10 -TptL 1 -TptH 2  -isRres false \
-	> log/DrawSimple_40_200_0_10_1_20.out 2> log/DrawSimple_40_200_0_10_1_20.err < /dev/null &
+	> log/DrawSimple_40_200_0_10_1_2.out 2> log/DrawSimple_40_200_0_10_1_2.err < /dev/null &
+	time ./ExecuteSimple -ptL 40 -ptH 200 -centL 0 -centH 10 -TptL 1 -TptH 2  -noZ true \
+	> log/DrawSimple_40_200_0_10_1_2_noZ.out 2> log/DrawSimple_40_200_0_10_1_2_noZ.err < /dev/null &
 	#time ./ExecuteSimple -ptL 40 -ptH 200 -centL 0 -centH 10 -TptL 2 -TptH 4  &
 	#time ./ExecuteSimple -ptL 40 -ptH 200 -centL 0 -centH 10 -TptL 4 -TptH 10  &
 	#time ./ExecuteSimple -ptL 40 -ptH 200 -centL 0 -centH 30 -TptL 1 -TptH 2  &

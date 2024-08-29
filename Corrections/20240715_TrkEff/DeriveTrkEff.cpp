@@ -422,9 +422,15 @@ int main(int argc, char *argv[])
 
          
 
+         //if(DoZSelection == true && DoElectron == true)
+         //{
+         //   if(isGenZ == false || isRecoZ == false)
+         //      continue;//we should also have true reco but false gen.
+         //}
+
          if(DoZSelection == true && DoElectron == true)
          {
-            if(isGenZ == false || isRecoZ == false)
+            if(isRecoZ == false)
                continue;
          }
 
@@ -434,8 +440,8 @@ int main(int argc, char *argv[])
 
          int bestZidx = -1, bestZgenIdx = -1;
 
-         float bestEta1Gen , bestPhi1Gen , bestPt1Gen ;
-         float bestEta2Gen , bestPhi2Gen , bestPt2Gen ;
+         //float bestEta1Gen , bestPhi1Gen , bestPt1Gen ;
+         //float bestEta2Gen , bestPhi2Gen , bestPt2Gen ;
          float bestEta1Reco, bestPhi1Reco, bestPt1Reco;
          float bestEta2Reco, bestPhi2Reco, bestPt2Reco;
 
@@ -464,7 +470,7 @@ int main(int argc, char *argv[])
             }
          }
 
-
+/*
          Zmass_temp = -1;
 
          for(int idx=0; idx < size(ZMass_gen) ; idx++){
@@ -489,7 +495,7 @@ int main(int argc, char *argv[])
 
             }
          } 
-
+*/
 
          // Loop over gen particles
 
@@ -513,14 +519,14 @@ int main(int argc, char *argv[])
 
             if(DoZSelection == true){
 
-               if(bestZgenIdx == -1) continue;
+               if(bestZidx == -1) continue;
 
-               double DeltaEtaEle1 = bestEta1Gen - MGen.Eta->at(iG);
-               double DeltaPhiEle1 = DeltaPhi(bestPhi1Gen, MGen.Phi->at(iG));
+               double DeltaEtaEle1 = bestEta1Reco - MGen.Eta->at(iG);
+               double DeltaPhiEle1 = DeltaPhi(bestPhi1Reco, MGen.Phi->at(iG));
                double DeltaR1 = sqrt(DeltaEtaEle1*DeltaEtaEle1 + DeltaPhiEle1*DeltaPhiEle1);
             
-               double DeltaEtaEle2 = bestEta2Gen - MGen.Eta->at(iG);
-               double DeltaPhiEle2 = DeltaPhi(bestPhi2Gen, MGen.Phi->at(iG));
+               double DeltaEtaEle2 = bestEta2Reco - MGen.Eta->at(iG);
+               double DeltaPhiEle2 = DeltaPhi(bestPhi2Reco, MGen.Phi->at(iG));
                double DeltaR2 = sqrt(DeltaEtaEle2*DeltaEtaEle2 + DeltaPhiEle2*DeltaPhiEle2);
             
                if(DeltaR1 <  LeptonVeto || DeltaR2 < LeptonVeto)

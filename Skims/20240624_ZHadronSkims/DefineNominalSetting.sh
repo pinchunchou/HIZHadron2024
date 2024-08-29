@@ -8,9 +8,10 @@ Data="--DoGenLevel false --IsData true"
 AODPF="--PFTree \"pfcandAnalyzer/pfTree\""
 MiniAODPF="--PFTree \"particleFlowAnalyser/pftree\""
 
-TrackResidualPathPbPb="${ProjectBase}/CommonCode/root/20240812_TrackResidualCorrection_V3_0_20.root,${ProjectBase}/CommonCode/root/20240812_TrackResidualCorrection_V3_20_60.root,${ProjectBase}/CommonCode/root/20240812_TrackResidualCorrection_V3_60_100.root,${ProjectBase}/CommonCode/root/20240812_TrackResidualCorrection_V3_100_200.root"
-TrackResidualPathPbPbMB="${ProjectBase}/CommonCode/root/20240812_TrackResidualCorrection_V3_0_20_MB.root,${ProjectBase}/CommonCode/root/20240812_TrackResidualCorrection_V3_20_60_MB.root,${ProjectBase}/CommonCode/root/20240812_TrackResidualCorrection_V3_60_100_MB.root,${ProjectBase}/CommonCode/root/20240812_TrackResidualCorrection_V3_100_200_MB.root"
-TrackResidualPathPP="${ProjectBase}/CommonCode/root/20240812_TrackResidualCorrection_V3_pp.root"
+TrackResidualPathPbPb="${ProjectBase}/CommonCode/root/20240827_TrackResidualCorrection_V3_0_20.root,${ProjectBase}/CommonCode/root/20240827_TrackResidualCorrection_V3_20_60.root,${ProjectBase}/CommonCode/root/20240827_TrackResidualCorrection_V3_60_100.root,${ProjectBase}/CommonCode/root/20240827_TrackResidualCorrection_V3_100_200.root"
+TrackResidualPathPbPbMB="${ProjectBase}/CommonCode/root/20240827_TrackResidualCorrection_V3_0_20_MB.root,${ProjectBase}/CommonCode/root/20240827_TrackResidualCorrection_V3_20_60_MB.root,${ProjectBase}/CommonCode/root/20240827_TrackResidualCorrection_V3_60_100_MB.root,${ProjectBase}/CommonCode/root/20240827_TrackResidualCorrection_V3_100_200_MB.root"
+TrackResidualPathPbPbNoZ="${ProjectBase}/CommonCode/root/20240827_TrackResidualCorrection_V3_0_20_NoZ.root,${ProjectBase}/CommonCode/root/20240827_TrackResidualCorrection_V3_20_60_NoZ.root,${ProjectBase}/CommonCode/root/20240827_TrackResidualCorrection_V3_60_100_NoZ.root,${ProjectBase}/CommonCode/root/20240827_TrackResidualCorrection_V3_100_200_NoZ.root"
+TrackResidualPathPP="${ProjectBase}/CommonCode/root/20240827_TrackResidualCorrection_V3_pp.root"
 
 #TrackResidualPathPbPb="${ProjectBase}/CommonCode/root/20230522_TrackResidualCorrection_V9_0_20.root,${ProjectBase}/CommonCode/root/20230522_TrackResidualCorrection_V9_20_60.root,${ProjectBase}/CommonCode/root/20230522_TrackResidualCorrection_V9_60_100.root,${ProjectBase}/CommonCode/root/20230522_TrackResidualCorrection_V9_100_200.root"
 #TrackResidualPathPP="${ProjectBase}/CommonCode/root/20230531_TrackResidualCorrection_V12_pp.root"
@@ -20,6 +21,7 @@ GenTrack="--DoTrackEfficiency false --TrackEfficiencyPath ${ProjectBase}/CommonC
 PPRecoTrack="--DoTrackEfficiency true --TrackEfficiencyPath ${ProjectBase}/CommonCode/root/ --DoTrackResidual true --TrackResidualPath $TrackResidualPathPP"
 PbPbRecoTrack="--DoTrackEfficiency true --TrackEfficiencyPath ${ProjectBase}/CommonCode/root/ --DoTrackResidual true --TrackResidualPath $TrackResidualPathPbPb"
 PbPbMBRecoTrack="--DoTrackEfficiency true --TrackEfficiencyPath ${ProjectBase}/CommonCode/root/ --DoTrackResidual true --TrackResidualPath $TrackResidualPathPbPbMB"
+PbPbRecoTrackNoZ="--DoTrackEfficiency true --TrackEfficiencyPath ${ProjectBase}/CommonCode/root/ --DoTrackResidual true --TrackResidualPath $TrackResidualPathPbPbNoZ"
 
 #BackgroundMC="   --DoBackground true --HFShift 0 --Tolerance 100000 --ToleranceFraction 0.001 --Oversample 1 --HFCeiling 134000" # 
 #BackgroundMC="   --DoBackground true --HFShift 766.28 --Tolerance 187.5 --ToleranceFraction 0.001 --Oversample 1 --HFCeiling 134000 --VZTolerance 2" # 
@@ -50,13 +52,16 @@ DHSet Setting.dh PPSignalMC          Nominal  string "$Common $MC    --IsPP true
 DHSet Setting.dh PPSignalGenMC       Nominal  string "$Common $MCGen --IsPP true  $AODPF     $GenTrack"
 DHSet Setting.dh PPSignalData        Nominal  string "$Common $Data  --IsPP true  $AODPF     $PPRecoTrack"
 DHSet Setting.dh PbPbSignalMC        Nominal  string "$Common $MC    --IsPP false $MiniAODPF $PbPbRecoTrack"
+DHSet Setting.dh PbPbSignalMCNoZ     Nominal  string "$Common $MC    --IsPP false $MiniAODPF $PbPbRecoTrackNoZ"
 DHSet Setting.dh PbPbSignalGenMC     Nominal  string "$Common $MCGen --IsPP false $MiniAODPF $GenTrack"
 DHSet Setting.dh PbPbSignalData      Nominal  string "$Common $Data  --IsPP false $MiniAODPF $PbPbRecoTrack"
+DHSet Setting.dh PbPbBackgroundMCNoZ Nominal  string "$Common $MC    --IsPP false $MiniAODPF $PbPbRecoTrackNoZ $BackgroundMC"
 DHSet Setting.dh PbPbBackgroundMCRes Nominal  string "$Common $MC    --IsPP false $MiniAODPF $PbPbRecoTrack    $BackgroundMC"
 DHSet Setting.dh PbPbBackgroundMC    Nominal  string "$Common $MC    --IsPP false $MiniAODPF $PbPbMBRecoTrack  $BackgroundMC"
 DHSet Setting.dh PbPbBackgroundMCResPF04 Nominal  string "$Common $MC    --IsPP false $MiniAODPF $PbPbRecoTrack    $BackgroundMCPF04"
 DHSet Setting.dh PbPbBackgroundMCPF04    Nominal  string "$Common $MC    --IsPP false $MiniAODPF $PbPbMBRecoTrack  $BackgroundMCPF04"
 
+DHSet Setting.dh PbPbBackgroundMCNoZGenMatch Nominal  string "$Common $MC --ForceGenMatch true --IsPP false $MiniAODPF $PbPbRecoTrackNoZ $BackgroundGenMC"
 DHSet Setting.dh PbPbBackgroundMCResGenMatch Nominal  string "$Common $MC --ForceGenMatch true --IsPP false $MiniAODPF $PbPbRecoTrack    $BackgroundGenMC"
 DHSet Setting.dh PbPbBackgroundMCGenMatch    Nominal  string "$Common $MC --ForceGenMatch true --IsPP false $MiniAODPF $PbPbMBRecoTrack  $BackgroundGenMC"
 
