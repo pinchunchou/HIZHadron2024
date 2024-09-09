@@ -72,11 +72,11 @@ int main(int argc, char *argv[])
 
    CommandLine CL(argc, argv);
 
-   //std::vector<double> PTs(49);
-   //std::generate_n(PTs.begin(), 49, [n = 0.2]() mutable { return n += 0.2; });
+   std::vector<double> PTs(49);
+   std::generate_n(PTs.begin(), 49, [n = 0.2]() mutable { return n += 0.2; });
 
-   std::vector<double> PTs(35);
-   std::generate_n(PTs.begin(), 35, [n=0.4/1.1]() mutable { return n += 0.1*n; });
+   //std::vector<double> PTs(35);
+   //std::generate_n(PTs.begin(), 35, [n=0.4/1.1]() mutable { return n += 0.1*n; });
 
    std::vector<double> Etas(51);
    std::generate_n(Etas.begin(), 51, [n = -2.4-0.096]() mutable { return n += 0.096; });
