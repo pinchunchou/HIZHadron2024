@@ -17,7 +17,7 @@ int main();
 void MakePlot(double XMin, double XMax, double YMin, double YMax, string Title,
    TProfile &P1, TProfile &P2, bool LogX, string Output);
 
-string OutputBase = "/eos/home-p/pchou/figs/ZHadron2024/ZeeEfficiency/20240723/vF/";
+string OutputBase = "/eos/home-p/pchou/figs/ZHadron2024/ZeeEfficiency/20240905/vF/";
 
 int main()
 {
@@ -29,8 +29,8 @@ int main()
    //TTree *TPbPb = (TTree *)FPbPb.Get("Tree");
    //TTree *TPP = (TTree *)FPP.Get("Tree");
 
-   TChain* TPbPb = new TChain("Tree"); TPbPb->Add("../20240706_ZeeEfficiency/PbPb_0723_vF/*.root");
-   TChain* TPP = new TChain("Tree"); TPP->Add("../20240706_ZeeEfficiency/pp_0723_vF/*.root");
+   TChain* TPbPb = new TChain("Tree"); TPbPb->Add("../20240706_ZeeEfficiency/PbPb_0905_vF/*.root");
+   TChain* TPP = new TChain("Tree"); TPP->Add("/eos/cms/store/group/phys_heavyions/pchou/HIZHadron2024/Corrections/20240706_ZeeEfficiency/pp_0723_vF/*.root");
 
    const int binnum = 12;
 
@@ -84,38 +84,38 @@ int main()
    TProfile HPPDataPTRaw           ("HPPDataPTRaw",            ";;", binnum, PTBins);
    TProfile HPPDataPTCorrected     ("HPPDataPTCorrected",      ";;", binnum, PTBins);
 
-   TPbPb->Draw("HasReco:Y>>HPbPbMCYRaw_cent1",                             "PT > 40 && HiBin <= 20", "prof");
-   TPbPb->Draw("HasReco*TreeWPbPbMC:Y>>HPbPbMCYCorrected_cent1",                     "PT > 40 && HiBin <= 20", "prof");
-   TPbPb->Draw("HasReco:PT>>HPbPbMCPTRaw_cent1",                           "PT > 40 && HiBin <= 20", "prof");
-   TPbPb->Draw("HasReco*TreeWPbPbMC:PT>>HPbPbMCPTCorrected_cent1",                   "PT > 40 && HiBin <= 20", "prof");
+   TPbPb->Draw("HasReco:Y>>HPbPbMCYRaw_cent1",                             "PT > 40 && PT < 200 && HiBin <= 20", "prof");
+   TPbPb->Draw("HasReco*TreeWPbPbMC:Y>>HPbPbMCYCorrected_cent1",                     "PT > 40 && PT < 200 && HiBin <= 20", "prof");
+   TPbPb->Draw("HasReco:PT>>HPbPbMCPTRaw_cent1",                           "PT > 40 && PT < 200 && HiBin <= 20", "prof");
+   TPbPb->Draw("HasReco*TreeWPbPbMC:PT>>HPbPbMCPTCorrected_cent1",                   "PT > 40 && PT < 200 && HiBin <= 20", "prof");
 
-   TPbPb->Draw("HasReco:Y>>HPbPbMCYRaw_cent2",                             "PT > 40 && HiBin > 20 && HiBin <= 60", "prof");
-   TPbPb->Draw("HasReco*TreeWPbPbMC:Y>>HPbPbMCYCorrected_cent2",                     "PT > 40 && HiBin > 20 && HiBin <= 60", "prof");
-   TPbPb->Draw("HasReco:PT>>HPbPbMCPTRaw_cent2",                           "PT > 40 && HiBin > 20 && HiBin <= 60", "prof");
-   TPbPb->Draw("HasReco*TreeWPbPbMC:PT>>HPbPbMCPTCorrected_cent2",                   "PT > 40 && HiBin > 20 && HiBin <= 60", "prof");
+   TPbPb->Draw("HasReco:Y>>HPbPbMCYRaw_cent2",                             "PT > 40 && PT < 200 && HiBin > 20 && HiBin <= 60", "prof");
+   TPbPb->Draw("HasReco*TreeWPbPbMC:Y>>HPbPbMCYCorrected_cent2",                     "PT > 40 && PT < 200 && HiBin > 20 && HiBin <= 60", "prof");
+   TPbPb->Draw("HasReco:PT>>HPbPbMCPTRaw_cent2",                           "PT > 40 && PT < 200 && HiBin > 20 && HiBin <= 60", "prof");
+   TPbPb->Draw("HasReco*TreeWPbPbMC:PT>>HPbPbMCPTCorrected_cent2",                   "PT > 40 && PT < 200 && HiBin > 20 && HiBin <= 60", "prof");
 
-   TPbPb->Draw("HasReco:Y>>HPbPbMCYRaw_pher1",                             "PT > 40 && HiBin > 60 && HiBin <= 100", "prof");
-   TPbPb->Draw("HasReco*TreeWPbPbMC:Y>>HPbPbMCYCorrected_pher1",                     "PT > 40 && HiBin > 60 && HiBin <= 100", "prof");
-   TPbPb->Draw("HasReco:PT>>HPbPbMCPTRaw_pher1",                           "PT > 40 && HiBin > 60 && HiBin <= 100", "prof");
-   TPbPb->Draw("HasReco*TreeWPbPbMC:PT>>HPbPbMCPTCorrected_pher1",                   "PT > 40 && HiBin > 60 && HiBin <= 100", "prof");
+   TPbPb->Draw("HasReco:Y>>HPbPbMCYRaw_pher1",                             "PT > 40 && PT < 200 && HiBin > 60 && HiBin <= 100", "prof");
+   TPbPb->Draw("HasReco*TreeWPbPbMC:Y>>HPbPbMCYCorrected_pher1",                     "PT > 40 && PT < 200 && HiBin > 60 && HiBin <= 100", "prof");
+   TPbPb->Draw("HasReco:PT>>HPbPbMCPTRaw_pher1",                           "PT > 40 && PT < 200 && HiBin > 60 && HiBin <= 100", "prof");
+   TPbPb->Draw("HasReco*TreeWPbPbMC:PT>>HPbPbMCPTCorrected_pher1",                   "PT > 40 && PT < 200 && HiBin > 60 && HiBin <= 100", "prof");
 
-   TPbPb->Draw("HasReco:Y>>HPbPbMCYRaw_pher2",                             "PT > 40 && HiBin > 100 && HiBin <= 180", "prof");
-   TPbPb->Draw("HasReco*TreeWPbPbMC:Y>>HPbPbMCYCorrected_pher2",                     "PT > 40 && HiBin > 100 && HiBin <= 180", "prof");
-   TPbPb->Draw("HasReco:PT>>HPbPbMCPTRaw_pher2",                           "PT > 40 && HiBin > 100 && HiBin <= 180", "prof");
-   TPbPb->Draw("HasReco*TreeWPbPbMC:PT>>HPbPbMCPTCorrected_pher2",                   "PT > 40 && HiBin > 100 && HiBin <= 180", "prof");
+   TPbPb->Draw("HasReco:Y>>HPbPbMCYRaw_pher2",                             "PT > 40 && PT < 200 && HiBin > 100 && HiBin <= 180", "prof");
+   TPbPb->Draw("HasReco*TreeWPbPbMC:Y>>HPbPbMCYCorrected_pher2",                     "PT > 40 && PT < 200 && HiBin > 100 && HiBin <= 180", "prof");
+   TPbPb->Draw("HasReco:PT>>HPbPbMCPTRaw_pher2",                           "PT > 40 && PT < 200 && HiBin > 100 && HiBin <= 180", "prof");
+   TPbPb->Draw("HasReco*TreeWPbPbMC:PT>>HPbPbMCPTCorrected_pher2",                   "PT > 40 && PT < 200 && HiBin > 100 && HiBin <= 180", "prof");
 
-   TPbPb->Draw("HasReco:Y>>HPbPbMCYRaw",                             "PT > 40", "prof");
-   TPbPb->Draw("HasReco*TreeWPbPbMC:Y>>HPbPbMCYCorrected",                     "PT > 40", "prof");
-   TPbPb->Draw("HasReco:PT>>HPbPbMCPTRaw",                           "PT > 40", "prof");
-   TPbPb->Draw("HasReco*TreeWPbPbMC:PT>>HPbPbMCPTCorrected",                   "PT > 40", "prof");
+   TPbPb->Draw("HasReco:Y>>HPbPbMCYRaw",                             "PT > 40 && PT < 200", "prof");
+   TPbPb->Draw("HasReco*TreeWPbPbMC:Y>>HPbPbMCYCorrected",                     "PT > 40 && PT < 200", "prof");
+   TPbPb->Draw("HasReco:PT>>HPbPbMCPTRaw",                           "PT > 40 && PT < 200", "prof");
+   TPbPb->Draw("HasReco*TreeWPbPbMC:PT>>HPbPbMCPTCorrected",                   "PT > 40 && PT < 200", "prof");
 
-   TPbPb->Draw("HasReco:HiBin/2>>HPbPbMCHiBinRaw",                   "PT > 40", "prof");
-   TPbPb->Draw("HasReco*TreeWPbPbMC:HiBin/2>>HPbPbMCHiBinCorrected",           "PT > 40", "prof");
+   TPbPb->Draw("HasReco:HiBin/2>>HPbPbMCHiBinRaw",                   "PT > 40 && PT < 200", "prof");
+   TPbPb->Draw("HasReco*TreeWPbPbMC:HiBin/2>>HPbPbMCHiBinCorrected",           "PT > 40 && PT < 200", "prof");
    
-   TPP  ->Draw("HasReco:Y>>HPPMCYRaw",                               "PT > 40", "prof");
-   TPP  ->Draw("HasReco*TreeWPPMC:Y>>HPPMCYCorrected",                   "PT > 40", "prof");
-   TPP  ->Draw("HasReco:PT>>HPPMCPTRaw",                             "PT > 40", "prof");
-   TPP  ->Draw("HasReco*TreeWPPMC:PT>>HPPMCPTCorrected",                 "PT > 40", "prof");
+   TPP  ->Draw("HasReco:Y>>HPPMCYRaw",                               "PT > 40 && PT < 200", "prof");
+   TPP  ->Draw("HasReco*TreeWPPMC:Y>>HPPMCYCorrected",                   "PT > 40 && PT < 200", "prof");
+   TPP  ->Draw("HasReco:PT>>HPPMCPTRaw",                             "PT > 40 && PT < 200", "prof");
+   TPP  ->Draw("HasReco*TreeWPPMC:PT>>HPPMCPTCorrected",                 "PT > 40 && PT < 200", "prof");
 
    MakePlot(-2.1, 2.1, 0., 1.2, ";y^{Z} (0 #leq Centrality #leq 10%);Efficiency", HPbPbMCYRaw_cent1, HPbPbMCYCorrected_cent1, false, "PbPbMCY_cent1.png");
    MakePlot(40, 200, 0., 1.2, ";p_{T}^{Z} (0 #leq Centrality #leq 10%);Efficiency", HPbPbMCPTRaw_cent1, HPbPbMCPTCorrected_cent1, true, "PbPbMCPT_cent1.png");

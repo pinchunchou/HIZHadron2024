@@ -65,7 +65,7 @@ public:
 
 int main(int argc, char *argv[]){
 
-   string Version = "V4b";
+   string Version = "V4d";
    CommandLine CL(argc, argv);
 
    vector<string> InputFileNames      = CL.GetStringVector("Input");
@@ -584,8 +584,8 @@ int main(int argc, char *argv[]){
             } // Loop over gen muons ended
 
             // Loop over gen electrons
-            if(MZHadron.Event==11959886)
-               cout<<"MSignalGG.NMC = "<<MSignalGG.NMC<<endl;
+            //if(MZHadron.Event==11959886)
+            //   cout<<"MSignalGG.NMC = "<<MSignalGG.NMC<<endl;
 
             if(DoGenLevel == true && DoElectron == true && MSignalGG.NMC > 1)
             {
@@ -637,8 +637,8 @@ int main(int argc, char *argv[]){
    
                      VGenZ = VGenEle1 + VGenEle2;
 
-                     if(MZHadron.Event==11959886)
-                        cout<<"VGenZ.M() = "<<VGenZ.M()<<endl;
+                     //if(MZHadron.Event==11959886)
+                     //   cout<<"VGenZ.M() = "<<VGenZ.M()<<endl;
 
                      if(VGenZ.M() < 60 || VGenZ.M() > 120)
                         continue;
@@ -761,7 +761,7 @@ int main(int argc, char *argv[]){
             	if(fabs(MSignalGG.EleSCEta->at(iele1)) > 2.5)                       continue;
                if(fabs(MSignalGG.EleEta->at(iele1)) > 2.1)                         continue;
             	if(fabs(MSignalGG.ElePt->at(iele1)) < 20)                           continue;
-            	if(IsPP == false && MSignalGG.DielectronPassVetoCut(iele1, MZHadron.hiBin) == false) continue;
+            	if(IsPP == false && MSignalGG.DielectronPassVetoCut(iele1, MZHadron.hiBin + MCHiBinShift) == false) continue;
                if(IsPP == true  && MSignalGG.DielectronPassVetoCutPP(iele1) == false) continue;
 
             	if(IsPP == false){ // per Kaya, HCAL failure gives rise to misidentified electrons.
@@ -779,7 +779,7 @@ int main(int argc, char *argv[]){
             		if(fabs(MSignalGG.EleSCEta->at(iele2)) > 2.5)             		       continue;
                   if(fabs(MSignalGG.EleEta->at(iele2)) > 2.1)                           continue;
             		if(fabs(MSignalGG.ElePt->at(iele2)) < 20)                 		       continue;
-            		if(IsPP == false && MSignalGG.DielectronPassVetoCut(iele2, MZHadron.hiBin) == false)   continue;
+            		if(IsPP == false && MSignalGG.DielectronPassVetoCut(iele2, MZHadron.hiBin + MCHiBinShift) == false)   continue;
                   if(IsPP == true  && MSignalGG.DielectronPassVetoCutPP(iele2) == false)   continue;
 
             		if(IsPP == false){ // per Kaya, HCAL failure gives rise to misidentified electrons.
@@ -792,8 +792,8 @@ int main(int argc, char *argv[]){
             		TLorentzVector Z = Ele1+Ele2;
             		double Zmass = Z.M();
 
-                  if(MZHadron.Event==11959886)
-                     cout<<"Zmass = "<<Zmass<<endl;
+                  //if(MZHadron.Event==11959886)
+                  //   cout<<"Zmass = "<<Zmass<<endl;
 
             		if(Zmass < 60 || Zmass > 120) continue;
             		//if(fabs(Z.Rapidity()) > 2.4) continue;
@@ -983,6 +983,11 @@ int main(int argc, char *argv[]){
 
                int trkHiBin = DoBackground ? MZHadron.hiBinBackground : MZHadron.hiBin;
 
+               if(DoBackground == true && MZHadron.hiBinBackground != Location.hiBin){
+                  cerr<<"Warning: MZHadron.hiBinBackground != Location.hiBin: "<<MZHadron.hiBinBackground<<" != "<<Location.hiBin<<endl;
+                  trkHiBin = Location.hiBin;
+               }
+
                int NSigTrk = IsPP ? MSignalTrackPP.nTrk : MSignalTrack.TrackPT->size();
                int NSigGenTrk = MSignalGen.PT->size();
 
@@ -1114,7 +1119,7 @@ int main(int argc, char *argv[]){
                   double TrackResidualCorrection = 1;
                   if(DoTrackResidual == true && DoGenCorrelation == false)
                   {
-                     TrackResidualCorrection = TrackResidual.GetCorrectionFactor(TrackPT, TrackEta, TrackPhi, trkHiBin, AlternateResCorrection );
+                     TrackResidualCorrection = TrackResidual.GetCorrectionFactor(TrackPT, TrackEta, TrackPhi, trkHiBin + MCHiBinShift, AlternateResCorrection );
                   }
                   MZHadron.trackWeight->push_back(TrackCorrection);
                   MZHadron.trackResidualWeight->push_back(TrackResidualCorrection);
@@ -1230,10 +1235,10 @@ int main(int argc, char *argv[]){
                if(IsPP == false)
                {
                   if(IsData == false)
-                     MZHadron.ZWeight = GetZeeWeightPbPbMC(Z.Pt(), Z.Rapidity(), MZHadron.hiBin);
+                     MZHadron.ZWeight = GetZeeWeightPbPbMC(Z.Pt(), Z.Rapidity(), MZHadron.hiBin + MCHiBinShift);
                   else
                   {
-                     MZHadron.ZWeight = GetZeeWeightPbPbDataTrigger(Z.Pt(), Z.Rapidity(), MZHadron.hiBin);
+                     MZHadron.ZWeight = GetZeeWeightPbPbDataTrigger(Z.Pt(), Z.Rapidity(), MZHadron.hiBin + MCHiBinShift);
                      
                      double Mu1Eta = MZHadron.muEta1->at(MZHadron.bestZidx);
                      double Mu1PT = MZHadron.muPt1->at(MZHadron.bestZidx);

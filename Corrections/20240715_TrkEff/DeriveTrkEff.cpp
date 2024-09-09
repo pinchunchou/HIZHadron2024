@@ -92,8 +92,8 @@ int main(int argc, char *argv[])
    vector<string> TrackResidualPath   = (DoTrackResidual == true) ? CL.GetStringVector("TrackResidualPath") : vector<string>{"", "", "", ""};
    bool DoMCHiBinShift                = IsPP ? CL.GetBool("DoMCHiBinShift", true): false;
    double MCHiBinShift                = DoMCHiBinShift ? CL.GetDouble("MCHiBinShift", 3) : 0;
-   double MinTrackPT                   = CL.GetDouble("MinTrackPT", 0.500);
-   double MaxTrackPT                   = CL.GetDouble("MaxTrackPT", 1000.00);
+   double MinTrackPT                   = CL.GetDouble("MinTrackPT", 0.400);
+   double MaxTrackPT                   = CL.GetDouble("MaxTrackPT", 10.00);
    int MinHiBin                        = CL.GetInt("MinHiBin", 0);
    int MaxHiBin                        = CL.GetInt("MaxHiBin", 200);
    bool DoIteration                    = (DoTrackResidual == true) ? CL.GetBool("DoIteration", false): false;
@@ -362,7 +362,7 @@ int main(int argc, char *argv[])
             if(fabs(MSignalGG.EleSCEta->at(iele1)) > 2.5)  continue;
             if(fabs(MSignalGG.EleEta->at(iele1)) > 2.1)    continue;
             if(fabs(MSignalGG.ElePt->at(iele1)) < 20)      continue;
-            if(IsPP == false && MSignalGG.DielectronPassVetoCut(iele1, MEvent.hiBin) == false) continue;
+            if(IsPP == false && MSignalGG.DielectronPassVetoCut(iele1, MEvent.hiBin + MCHiBinShift) == false) continue;
             if(IsPP == true  && MSignalGG.DielectronPassVetoCutPP(iele1) == false) continue;
 
             if(IsPP == false){ // per Kaya, HCAL failure gives rise to misidentified electrons.
@@ -380,7 +380,7 @@ int main(int argc, char *argv[])
                if(fabs(MSignalGG.EleSCEta->at(iele2)) > 2.5)                         continue;
                if(fabs(MSignalGG.EleEta->at(iele2)) > 2.1)                           continue;
                if(fabs(MSignalGG.ElePt->at(iele2)) < 20)                             continue;
-               if(IsPP == false && MSignalGG.DielectronPassVetoCut(iele2, MEvent.hiBin) == false)   continue;
+               if(IsPP == false && MSignalGG.DielectronPassVetoCut(iele2, MEvent.hiBin + MCHiBinShift) == false)   continue;
                if(IsPP == true  && MSignalGG.DielectronPassVetoCutPP(iele2) == false)   continue;
 
                if(IsPP == false){ // per Kaya, HCAL failure gives rise to misidentified electrons.
@@ -419,18 +419,9 @@ int main(int argc, char *argv[])
 
          } // Loop over 1st reco electron ended
 
-
-         
-
-         //if(DoZSelection == true && DoElectron == true)
-         //{
-         //   if(isGenZ == false || isRecoZ == false)
-         //      continue;//we should also have true reco but false gen.
-         //}
-
          if(DoZSelection == true && DoElectron == true)
          {
-            if(isRecoZ == false)
+            if(isGenZ == false || isRecoZ == false)
                continue;
          }
 
@@ -440,8 +431,9 @@ int main(int argc, char *argv[])
 
          int bestZidx = -1, bestZgenIdx = -1;
 
-         //float bestEta1Gen , bestPhi1Gen , bestPt1Gen ;
-         //float bestEta2Gen , bestPhi2Gen , bestPt2Gen ;
+         float bestEta1Gen , bestPhi1Gen , bestPt1Gen ;
+         float bestEta2Gen , bestPhi2Gen , bestPt2Gen ;
+         
          float bestEta1Reco, bestPhi1Reco, bestPt1Reco;
          float bestEta2Reco, bestPhi2Reco, bestPt2Reco;
 
@@ -470,7 +462,6 @@ int main(int argc, char *argv[])
             }
          }
 
-/*
          Zmass_temp = -1;
 
          for(int idx=0; idx < size(ZMass_gen) ; idx++){
@@ -492,18 +483,20 @@ int main(int argc, char *argv[])
                bestEta2Gen = eleEta2_gen[idx];
                bestPhi2Gen = elePhi2_gen[idx];
                bestPt2Gen = elePt2_gen[idx];
-
             }
          } 
-*/
+
 
          // Loop over gen particles
+
+         //cout<<"Loop over gen tracks"<<endl;
 
          int NGenTrack = (MGen.PT->size() > MGen.Mult) ? MGen.Mult : MGen.PT->size(); // To prevent some weird out_of_range errors.
          if(MGen.PT->size() < MGen.Mult){
             cerr << "Warning: Less Gen tracks than Mult: " << MGen.PT->size() << " < " << MGen.Mult << endl;
          }
 
+         //cout<<"NGenTrack = "<<NGenTrack<<endl;
          for(int iG = 0; iG < NGenTrack; iG++)
          {
             // Apply gen-level cuts (e.g., charged particles only, stable particles only)
@@ -519,20 +512,19 @@ int main(int argc, char *argv[])
 
             if(DoZSelection == true){
 
-               if(bestZidx == -1) continue;
+               if(bestZgenIdx == -1) continue;
 
-               double DeltaEtaEle1 = bestEta1Reco - MGen.Eta->at(iG);
-               double DeltaPhiEle1 = DeltaPhi(bestPhi1Reco, MGen.Phi->at(iG));
+               double DeltaEtaEle1 = bestEta1Gen - MGen.Eta->at(iG);
+               double DeltaPhiEle1 = DeltaPhi(bestPhi1Gen, MGen.Phi->at(iG));
                double DeltaR1 = sqrt(DeltaEtaEle1*DeltaEtaEle1 + DeltaPhiEle1*DeltaPhiEle1);
             
-               double DeltaEtaEle2 = bestEta2Reco - MGen.Eta->at(iG);
-               double DeltaPhiEle2 = DeltaPhi(bestPhi2Reco, MGen.Phi->at(iG));
+               double DeltaEtaEle2 = bestEta2Gen - MGen.Eta->at(iG);
+               double DeltaPhiEle2 = DeltaPhi(bestPhi2Gen, MGen.Phi->at(iG));
                double DeltaR2 = sqrt(DeltaEtaEle2*DeltaEtaEle2 + DeltaPhiEle2*DeltaPhiEle2);
-            
                if(DeltaR1 <  LeptonVeto || DeltaR2 < LeptonVeto)
                   continue;
             }
-
+            //cout<<"Fill gen track"<<endl;
             HGenTrack.Fill(MGen.Eta->at(iG), MGen.Phi->at(iG) < 0 ? MGen.Phi->at(iG)+2*M_PI : MGen.Phi->at(iG), MGen.PT->at(iG));
 
          }
@@ -571,7 +563,7 @@ int main(int argc, char *argv[])
                   if(DeltaR1 <  LeptonVeto || DeltaR2 < LeptonVeto)
                      continue;
                }
-
+               //cout<<"Fill reco track"<<endl;
                HRecoTrack.Fill(RecoEta, RecoPhi < 0 ? RecoPhi+2*M_PI : RecoPhi, RecoPT);
 
                // Calculate track efficiency correction
@@ -621,7 +613,7 @@ int main(int argc, char *argv[])
                   if(DeltaR1 <  LeptonVeto || DeltaR2 < LeptonVeto)
                      continue;
                }
-
+               //cout<<"Fill reco track"<<endl;
                HRecoTrack.Fill(RecoEta, RecoPhi < 0 ? RecoPhi+2*M_PI : RecoPhi, RecoPT);
 
                // Calculate track efficiency correction

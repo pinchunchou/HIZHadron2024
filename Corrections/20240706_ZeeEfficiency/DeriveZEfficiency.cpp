@@ -38,6 +38,9 @@ int main(int argc, char *argv[])
    bool IsPP                     = CL.GetBool("IsPP", false);
    string GGTreeName             = IsPP ? "ggHiNtuplizerGED/EventTree" : "ggHiNtuplizer/EventTree";
    GGTreeName                    = CL.Get("GGTree", GGTreeName);
+   bool DoMCHiBinShift           = CL.GetBool("DoMCHiBinShift", false);
+   double MCHiBinShift           = DoMCHiBinShift ? CL.GetDouble("MCHiBinShift", 3) : 0;
+
 
    sort(Ys.begin(), Ys.end());
    sort(PTs.begin(), PTs.end());
@@ -119,7 +122,7 @@ int main(int argc, char *argv[])
 
          if(IsPP == false)
          {
-            MEvent.hiBin = MEvent.hiBin - 3;   // MC shift
+            MEvent.hiBin = MEvent.hiBin -  MCHiBinShift;   // MC shift
             if(MEvent.hiBin < 0)   // out of range after shifting.  Skip!
                continue;
          }
@@ -194,7 +197,7 @@ int main(int argc, char *argv[])
             if(fabs(MSignalGG.EleSCEta->at(iele1)) > 2.5)                       continue;
             if(fabs(MSignalGG.EleEta->at(iele1)) > 2.1)                         continue;
             if(fabs(MSignalGG.ElePt->at(iele1)) < 20)                           continue;
-            if(IsPP == false && MSignalGG.DielectronPassVetoCut(iele1, MEvent.hiBin) == false) continue;
+            if(IsPP == false && MSignalGG.DielectronPassVetoCut(iele1, MEvent.hiBin + MCHiBinShift) == false) continue;
             if(IsPP == true  && MSignalGG.DielectronPassVetoCutPP(iele1) == false) continue;
 
             if(IsPP == false){ // per Kaya, HCAL failure gives rise to misidentified electrons.
@@ -212,7 +215,7 @@ int main(int argc, char *argv[])
                if(fabs(MSignalGG.EleSCEta->at(iele2)) > 2.5)                         continue;
                if(fabs(MSignalGG.EleEta->at(iele2)) > 2.1)                           continue;
                if(fabs(MSignalGG.ElePt->at(iele2)) < 20)                             continue;
-               if(IsPP == false && MSignalGG.DielectronPassVetoCut(iele2, MEvent.hiBin) == false)   continue;
+               if(IsPP == false && MSignalGG.DielectronPassVetoCut(iele2, MEvent.hiBin + MCHiBinShift) == false)   continue;
                if(IsPP == true  && MSignalGG.DielectronPassVetoCutPP(iele2) == false)   continue;
 
                if(IsPP == false){ // per Kaya, HCAL failure gives rise to misidentified electrons.

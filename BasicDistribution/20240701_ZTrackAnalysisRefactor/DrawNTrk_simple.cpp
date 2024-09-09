@@ -27,8 +27,8 @@ TChain *TreeBkg = new TChain("Tree");
 TChain *TreeSgG = new TChain("Tree"); 
 TChain *TreeBgG = new TChain("Tree"); 
 
-const char *typeofdata = "ZHadron2024/DrawNTrk/ov1_v3cv4b_sub0_Rres_tol120/20240827/";
-const char *typeofdata1 = "ov1_v3cv4b_sub0_Rres_tol120";
+const char *typeofdata = "ZHadron2024/DrawNTrk/ov1_v4b_sub0_Rres_tol120/20240831/";
+const char *typeofdata1 = "ov1_v4b_sub0_Rres_tol120";
     
 string filebase = "/eos/cms/store/group/phys_heavyions/pchou/SkimZHadron2024/";
 string cernbox = "/eos/home-p/pchou/SkimZHadron2024/";
@@ -52,8 +52,8 @@ int main(int argc, char *argv[]){
     gStyle->SetOptStat(0);
 
     
-    TreeSig->Add((filebase + "OutputMC_v3c_ee/Result*.root").c_str());
-    TreeBkg->Add((cernbox  + "OutputMCBkg_v4b_ee_Rres_tol120_v2/Result*.root").c_str());
+    TreeSig->Add((filebase + "OutputMC_v4b_ee_v3/Result*.root").c_str());
+    TreeBkg->Add((cernbox  + "OutputMCBkg_v4b_ee_Rres_tol120_v3/Result*.root").c_str());
     TreeSgG->Add((filebase + "OutputMCGen_v3c_ee/Result*.root").c_str());
     TreeBgG->Add((filebase + "OutputMCbkgGen_v4_ee_tol120/Result*.root").c_str());
     

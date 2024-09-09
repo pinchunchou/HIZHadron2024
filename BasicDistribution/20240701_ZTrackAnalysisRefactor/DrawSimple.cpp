@@ -54,14 +54,14 @@ void style(){
   gROOT->ForceStyle();
 }
 
-const char *typeofdata = "ZHadron2024/SkimBkgSub/ov1_v4b_sub0_tol120/20240829/";
-const char *typeofdata1 = "ov1_v4b_sub0_tol120";
+const char *typeofdata = "ZHadron2024/SkimBkgSub/ov1_v4d_sub0_GenMatch/20240907/";
+const char *typeofdata1 = "ov1_v4d_sub0_GenMatch";
 
-const char *typeofdataRres = "ZHadron2024/SkimBkgSub/ov1_v4b_sub0_Rres_tol120/20240829/";
-const char *typeofdataRres1 = "ov1_v4b_sub0_Rres_tol120";
+const char *typeofdataRres = "ZHadron2024/SkimBkgSub/ov1_v4d_sub0_Rres/20240907/";
+const char *typeofdataRres1 = "ov1_v4d_sub0_Rres";
 
-const char *typeofdataNoZ = "ZHadron2024/SkimBkgSub/ov1_v4b_sub0_NoZ_tol120/20240829/";
-const char *typeofdataNoZ1 = "ov1_v4b_sub0_NoZ_tol120";
+const char *typeofdataNoZ = "ZHadron2024/SkimBkgSub/ov1_v4d_sub0_NoZ_GenMatch/20240907/";
+const char *typeofdataNoZ1 = "ov1_v4d_sub0_NoZ_GenMatch";
 
 
 TChain *TreeSig = new TChain("Tree"); 
@@ -80,7 +80,7 @@ void DefinePhiRangeCorrelation() {
     );
 }
 
-void DrawSimple_single(float ptL=20,float ptH=2000,float centL=0,float centH=90,float TptL=0,float TptH=10000, bool isRres = false, bool noZ = false){
+void DrawSimple_single(float ptL=20,float ptH=2000,float centL=0,float centH=90,float TptL=0,float TptH=10000, bool isRres = false, bool noZ = false, double leptonveto = 0.01){
 
 	DefinePhiRangeCorrelation();
 
@@ -130,8 +130,8 @@ void DrawSimple_single(float ptL=20,float ptH=2000,float centL=0,float centH=90,
 	TCut evtCutGenPP = evtCutGenPP0;// || evtCutGenPP1 || evtCutGenPP2 || evtCutGenPP3;
 	TCut evtCutGen = evtCutGenPP && Form("hiBin>%f&&hiBin<%f",2*centL,2*centH);
 
-	TCut trkCut = Form("trackMuTagged==0&&trackPt>%f&&trackPt<%f",TptL,TptH);
-	TCut trkCutSum = Form("Sum$(trackMuTagged==0&&trackPt>%f&&trackPt<%f)>0",TptL,TptH);
+	TCut trkCut = Form("trackMuTagged==0&&trackPt>%f&&trackPt<%f&&trackMuDR>%f",TptL,TptH,leptonveto);
+	TCut trkCutSum = Form("Sum$(trackMuTagged==0&&trackPt>%f&&trackPt<%f&&trackMuDR>%f)>0",TptL,TptH,leptonveto);
 
 
 /*
@@ -527,11 +527,11 @@ void DrawSimple_single(float ptL=20,float ptH=2000,float centL=0,float centH=90,
   	gSystem->Exec(Form("mkdir -p /eos/user/p/pchou/figs/%s/%s",typeofdata,HistName.c_str()));
 
   if(isRres)
-  	c->SaveAs(Form("/eos/user/p/pchou/figs/%s/%s/Ztrack_%s_com_%.0f_%.0f_%.0f_%.0f_%.0f_%.0f.png",typeofdataRres,HistName.c_str(),typeofdataRres1,ptL,ptH,centL,centH,TptL,TptH));
+  	c->SaveAs(Form("/eos/user/p/pchou/figs/%s/%s/Ztrack_%s_com_%.0f_%.0f_%.0f_%.0f_%.0f_%.0f_%.0f.png",typeofdataRres,HistName.c_str(),typeofdataRres1,ptL,ptH,centL,centH,TptL,TptH,100*leptonveto));
   else if(noZ)
-  	c->SaveAs(Form("/eos/user/p/pchou/figs/%s/%s/Ztrack_%s_com_%.0f_%.0f_%.0f_%.0f_%.0f_%.0f.png",typeofdataNoZ,HistName.c_str(),typeofdataNoZ1,ptL,ptH,centL,centH,TptL,TptH)); 
+  	c->SaveAs(Form("/eos/user/p/pchou/figs/%s/%s/Ztrack_%s_com_%.0f_%.0f_%.0f_%.0f_%.0f_%.0f_%.0f.png",typeofdataNoZ,HistName.c_str(),typeofdataNoZ1,ptL,ptH,centL,centH,TptL,TptH,100*leptonveto)); 
   else
-  	c->SaveAs(Form("/eos/user/p/pchou/figs/%s/%s/Ztrack_%s_com_%.0f_%.0f_%.0f_%.0f_%.0f_%.0f.png",typeofdata,HistName.c_str(),typeofdata1,ptL,ptH,centL,centH,TptL,TptH)); 
+  	c->SaveAs(Form("/eos/user/p/pchou/figs/%s/%s/Ztrack_%s_com_%.0f_%.0f_%.0f_%.0f_%.0f_%.0f_%.0f.png",typeofdata,HistName.c_str(),typeofdata1,ptL,ptH,centL,centH,TptL,TptH,100*leptonveto)); 
    
   d4->SetFillStyle(0);
   d5->SetFillStyle(0);
@@ -539,11 +539,11 @@ void DrawSimple_single(float ptL=20,float ptH=2000,float centL=0,float centH=90,
   d20->SetMaximum(12);
 
   if(isRres)
-  	c->SaveAs(Form("/eos/user/p/pchou/figs/%s/%s/Ztrack_%s_com_%.0f_%.0f_%.0f_%.0f_%.0f_%.0f_low.png",typeofdataRres,HistName.c_str(),typeofdataRres1,ptL,ptH,centL,centH,TptL,TptH));
+  	c->SaveAs(Form("/eos/user/p/pchou/figs/%s/%s/Ztrack_%s_com_%.0f_%.0f_%.0f_%.0f_%.0f_%.0f_%.0f_low.png",typeofdataRres,HistName.c_str(),typeofdataRres1,ptL,ptH,centL,centH,TptL,TptH,100*leptonveto));
   else if(noZ)
-  	c->SaveAs(Form("/eos/user/p/pchou/figs/%s/%s/Ztrack_%s_com_%.0f_%.0f_%.0f_%.0f_%.0f_%.0f_low.png",typeofdataNoZ,HistName.c_str(),typeofdataNoZ1,ptL,ptH,centL,centH,TptL,TptH)); 
+  	c->SaveAs(Form("/eos/user/p/pchou/figs/%s/%s/Ztrack_%s_com_%.0f_%.0f_%.0f_%.0f_%.0f_%.0f_%.0f_low.png",typeofdataNoZ,HistName.c_str(),typeofdataNoZ1,ptL,ptH,centL,centH,TptL,TptH,100*leptonveto)); 
   else
-  	c->SaveAs(Form("/eos/user/p/pchou/figs/%s/%s/Ztrack_%s_com_%.0f_%.0f_%.0f_%.0f_%.0f_%.0f_low.png",typeofdata,HistName.c_str(),typeofdata1,ptL,ptH,centL,centH,TptL,TptH)); 
+  	c->SaveAs(Form("/eos/user/p/pchou/figs/%s/%s/Ztrack_%s_com_%.0f_%.0f_%.0f_%.0f_%.0f_%.0f_%.0f_low.png",typeofdata,HistName.c_str(),typeofdata1,ptL,ptH,centL,centH,TptL,TptH,100*leptonveto)); 
 
 }
 
@@ -563,24 +563,26 @@ int main(int argc, char *argv[]){
 	bool isRres					 = CL.GetBool("isRres",false);
 	bool noZ					 = CL.GetBool("noZ",false);
 
+	double leptonveto			 = CL.GetDouble("leptonveto", 0.01);
+
 	string filebase = "/eos/cms/store/group/phys_heavyions/pchou/SkimZHadron2024/";
 	string cernbox = "/eos/home-p/pchou/SkimZHadron2024/";
 
 	if(noZ)
-		TreeSig->Add((filebase + "OutputMC_v4b_ee_NoZ_v2/Result*.root").c_str());
+		TreeSig->Add((filebase + "OutputMC_v4b_ee_NoZ_v3/Result*.root").c_str());
 	else
-		TreeSig->Add((filebase + "OutputMC_v3c_ee/Result*.root").c_str());
+		TreeSig->Add((cernbox + "OutputMC_v4d_ee/Result*.root").c_str());
 
 	if(isRres)
-		TreeBkg->Add((cernbox + "OutputMCBkg_v4b_ee_Rres_tol120_v2/Result*.root").c_str());
+		TreeBkg->Add((cernbox + "OutputMCBkg_v4d_ee_Rres/Result*.root").c_str());
 	else if(noZ)
-		TreeBkg->Add((cernbox + "OutputMCBkg_v4b_ee_NoZ_tol120_v2/Result*.root").c_str());
+		TreeBkg->Add((cernbox + "OutputMCBkg_v4b_ee_NoZ_tol120_v3/Result*.root").c_str());
 	else
-		TreeBkg->Add((cernbox + "OutputMCBkg_v4b_ee_tol120_v2/Result*.root").c_str());
+		TreeBkg->Add((cernbox + "OutputMCBkg_v4b_ee_tol120/Result*.root").c_str());
 
 	//TreePP0->Add((filebase + "OutputPPMC_v3c_ee/*.root").c_str());
 	TreeSgG->Add((filebase + "OutputMCGen_v3c_ee/Result*.root").c_str());
-	TreeBgG->Add((filebase + "OutputMCbkgGen_v4_ee_tol120/Result*.root").c_str());
+	TreeBgG->Add((cernbox + "OutputMCbkgGen_v4d_ee/Result*.root").c_str());
 
 	//TreeSig->Add("/eos/cms/store/group/phys_heavyions/pchou/SkimMC_v14.root");
 	////TreeBkg->Add("/eos/cms/store/group/phys_heavyions/pchou/SkimMCbkg_v14.root");
@@ -589,7 +591,7 @@ int main(int argc, char *argv[]){
 	////TreeBgG->Add("/eos/cms/store/group/phys_heavyions/pchou/SkimMCbkgGen_v14.root");
 
 
-	DrawSimple_single(ptL,ptH,centL,centH,TptL,TptH,isRres,noZ);
+	DrawSimple_single(ptL,ptH,centL,centH,TptL,TptH,isRres,noZ,leptonveto);
 
 
 	//DrawSimple_single(40,200,0,10,1,2);

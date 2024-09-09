@@ -78,7 +78,13 @@
 
 * Version 4b - 2024 August 26
    * Add background hiBin, and background track weights use background hibin instead of signal hibin.
-   
+
+* Version 4c - 2024 September 3
+   * Background hiBin do not cut off negative ones. Residual weights fixed such that they are without hiBin shifted.
+
+* Version 4d - 2024 September 6
+   * DielectronPassVetoCut: hiBin shift. Z weights fixed such that they are without hiBin shifted. Background hiBin cut off negative ones.
+
 ## Arguments
 
 | Argument | type | default | comments |

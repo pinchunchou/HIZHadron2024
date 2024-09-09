@@ -63,7 +63,8 @@ float TrkEff2018PbPb::getCorrection(float pt, float eta, int hiBin){
   if(efficiency > 0.001){
     return (1-fake)/efficiency;
   } else {
-    if( ! isQuiet ) std::cout << "TrkEff2018PbPb: Warning! Tracking efficiency is very low for this track (close to dividing by 0).  Returning correction factor of 0 for this track for now." << std::endl;
+    if( ! isQuiet ) std::cout << "TrkEff2018PbPb: Warning! Tracking efficiency ("<< efficiency <<") is very low for this track (close to dividing by 0).  Returning correction factor of 0 for this track for now." << std::endl;
+    
     return 0;
   }
 }

@@ -8,10 +8,10 @@ Data="--DoGenLevel false --IsData true"
 AODPF="--PFTree \"pfcandAnalyzer/pfTree\""
 MiniAODPF="--PFTree \"particleFlowAnalyser/pftree\""
 
-TrackResidualPathPbPb="${ProjectBase}/CommonCode/root/20240827_TrackResidualCorrection_V3_0_20.root,${ProjectBase}/CommonCode/root/20240827_TrackResidualCorrection_V3_20_60.root,${ProjectBase}/CommonCode/root/20240827_TrackResidualCorrection_V3_60_100.root,${ProjectBase}/CommonCode/root/20240827_TrackResidualCorrection_V3_100_200.root"
-TrackResidualPathPbPbMB="${ProjectBase}/CommonCode/root/20240827_TrackResidualCorrection_V3_0_20_MB.root,${ProjectBase}/CommonCode/root/20240827_TrackResidualCorrection_V3_20_60_MB.root,${ProjectBase}/CommonCode/root/20240827_TrackResidualCorrection_V3_60_100_MB.root,${ProjectBase}/CommonCode/root/20240827_TrackResidualCorrection_V3_100_200_MB.root"
-TrackResidualPathPbPbNoZ="${ProjectBase}/CommonCode/root/20240827_TrackResidualCorrection_V3_0_20_NoZ.root,${ProjectBase}/CommonCode/root/20240827_TrackResidualCorrection_V3_20_60_NoZ.root,${ProjectBase}/CommonCode/root/20240827_TrackResidualCorrection_V3_60_100_NoZ.root,${ProjectBase}/CommonCode/root/20240827_TrackResidualCorrection_V3_100_200_NoZ.root"
-TrackResidualPathPP="${ProjectBase}/CommonCode/root/20240827_TrackResidualCorrection_V3_pp.root"
+TrackResidualPathPbPb="${ProjectBase}/CommonCode/root/20240903_TrackResidualCorrection_V3_0_20.root,${ProjectBase}/CommonCode/root/20240903_TrackResidualCorrection_V3_20_60.root,${ProjectBase}/CommonCode/root/20240903_TrackResidualCorrection_V3_60_100.root,${ProjectBase}/CommonCode/root/20240903_TrackResidualCorrection_V3_100_200.root"
+TrackResidualPathPbPbMB="${ProjectBase}/CommonCode/root/20240903_TrackResidualCorrection_V3_0_20_MB.root,${ProjectBase}/CommonCode/root/20240903_TrackResidualCorrection_V3_20_60_MB.root,${ProjectBase}/CommonCode/root/20240903_TrackResidualCorrection_V3_60_100_MB.root,${ProjectBase}/CommonCode/root/20240903_TrackResidualCorrection_V3_100_200_MB.root"
+TrackResidualPathPbPbNoZ="${ProjectBase}/CommonCode/root/20240903_TrackResidualCorrection_V3_0_20_NoZ.root,${ProjectBase}/CommonCode/root/20240903_TrackResidualCorrection_V3_20_60_NoZ.root,${ProjectBase}/CommonCode/root/20240903_TrackResidualCorrection_V3_60_100_NoZ.root,${ProjectBase}/CommonCode/root/20240903_TrackResidualCorrection_V3_100_200_NoZ.root"
+TrackResidualPathPP="${ProjectBase}/CommonCode/root/20240903_TrackResidualCorrection_V3_pp.root"
 
 #TrackResidualPathPbPb="${ProjectBase}/CommonCode/root/20230522_TrackResidualCorrection_V9_0_20.root,${ProjectBase}/CommonCode/root/20230522_TrackResidualCorrection_V9_20_60.root,${ProjectBase}/CommonCode/root/20230522_TrackResidualCorrection_V9_60_100.root,${ProjectBase}/CommonCode/root/20230522_TrackResidualCorrection_V9_100_200.root"
 #TrackResidualPathPP="${ProjectBase}/CommonCode/root/20230531_TrackResidualCorrection_V12_pp.root"
@@ -25,9 +25,9 @@ PbPbRecoTrackNoZ="--DoTrackEfficiency true --TrackEfficiencyPath ${ProjectBase}/
 
 #BackgroundMC="   --DoBackground true --HFShift 0 --Tolerance 100000 --ToleranceFraction 0.001 --Oversample 1 --HFCeiling 134000" # 
 #BackgroundMC="   --DoBackground true --HFShift 766.28 --Tolerance 187.5 --ToleranceFraction 0.001 --Oversample 1 --HFCeiling 134000 --VZTolerance 2" # 
-BackgroundMC="   --DoBackground true --HFShift 766.203 --isMultiHFShift true --HFShifts 766.203,1051.16,1335.08,1615.61,1901.31,2174.46,2476.89,2693.89,3023.67,3460.22,3501.73,4487.32 --Tolerance 120 --ToleranceFraction 0.001 --Oversample 1 --HFCeiling 134000 --VZTolerance 2" # 
-BackgroundMCPF04="--DoBackground true --HFShift 316.772 --isMultiHFShift true --HFShifts 316.772,429.746,550.097,677.34,816.485,957.439,1124.26,1240.29,1446.87,1743.55,1781.42,2375.24 --Tolerance 120 --ToleranceFraction 0.001 --Oversample 1 --HFCeiling 134000 --VZTolerance 2" # 
-BackgroundGenMC="--DoBackground true --HFShift 747.177 --Tolerance 120 --ToleranceFraction 0.001 --Oversample 1 --HFCeiling 156000 --VZTolerance 2"
+BackgroundMC="   --DoBackground true --HFShift 766.203 --isMultiHFShift true --HFShifts 766.203,1051.16,1335.08,1615.61,1901.31,2174.46,2476.89,2693.89,3023.67,3460.22,3501.73,4487.32 --Tolerance 187.5 --ToleranceFraction 0.001 --Oversample 1 --HFCeiling 134000 --VZTolerance 2" # 
+BackgroundMCPF04="--DoBackground true --HFShift 316.772 --isMultiHFShift true --HFShifts 316.772,429.746,550.097,677.34,816.485,957.439,1124.26,1240.29,1446.87,1743.55,1781.42,2375.24 --Tolerance 187.5 --ToleranceFraction 0.001 --Oversample 1 --HFCeiling 134000 --VZTolerance 2" # 
+BackgroundGenMC="--DoBackground true --HFShift 747.177 --Tolerance 187.5 --ToleranceFraction 0.001 --Oversample 1 --HFCeiling 156000 --VZTolerance 2"
 BackgroundData=" --DoBackground true --HFShift 660  --Tolerance 150.0   --ToleranceFraction 0.001 --Oversample 25 --HFCeiling  70000"
 
 #BackgroundMC="   --DoBackground true --HFShift 682  --Tolerance 90 --ToleranceFraction 0.005 --Oversample 10 --HFCeiling 134000"
