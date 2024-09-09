@@ -72,8 +72,11 @@ int main(int argc, char *argv[])
 
    CommandLine CL(argc, argv);
 
-   std::vector<double> PTs(49);
-   std::generate_n(PTs.begin(), 49, [n = 0.2]() mutable { return n += 0.2; });
+   //std::vector<double> PTs(49);
+   //std::generate_n(PTs.begin(), 49, [n = 0.2]() mutable { return n += 0.2; });
+
+   std::vector<double> PTs(35);
+   std::generate_n(PTs.begin(), 35, [n=0.4/1.1]() mutable { return n += 0.1*n; });
 
    std::vector<double> Etas(51);
    std::generate_n(Etas.begin(), 51, [n = -2.4-0.096]() mutable { return n += 0.096; });
@@ -92,8 +95,8 @@ int main(int argc, char *argv[])
    vector<string> TrackResidualPath   = (DoTrackResidual == true) ? CL.GetStringVector("TrackResidualPath") : vector<string>{"", "", "", ""};
    bool DoMCHiBinShift                = IsPP ? CL.GetBool("DoMCHiBinShift", true): false;
    double MCHiBinShift                = DoMCHiBinShift ? CL.GetDouble("MCHiBinShift", 3) : 0;
-   double MinTrackPT                   = CL.GetDouble("MinTrackPT", 0.400);
-   double MaxTrackPT                   = CL.GetDouble("MaxTrackPT", 10.00);
+   double MinTrackPT                   = CL.GetDouble("MinTrackPT", (double) PTs[0]);
+   double MaxTrackPT                   = CL.GetDouble("MaxTrackPT", (double) PTs[size(PTs)-1]);
    int MinHiBin                        = CL.GetInt("MinHiBin", 0);
    int MaxHiBin                        = CL.GetInt("MaxHiBin", 200);
    bool DoIteration                    = (DoTrackResidual == true) ? CL.GetBool("DoIteration", false): false;
