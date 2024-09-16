@@ -1,7 +1,7 @@
 default: Prepare TestRun
 
 YEAR    = 2024
-DATE    = 0909
+DATE    = 0910
 DMY     = ${YEAR}${DATE}
 DYMC    = /eos/cms/store/group/phys_heavyions/chenyi/PbPb2018/Forest/DYJetsToLL_MLL-50_TuneCP5_HydjetDrumMB_5p02TeV-amcatnloFXFX-pythia8/HINPbPbSpring21MiniAOD-mva98_112X_upgrade2018_realistic_HI_v9-v1/MINIAODSIM/DYJetsToLL_MLL-50_TuneCP5_HydjetDrumMB_5p02TeV-amcatnloFXFX-pythia8/20240605_ZHadronMCDY/240605_151412/0000/
 CERNBOX = /eos/home-p/pchou/figs/ZHadron2024/TrkEff/${DMY}/
@@ -11,28 +11,28 @@ AFSBase = /afs/cern.ch/user/p/pchou/HIZHadron2024/Corrections/20240715_TrkEff/
 PPMC    = /eos/cms/store/group/phys_heavyions/chenyi/pp2017/Forest/DYJetsToLL_MLL-50_TuneCP5_5020GeV-amcatnloFXFX-pythia8/RunIIpp5Spring18DR-94X_mc2017_realistic_forppRef5TeV-v2/AODSIM/DYJetsToLL_MLL-50_TuneCP5_5020GeV-amcatnloFXFX-pythia8/20231020_ZHadronMLLWithMuTreePP/231020_152224/0000/
 MBMC    = /eos/cms/store/group/phys_heavyions/chenyi/Samples/store/user/mitaylor/PhotonJet/MinBias_Hydjet_Drum5F_2018_5p02TeV/HINPbPbSpring21MiniAOD-NoPUmva98_112X_upgrade2018_realistic_HI_v9-v1/MINIAODSIM/MinBias_Hydjet_Drum5F_2018_5p02TeV/20230127PbPbMCMB/230127_211118/
 
-TrackResidualPathPbPb="${ProjectBase}/CommonCode/root/20230522_TrackResidualCorrection_V9_0_20.root,${ProjectBase}/CommonCode/root/20230522_TrackResidualCorrection_V9_20_60.root,${ProjectBase}/CommonCode/root/20230522_TrackResidualCorrection_V9_60_100.root,${ProjectBase}/CommonCode/root/20230522_TrackResidualCorrection_V9_100_200.root"
-TrackResidualPathPbPbNoZ="${ProjectBase}/CommonCode/root/20230522_TrackResidualCorrection_V9_0_20.root,${ProjectBase}/CommonCode/root/20230522_TrackResidualCorrection_V9_20_60.root,${ProjectBase}/CommonCode/root/20230522_TrackResidualCorrection_V9_60_100.root,${ProjectBase}/CommonCode/root/20230522_TrackResidualCorrection_V9_100_200.root"
-TrackResidualPathPbPbMB="${ProjectBase}/CommonCode/root/20230522_TrackResidualCorrection_V9_0_20.root,${ProjectBase}/CommonCode/root/20230522_TrackResidualCorrection_V9_20_60.root,${ProjectBase}/CommonCode/root/20230522_TrackResidualCorrection_V9_60_100.root,${ProjectBase}/CommonCode/root/20230522_TrackResidualCorrection_V9_100_200.root"
-TrackResidualPathPP="${ProjectBase}/CommonCode/root/20230531_TrackResidualCorrection_V12_pp.root"
+#TrackResidualPathPbPb="${ProjectBase}/CommonCode/root/20230522_TrackResidualCorrection_V9_0_20.root,${ProjectBase}/CommonCode/root/20230522_TrackResidualCorrection_V9_20_60.root,${ProjectBase}/CommonCode/root/20230522_TrackResidualCorrection_V9_60_100.root,${ProjectBase}/CommonCode/root/20230522_TrackResidualCorrection_V9_100_200.root"
+#TrackResidualPathPbPbNoZ="${ProjectBase}/CommonCode/root/20230522_TrackResidualCorrection_V9_0_20.root,${ProjectBase}/CommonCode/root/20230522_TrackResidualCorrection_V9_20_60.root,${ProjectBase}/CommonCode/root/20230522_TrackResidualCorrection_V9_60_100.root,${ProjectBase}/CommonCode/root/20230522_TrackResidualCorrection_V9_100_200.root"
+#TrackResidualPathPbPbMB="${ProjectBase}/CommonCode/root/20230522_TrackResidualCorrection_V9_0_20.root,${ProjectBase}/CommonCode/root/20230522_TrackResidualCorrection_V9_20_60.root,${ProjectBase}/CommonCode/root/20230522_TrackResidualCorrection_V9_60_100.root,${ProjectBase}/CommonCode/root/20230522_TrackResidualCorrection_V9_100_200.root"
+#TrackResidualPathPP="${ProjectBase}/CommonCode/root/20230531_TrackResidualCorrection_V12_pp.root"
 
 #TrackResidualPathPbPb="${ProjectBase}/CommonCode/root/${DMY}_TrackResidualCorrection_V1_0_20.root,${ProjectBase}/CommonCode/root/${DMY}_TrackResidualCorrection_V1_20_60.root,${ProjectBase}/CommonCode/root/${DMY}_TrackResidualCorrection_V1_60_100.root,${ProjectBase}/CommonCode/root/${DMY}_TrackResidualCorrection_V1_100_200.root"
 #TrackResidualPathPbPbNoZ="${ProjectBase}/CommonCode/root/${DMY}_TrackResidualCorrection_V1_0_20_NoZ.root,${ProjectBase}/CommonCode/root/${DMY}_TrackResidualCorrection_V1_20_60_NoZ.root,${ProjectBase}/CommonCode/root/${DMY}_TrackResidualCorrection_V1_60_100_NoZ.root,${ProjectBase}/CommonCode/root/${DMY}_TrackResidualCorrection_V1_100_200_NoZ.root"
 #TrackResidualPathPbPbMB="${ProjectBase}/CommonCode/root/${DMY}_TrackResidualCorrection_V1_0_20_MB.root,${ProjectBase}/CommonCode/root/${DMY}_TrackResidualCorrection_V1_20_60_MB.root,${ProjectBase}/CommonCode/root/${DMY}_TrackResidualCorrection_V1_60_100_MB.root,${ProjectBase}/CommonCode/root/${DMY}_TrackResidualCorrection_V1_100_200_MB.root"
 #TrackResidualPathPP="${ProjectBase}/CommonCode/root/${DMY}_TrackResidualCorrection_V1_pp.root"
 
-#TrackResidualPathPbPb="${ProjectBase}/CommonCode/root/${DMY}_TrackResidualCorrection_V2_0_20.root,${ProjectBase}/CommonCode/root/${DMY}_TrackResidualCorrection_V2_20_60.root,${ProjectBase}/CommonCode/root/${DMY}_TrackResidualCorrection_V2_60_100.root,${ProjectBase}/CommonCode/root/${DMY}_TrackResidualCorrection_V2_100_200.root"
-#TrackResidualPathPbPbNoZ="${ProjectBase}/CommonCode/root/${DMY}_TrackResidualCorrection_V2_0_20_NoZ.root,${ProjectBase}/CommonCode/root/${DMY}_TrackResidualCorrection_V2_20_60_NoZ.root,${ProjectBase}/CommonCode/root/${DMY}_TrackResidualCorrection_V2_60_100_NoZ.root,${ProjectBase}/CommonCode/root/${DMY}_TrackResidualCorrection_V2_100_200_NoZ.root"
-#TrackResidualPathPbPbMB="${ProjectBase}/CommonCode/root/${DMY}_TrackResidualCorrection_V2_0_20_MB.root,${ProjectBase}/CommonCode/root/${DMY}_TrackResidualCorrection_V2_20_60_MB.root,${ProjectBase}/CommonCode/root/${DMY}_TrackResidualCorrection_V2_60_100_MB.root,${ProjectBase}/CommonCode/root/${DMY}_TrackResidualCorrection_V2_100_200_MB.root"
-#TrackResidualPathPP="${ProjectBase}/CommonCode/root/${DMY}_TrackResidualCorrection_V2_pp.root"
+TrackResidualPathPbPb="${ProjectBase}/CommonCode/root/${DMY}_TrackResidualCorrection_V2_0_20.root,${ProjectBase}/CommonCode/root/${DMY}_TrackResidualCorrection_V2_20_60.root,${ProjectBase}/CommonCode/root/${DMY}_TrackResidualCorrection_V2_60_100.root,${ProjectBase}/CommonCode/root/${DMY}_TrackResidualCorrection_V2_100_200.root"
+TrackResidualPathPbPbNoZ="${ProjectBase}/CommonCode/root/${DMY}_TrackResidualCorrection_V2_0_20_NoZ.root,${ProjectBase}/CommonCode/root/${DMY}_TrackResidualCorrection_V2_20_60_NoZ.root,${ProjectBase}/CommonCode/root/${DMY}_TrackResidualCorrection_V2_60_100_NoZ.root,${ProjectBase}/CommonCode/root/${DMY}_TrackResidualCorrection_V2_100_200_NoZ.root"
+TrackResidualPathPbPbMB="${ProjectBase}/CommonCode/root/${DMY}_TrackResidualCorrection_V2_0_20_MB.root,${ProjectBase}/CommonCode/root/${DMY}_TrackResidualCorrection_V2_20_60_MB.root,${ProjectBase}/CommonCode/root/${DMY}_TrackResidualCorrection_V2_60_100_MB.root,${ProjectBase}/CommonCode/root/${DMY}_TrackResidualCorrection_V2_100_200_MB.root"
+TrackResidualPathPP="${ProjectBase}/CommonCode/root/${DMY}_TrackResidualCorrection_V2_pp.root"
 
 #TrackResidualPathPbPb="${ProjectBase}/CommonCode/root/${DMY}_TrackResidualCorrection_V3_0_20.root,${ProjectBase}/CommonCode/root/${DMY}_TrackResidualCorrection_V3_20_60.root,${ProjectBase}/CommonCode/root/${DMY}_TrackResidualCorrection_V3_60_100.root,${ProjectBase}/CommonCode/root/${DMY}_TrackResidualCorrection_V3_100_200.root"
 #TrackResidualPathPbPbNoZ="${ProjectBase}/CommonCode/root/${DMY}_TrackResidualCorrection_V3_0_20_NoZ.root,${ProjectBase}/CommonCode/root/${DMY}_TrackResidualCorrection_V3_20_60_NoZ.root,${ProjectBase}/CommonCode/root/${DMY}_TrackResidualCorrection_V3_60_100_NoZ.root,${ProjectBase}/CommonCode/root/${DMY}_TrackResidualCorrection_V3_100_200_NoZ.root"
 #TrackResidualPathPbPbMB="${ProjectBase}/CommonCode/root/${DMY}_TrackResidualCorrection_V3_0_20_MB.root,${ProjectBase}/CommonCode/root/${DMY}_TrackResidualCorrection_V3_20_60_MB.root,${ProjectBase}/CommonCode/root/${DMY}_TrackResidualCorrection_V3_60_100_MB.root,${ProjectBase}/CommonCode/root/${DMY}_TrackResidualCorrection_V3_100_200_MB.root"
 #TrackResidualPathPP="${ProjectBase}/CommonCode/root/${DMY}_TrackResidualCorrection_V3_pp.root"
 
-VERSION=V1
-IFDOIter=false
+VERSION=V3
+IFDOIter=true
 IFDOHiBinShift=false
 
 Prepare:

@@ -103,7 +103,7 @@ PrepareToRun3:
 PrepareToRunMC:
 	bash PrepareInput.sh \
 		$(PbPbSignalMC)/ \
-		5 LogMC_v4d_ee_v2/ $(CERNBOX)/OutputMC_v4d_ee_v2/ \
+		5 LogMC_v4d_ee_v3/ $(CERNBOX)/OutputMC_v4d_ee_v3/ \
 		--Fraction 1 --DoMuon false `./Expand Setting.dh PbPbSignalMC Nominal`
 
 PrepareToRunMCNoZ:
@@ -133,7 +133,7 @@ PrepareToRunMC3:
 PrepareToRunGenMC:
 	bash PrepareInput.sh \
 		$(PbPbSignalMC)/ \
-		5 LogGenMC_v4d_ee/ $(EOSBase)/OutputMCGen_v4d_ee/ \
+		5 LogGenMC_v4d_ee/ $(CERNBOX)/OutputMCGen_v4d_ee/ \
  		--Fraction 1 --DoMuon false `./Expand Setting.dh PbPbSignalGenMC Nominal`
 
 PrepareToRunPP:
@@ -207,7 +207,7 @@ PrepareToRunMCBackground:
 PrepareToRunMCBackgroundRes:
 	bash PrepareInputRandomBackground.sh \
 		$(PbPbSignalMC) \
-		5 LogMCBkg_v4d_ee_Rres_v2/ $(CERNBOX)/OutputMCBkg_v4d_ee_Rres_v2/ \
+		5 LogMCBkg_v4d_ee_Rres_v3/ $(CERNBOX)/OutputMCBkg_v4d_ee_Rres_v3/ \
 		$(PbPbBackgroundMC)/ 15 --DoMuon false \
 		`./Expand Setting.dh PbPbBackgroundMCRes Nominal`
 

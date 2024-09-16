@@ -134,11 +134,16 @@ int main(int argc, char *argv[])
          vector<TLorentzVector> PGenZ, PGenEle1, PGenEle2;
          for(int iEle1 = 0; iEle1 < MSignalGG.NMC; iEle1++)
          {
+            if(iEle1 > MSignalGG.MCPID->size() - 1){
+               cerr<<"Warning: MSignalGG.NMC and iEle1 > MSignalGG.MCPID->size(): "<< MSignalGG.NMC <<" or "<<iEle1<<" > "<< MSignalGG.MCPID->size()<<endl;
+               break;
+            }
+
             // We only want electron from Z's
             if(fabs(MSignalGG.MCPID->at(iEle1)) != 11)
                 continue;
-            //if(MSignalGG.MCMomPID->at(iEle1) != 23)
-            //   continue;
+            if(MSignalGG.MCMomPID->at(iEle1) != 23 && ((MSignalGG.MCMomPID->at(iEle1) != MSignalGG.MCPID->at(iEle1)) || MSignalGG.MCGMomPID->at(iEle1) != 23) )
+               continue;
             if(MSignalGG.MCPt->at(iEle1) < 20)
                continue;
             if(fabs(MSignalGG.MCEta->at(iEle1)) > 2.1)
@@ -149,11 +154,15 @@ int main(int argc, char *argv[])
 
             for(int iEle2 = iEle1 + 1; iEle2 < MSignalGG.NMC; iEle2++)
             {
+               if(iEle2 > MSignalGG.MCPID->size() - 1){
+                  cerr<<"Warning: MSignalGG.NMC and iEle2 > MSignalGG.MCPID->size(): "<< MSignalGG.NMC <<" or "<<iEle2<<" > "<< MSignalGG.MCPID->size()<<endl;
+                  break;
+               }
                // We only want electron from Z's
                if(MSignalGG.MCPID->at(iEle2) != -MSignalGG.MCPID->at(iEle1))
                    continue;
-               //if(MSignalGG.MCMomPID->at(iEle2) != 23)
-               //   continue;
+               if(MSignalGG.MCMomPID->at(iEle2) != 23 && ((MSignalGG.MCMomPID->at(iEle2) != MSignalGG.MCPID->at(iEle2)) || MSignalGG.MCGMomPID->at(iEle2) != 23) )
+                  continue;
                if(MSignalGG.MCPt->at(iEle2) < 20)
                   continue;
                if(fabs(MSignalGG.MCEta->at(iEle2)) > 2.1)
@@ -191,7 +200,14 @@ int main(int argc, char *argv[])
 			// Then find all the reco Zs			
          vector<TLorentzVector> PRecoZ, PRecoEle1, PRecoEle2;
 
-         for(int iele1 = 0; iele1 < MSignalGG.NEle; iele1++)
+         int N_eles = MSignalGG.NEle ;
+
+         if( N_eles > MSignalGG.ElePt->size() ){
+            cerr<<"Warning: MSignalGG.NEle and N_eles > MSignalGG.ElePt->size(): "<< MSignalGG.NEle <<" or "<<N_eles<<" > "<< MSignalGG.ElePt->size()<<endl;
+            N_eles = MSignalGG.ElePt->size();
+         }
+
+         for(int iele1 = 0; iele1 < N_eles; iele1++)
          {
             // Some basic electron kinematic cuts
             if(fabs(MSignalGG.EleSCEta->at(iele1)) > 2.5)                       continue;
@@ -208,7 +224,7 @@ int main(int argc, char *argv[])
             Ele1.SetPtEtaPhiM(MSignalGG.ElePt->at(iele1), MSignalGG.EleEta->at(iele1), MSignalGG.ElePhi->at(iele1), E_MASS);
 
             // Loop over 2nd reco electron
-            for(int iele2 = iele1+1; iele2 < MSignalGG.NEle; iele2++)
+            for(int iele2 = iele1+1; iele2 < N_eles; iele2++)
             {
                // We want opposite-charge electrons with some basic kinematic cuts
                if(MSignalGG.EleCharge->at(iele1) == MSignalGG.EleCharge->at(iele2))  continue;

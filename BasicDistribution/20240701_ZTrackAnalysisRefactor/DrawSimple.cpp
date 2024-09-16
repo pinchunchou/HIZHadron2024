@@ -57,8 +57,8 @@ void style(){
 const char *typeofdata = "ZHadron2024/SkimBkgSub/ov1_v4d_sub0_GenMatch/20240907/";
 const char *typeofdata1 = "ov1_v4d_sub0_GenMatch";
 
-const char *typeofdataRres = "ZHadron2024/SkimBkgSub/ov1_v4d_sub0_Rres/20240907/";
-const char *typeofdataRres1 = "ov1_v4d_sub0_Rres";
+const char *typeofdataRres = "ZHadron2024/SkimBkgSub/ov1_v4d_sub0_Rres_v3/20240912/";
+const char *typeofdataRres1 = "ov1_v4d_sub0_Rres_v3";
 
 const char *typeofdataNoZ = "ZHadron2024/SkimBkgSub/ov1_v4d_sub0_NoZ_GenMatch/20240907/";
 const char *typeofdataNoZ1 = "ov1_v4d_sub0_NoZ_GenMatch";
@@ -571,17 +571,17 @@ int main(int argc, char *argv[]){
 	if(noZ)
 		TreeSig->Add((filebase + "OutputMC_v4b_ee_NoZ_v3/Result*.root").c_str());
 	else
-		TreeSig->Add((cernbox + "OutputMC_v4d_ee/Result*.root").c_str());
+		TreeSig->Add((cernbox + "OutputMC_v4d_ee_v3/Result*.root").c_str());
 
 	if(isRres)
-		TreeBkg->Add((cernbox + "OutputMCBkg_v4d_ee_Rres/Result*.root").c_str());
+		TreeBkg->Add((cernbox + "OutputMCBkg_v4d_ee_Rres_v3/Result*.root").c_str());
 	else if(noZ)
 		TreeBkg->Add((cernbox + "OutputMCBkg_v4b_ee_NoZ_tol120_v3/Result*.root").c_str());
 	else
 		TreeBkg->Add((cernbox + "OutputMCBkg_v4b_ee_tol120/Result*.root").c_str());
 
 	//TreePP0->Add((filebase + "OutputPPMC_v3c_ee/*.root").c_str());
-	TreeSgG->Add((filebase + "OutputMCGen_v3c_ee/Result*.root").c_str());
+	TreeSgG->Add((cernbox + "OutputMCGen_v4d_ee/Result*.root").c_str());
 	TreeBgG->Add((cernbox + "OutputMCbkgGen_v4d_ee/Result*.root").c_str());
 
 	//TreeSig->Add("/eos/cms/store/group/phys_heavyions/pchou/SkimMC_v14.root");
